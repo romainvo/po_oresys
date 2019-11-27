@@ -14,9 +14,14 @@ def John():
 def test_map():
   return render_template("test_map.html")
 
+@app.route("/mapbox")
+def test_mapbox():
+  return render_template("test_mapbox.html")
+
 @app.route("/about")
 def about():
   return render_template("about.html")
+
 
 if __name__ == "__main__":
   app.run(debug=True)
