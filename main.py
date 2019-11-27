@@ -18,6 +18,10 @@ def test_map():
 def test_mapbox():
   return render_template("test_mapbox.html")
 
+@app.route("/leaflet")
+def test_leaflet():
+  return render_template("test_leaflet.html")
+
 @app.route("/about")
 def about():
   return render_template("about.html")
