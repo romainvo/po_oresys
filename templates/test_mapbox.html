@@ -7,7 +7,7 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.29.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.29.0/mapbox-gl.css' rel='stylesheet' />
-    
+
     <style>
         #map { height: 700px; }
     </style>
@@ -18,18 +18,7 @@
     {% block content %}
 
     <div id='map'></div>
-    <script>
-        var map = new mapboxgl.Map({
-            container: 'map',
-            style: 'https://openmaptiles.geo.data.gouv.fr/styles/osm-bright/style.json', 
-            //'https://openmaptiles.github.io/klokantech-basic-gl-style/style-cdn.json',
-            //'https://openmaptiles.github.io/osm-bright-gl-style/style-cdn.json',
-            center: [3, 47],
-            zoom: 5,
-            minZoom: 1,
-            maxZoom: 19
-        });
-    </script>
+    <script src='/static/js/test_mapbox.js'></script>
 
     {% endblock %}
   </body>
