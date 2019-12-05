@@ -37,13 +37,6 @@ def func(chunk_bnb, data_rpls=None):
                               , lon2=row.longitude, lat2=row.latitude)
         chunk_bnb.at[idx, 'id_rpls'] = distances.idxmin()
         chunk_bnb.at[idx, 'dist'] = distances.min()
-
-#data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
-#                          usecols=['street','neighbourhood', 'neighbourhood_cleansed'
-#                                   ,'city','state','zipcode'
-#                                   ,'country_code', 'country'
-#                                   ,'latitude','longitude', 'is_location_exact'],
-#                          dtype={'longitude':'float', 'latitude':'float'})
     
 data_rpls = pd.read_csv("paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                         header='infer', 
