@@ -11,6 +11,17 @@ var map = new mapboxgl.Map({
  
 map.addControl(new mapboxgl.NavigationControl());
 
+var geojson = {
+    "type": "FeatureCollection",
+    "features": [{
+    "type": "Feature",
+    "geometry": {
+    "type": "Point",
+    "coordinates": [0, 0]
+    }
+    }]
+    };
+
 map.on('load', function () {
 
     map.addSource('polygon_example', {
@@ -69,6 +80,21 @@ map.on('load', function () {
         .setLngLat(e.lngLat)
         .setHTML('bonjour le click')
         .addTo(map);
+    });
+
+    map.addSource('point', {
+        "type": "geojson",
+        "data": geojson
+        });
+         
+    map.addLayer({
+    "id": "point",
+    "type": "circle",
+    "source": "point",
+    "paint": {
+    "circle-radius": 10,
+    "circle-color": "#3887be"
+    }
     });
 
 });

@@ -4,7 +4,7 @@ var map = new mapboxgl.Map({
     style: 'https://openmaptiles.geo.data.gouv.fr/styles/osm-bright/style.json', 
     center: [2.349014, 48.85500],
     zoom: 11.5,
-    minZoom: 1,
+    minZoom: 11,
     maxZoom: 19
     });
  
@@ -12,11 +12,21 @@ map.addControl(new mapboxgl.NavigationControl());
 
 var hoveredStateId =  null;
 
+var coordinates = document.getElementById('coordinates');
+
 map.on('load', function () {
     map.addSource('arrondissements', {
         'type': 'geojson',
         'generateId' : true,
         'data': '/donneesgeos/arrondissements_municipaux-20180711.json'
+    });
+
+    map.addSource('rpls', {
+        'type': 'geojson',
+        'generateId': true,
+        'data': '/donneesgeos/rpls.geojson',
+        'buffer':0,
+        //'cluster-radius':512
     });
 
     map.addLayer({
@@ -28,7 +38,7 @@ map.on('load', function () {
             "line-color": "#000000",
             "line-width": 1
         },
-        "filter": ["==", "$type", "Polygon"]
+        //"filter": ["==", "$type", "Polygon"]
     });
          
     map.addLayer({
@@ -44,7 +54,7 @@ map.on('load', function () {
                 0
             ]
         },
-        "filter": ["==", "$type", "Polygon"]
+        //"filter": ["==", "$type", "Polygon"]
     });
 
     // When the user moves their mouse over the arrondissements-fill layer, 
@@ -73,5 +83,25 @@ map.on('load', function () {
         }
         hoveredStateId =  null;
     });
+
+    map.addLayer({
+        "id": "rpls-points",
+        "type": "circle",
+        "source": "rpls",
+        "layout": {},
+        "paint": {
+            "circle-radius": 2,
+            "circle-color": "#000000"
+        },
+    });
+
+    map.on('mousemove', function (e) {
+        document.getElementById('coordinates').innerHTML =
+        // e.point is the x, y coordinates of the mousemove event relative
+        // to the top-left corner of the map
+        JSON.stringify(e.point) + '<br />' +
+        // e.lngLat is the longitude, latitude geographical position of the event
+        JSON.stringify(e.lngLat.wrap());
+        });
 
 });

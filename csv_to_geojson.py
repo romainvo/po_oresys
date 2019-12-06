@@ -9,7 +9,7 @@ import pandas as pd
 import geopandas as gpd
 
 df = pd.read_csv('paris_rpls_2017.csv', sep=',', header='infer',
-                 usecols=['codepostal','numvoie','typvoie','nomvoie','longitude',
+                 usecols=['longitude',
                           'latitude'])
 
 gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
