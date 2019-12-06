@@ -4,7 +4,7 @@ var map = new mapboxgl.Map({
     style: 'https://openmaptiles.geo.data.gouv.fr/styles/osm-bright/style.json', 
     center: [2.349014, 48.85500],
     zoom: 11.5,
-    minZoom: 11,
+    minZoom: 1,
     maxZoom: 19
     });
  
@@ -22,11 +22,69 @@ map.on('load', function () {
     });
 
     map.addSource('rpls', {
-        'type': 'geojson',
-        'generateId': true,
-        'data': '/donneesgeos/rpls.geojson',
-        'buffer':0,
-        //'cluster-radius':512
+        type: 'geojson',
+        generateId: true,
+        data: '/donneesgeos/rpls.geojson',
+        cluster: true,
+        clusterMaxZoom: 12, // Max zoom to cluster points on
+        clusterRadius: 70 // Radius of each cluster when clustering points (defaults to 50)    
+    });
+
+    map.addLayer({
+        id: "clusters",
+        type: "circle",
+        source: "rpls",
+        filter: ["has", "point_count"],
+        paint: {
+            "circle-color": [
+                "step",
+                ["get", "point_count"],
+                "#000000", //"#51bbd6",
+                100,
+                "#000000", //"#f1f075",
+                750,
+                "#000000", //"#f28cb1"
+            ],
+            "circle-radius": [
+                "step",
+                ["get", "point_count"],
+                20,
+                100,
+                30,
+                750,
+                40
+            ],
+            "circle-stroke-width": 1,
+            "circle-stroke-color": "#FFFFFF"
+        }
+    }); 
+    
+    map.addLayer({
+        id: "cluster-count",
+        type: "symbol",
+        source: "rpls",
+        filter: ["has", "point_count"],
+        layout: {
+            "text-field": "{point_count_abbreviated}",
+            "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+            "text-size": 12
+        },
+        paint: {
+            "text-color": "#FFFFFF"
+        }
+    });
+         
+    map.addLayer({
+        id: "unclustered-point",
+        type: "circle",
+        source: "rpls",
+        filter: ["!", ["has", "point_count"]],
+        paint: {
+            "circle-color": "#000000",//"#11b4da",
+            "circle-radius": 4,
+            "circle-stroke-width": 1,
+            "circle-stroke-color": "#fff"
+        }
     });
 
     map.addLayer({
@@ -84,7 +142,7 @@ map.on('load', function () {
         hoveredStateId =  null;
     });
 
-    map.addLayer({
+    /*map.addLayer({
         "id": "rpls-points",
         "type": "circle",
         "source": "rpls",
@@ -93,7 +151,7 @@ map.on('load', function () {
             "circle-radius": 2,
             "circle-color": "#000000"
         },
-    });
+    });*/
 
     map.on('mousemove', function (e) {
         document.getElementById('coordinates').innerHTML =
