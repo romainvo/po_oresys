@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+    
    <head>
       <meta charset="utf-8">
       <title>FTemplate web application</title>
       <link rel="stylesheet" href="{{ url_for('static', filename='css/template.css') }}">
+      <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
+      <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
    </head>
+
    <body>
       <header>
          <div class="container">
@@ -15,7 +21,7 @@
                      <li><a href="{{ url_for('home') }}">Home</a></li>
                      <li><a href="{{ url_for('about') }}">About</a></li>
                      <li><a href="{{ url_for('test_mapbox') }}">Mapbox</a></li>
-                     <li><a href="{{ url_for('test_leaflet') }}">Leaflet</a></li>
+                     <li><a href="{{ url_for('test_polygon') }}">Polygon</a></li>
                   </ul>
                </nav>
             </strong>
