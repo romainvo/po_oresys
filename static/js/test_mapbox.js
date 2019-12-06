@@ -30,8 +30,17 @@ map.on('load', function () {
         clusterRadius: 70 // Radius of each cluster when clustering points (defaults to 50)    
     });
 
+    map.addSource('airbnb', {
+        type: 'geojson',
+        generateId: true,
+        data: '/donneesgeos/airbnb.geojson',
+        cluster: true,
+        clusterMaxZoom: 14, // Max zoom to cluster points on
+        clusterRadius: 70 // Radius of each cluster when clustering points (defaults to 50)    
+    });
+
     map.addLayer({
-        id: "clusters",
+        id: "rpls-cluster",
         type: "circle",
         source: "rpls",
         filter: ["has", "point_count"],
@@ -60,7 +69,7 @@ map.on('load', function () {
     }); 
     
     map.addLayer({
-        id: "cluster-count",
+        id: "rpls-cluster-count",
         type: "symbol",
         source: "rpls",
         filter: ["has", "point_count"],
@@ -75,7 +84,7 @@ map.on('load', function () {
     });
          
     map.addLayer({
-        id: "unclustered-point",
+        id: "rpls-unclustered-point",
         type: "circle",
         source: "rpls",
         filter: ["!", ["has", "point_count"]],
@@ -83,8 +92,65 @@ map.on('load', function () {
             "circle-color": "#000000",//"#11b4da",
             "circle-radius": 4,
             "circle-stroke-width": 1,
-            "circle-stroke-color": "#fff"
+            "circle-stroke-color": "#FFFfff"
         }
+    });
+
+    map.addLayer({
+        id: "airbnb-cluster",
+        type: "circle",
+        source: "airbnb",
+        filter: ["has", "point_count"],
+        paint: {
+            "circle-color": [
+                "step",
+                ["get", "point_count"],
+                "#FF0000", //"#51bbd6",
+                100,
+                "#FF0000", //"#f1f075",
+                750,
+                "#FF0000", //"#f28cb1"
+            ],
+            "circle-radius": [
+                "step",
+                ["get", "point_count"],
+                20,
+                100,
+                30,
+                750,
+                40
+            ],
+            "circle-stroke-width": 1,
+            "circle-stroke-color": "#FFFFFF"
+        }
+    }); 
+    
+    map.addLayer({
+        id: "airbnb-cluster-count",
+        type: "symbol",
+        source: "airbnb",
+        filter: ["has", "point_count"],
+        layout: {
+            "text-field": "{point_count_abbreviated}",
+            "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+            "text-size": 12
+        },
+        paint: {
+            "text-color": "#FFFFFF"
+        }
+    });
+
+    map.addLayer({
+        "id": "airbnb-unclustered-points",
+        "type": "circle",
+        "source": "airbnb",
+        "layout": {},
+        "paint": {
+            "circle-radius": 4,
+            "circle-color": "#FF0000",
+            "circle-stroke-width": 1,
+            "circle-stroke-color": "#FFFFFF"
+        },
     });
 
     map.addLayer({
@@ -141,17 +207,6 @@ map.on('load', function () {
         }
         hoveredStateId =  null;
     });
-
-    /*map.addLayer({
-        "id": "rpls-points",
-        "type": "circle",
-        "source": "rpls",
-        "layout": {},
-        "paint": {
-            "circle-radius": 2,
-            "circle-color": "#000000"
-        },
-    });*/
 
     map.on('mousemove', function (e) {
         document.getElementById('coordinates').innerHTML =
