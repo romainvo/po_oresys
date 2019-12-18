@@ -54,6 +54,9 @@ map.on('load', function () {
         id: "rpls-cluster",
         type: "circle",
         source: "rpls",
+        layout: {
+            visibility: "visible"
+        },
         filter: ["has", "point_count"],
         paint: {
             "circle-color": [
@@ -95,9 +98,12 @@ map.on('load', function () {
     });
          
     map.addLayer({
-        id: "rpls-unclustered-point",
+        id: "rpls-unclustered-points",
         type: "circle",
         source: "rpls",
+        layout: {
+            visibility: "visible"
+        },
         filter: ["!", ["has", "point_count"]],
         paint: {
             "circle-color": "#000000",//"#11b4da",
@@ -111,6 +117,9 @@ map.on('load', function () {
         id: "airbnb-cluster",
         type: "circle",
         source: "airbnb",
+        layout: {
+            visibility: "visible"
+        },
         filter: ["has", "point_count"],
         paint: {
             "circle-color": [
@@ -152,12 +161,14 @@ map.on('load', function () {
     });
 
     map.addLayer({
-        "id": "airbnb-unclustered-points",
-        "type": "circle",
-        "source": "airbnb",
-        "layout": {},
+        id: "airbnb-unclustered-points",
+        type: "circle",
+        source: "airbnb",
+        layout: {
+            visibility: "visible"
+        },        
         "filter": ["!", ["has", "point_count"]],
-        "paint": {
+        paint: {
             "circle-radius": 4,
             "circle-color": "#FF0000",
             "circle-stroke-width": 1,
@@ -166,11 +177,11 @@ map.on('load', function () {
     });
 
     map.addLayer({
-        "id": "arrondissements-contour",
-        "type": "line",
-        "source": "arrondissements",
-        "layout": {},
-        "paint": {
+        id: "arrondissements-contour",
+        type: "line",
+        source: "arrondissements",
+        layout: {},
+        paint: {
             "line-color": "#000000",
             "line-width": 1
         },
@@ -197,6 +208,9 @@ map.on('load', function () {
         id: "croisements-points",
         type: "circle",
         source: "croisements",
+        layout: {
+            visibility: "visible"
+        },   
         paint: {
             "circle-color": "rgba(0,255,0,0.5)",//"#11b4da",
             "circle-radius": 5,
@@ -239,6 +253,46 @@ map.on('load', function () {
         JSON.stringify(e.point) + '<br />' +
         // e.lngLat is the longitude, latitude geographical position of the event
         JSON.stringify(e.lngLat.wrap());
-        });
+    });
 
 });
+
+var toggleableLayerIds = ['RPLS', 'AirBnB', 'Croisements'];
+ 
+for (var i = 0; i < toggleableLayerIds.length; i++) {
+    var id = toggleableLayerIds[i];
+ 
+    var link = document.createElement('a');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+
+    if (id == 'RPLS') {
+        var clickedLayer = ['rpls-cluster','rpls-unclustered-points'];
+    } else if (id == 'AirBnB') {
+        var clickedLayer = ['airbnb-cluster','airbnb-unclustered-points'];
+    } else if (id == 'Croisements') {
+        var clickedLayer = ['croisements-points'];
+    }
+ 
+    link.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer[0], 'visibility');
+
+        if (visibility === 'visible') {
+            for (var j=0; j<clickedLayer.length; j++) {
+                map.setLayoutProperty(clickedLayer[j], 'visibility', 'none');
+            }
+            this.className = '';
+        } else {
+            this.className = 'active';
+            for (var j=0; j<clickedLayer.length; j++) {
+                map.setLayoutProperty(clickedLayer[j], 'visibility', 'visible');
+            }
+        }
+    };
+    var layers = document.getElementById('hide_layers');
+    layers.appendChild(link);
+}
