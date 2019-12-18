@@ -11,7 +11,6 @@ def test_db():
   from database import Airbnb
   all_airbnb = Airbnb.query.all()
   return render_template("test_db.html", all_airbnb = all_airbnb)
-   #return str(first_airbnb.longitude)
 
 @app.route('/donneesgeos/<path:path>')
 def send_donneesgeo(path):

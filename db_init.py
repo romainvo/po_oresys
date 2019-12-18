@@ -1,24 +1,24 @@
-from database import db, Airbnb
+from database import db, engine, Airbnb
 from  sqlalchemy.sql.expression import func
+from sqlalchemy import Table, Column, Integer, Float
 import csv
+import pandas as pd
 
 if __name__ == "__main__":
 
     db.create_all()
 
-    with open('airbnb.csv') as csv_file :
-        csv_reader = csv.DictReader(csv_file)
-        line_count = 0
-        for row in csv_reader:
-            if line_count < 10 :
-                new_Airbnb = Airbnb(id = row["id"], longitude = row["longitude"], latitude = row['latitude'])
-                db.session.add(new_Airbnb)
-                db.session.commit()
-                print(f'\t{row["id"]} est à la longitude {row["longitude"]}')
-                line_count = line_count + 1
-            else :
-                break
+    # Création du dataframe à partir du csv
+    airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
+        usecols=['id','latitude','longitude'],
+        dtype={'longitude':'float', 'latitude':'float'})
 
-#    new_airbnb = Airbnb(id=1, longitude = 84.88, latitude = 45.50)
-#    db.session.add(new_airbnb)
-#    db.session.commit()
+    # Alimentation de la table Airbnb via la dataframe
+    airbnb.to_sql('Airbnb',
+        con = engine,
+        if_exists='replace',
+        index=False,
+        chunksize=100,
+        dtype={'id': Integer,
+       'longitude': Float,
+       'latitude': Float})
