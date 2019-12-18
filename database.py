@@ -14,3 +14,9 @@ class Airbnb(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     longitude = db.Column(db.Float)
     latitude = db.Column(db.Float)
+
+class Rpls(db.Model):
+
+    id = db.Column(db.Integer, primary_key = True)
+    longitude = db.Column(db.Float)
+    latitude = db.Column(db.Float)

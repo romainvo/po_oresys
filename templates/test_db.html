@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Home</title>
+</head>
+
+<body>
+    {% extends "template.html" %}
+    {% block content %}
+    {% for airbnb in all_airbnb %}
+    <ul id="airbnb.id">
+        <li>ID Airbnb: {{ airbnb.id }}</li>
+        <li>Longitude: {{ airbnb.longitude }}</li>
+        <li>Latitude: {{ airbnb.latitude }}</li>
+    </ul>
+    {% endfor %}
+    {% endblock %}
+</body>

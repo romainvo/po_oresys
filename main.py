@@ -9,9 +9,9 @@ def home():
 @app.route("/test_db")
 def test_db():
   from database import Airbnb
-  first_airbnb = Airbnb.query.get(1)
-  #print(first_airbnb.longitude)
-  return str(first_airbnb.longitude)
+  all_airbnb = Airbnb.query.all()
+  return render_template("test_db.html", all_airbnb = all_airbnb)
+   #return str(first_airbnb.longitude)
 
 @app.route('/donneesgeos/<path:path>')
 def send_donneesgeo(path):
