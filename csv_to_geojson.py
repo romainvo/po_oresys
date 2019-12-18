@@ -17,9 +17,15 @@ if __name__ == '__main__':
 #    gdf.drop(columns=['longitude','latitude'], inplace=True)
 #    gdf.to_file("static/donneesgeos/rpls.geojson", driver='GeoJSON')
 
-    df = pd.read_csv("airbnb.csv", sep=',', header='infer',
-                          usecols=['latitude','longitude'],
-                          dtype={'longitude':'float', 'latitude':'float'})
-    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
-    gdf.drop(columns=['longitude','latitude'], inplace=True)
-    gdf.to_file("static/donneesgeos/airbnb.geojson", driver='GeoJSON')
+#    df = pd.read_csv("airbnb.csv", sep=',', header='infer',
+#                          usecols=['latitude','longitude'],
+#                          dtype={'longitude':'float', 'latitude':'float'})
+#    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
+#    gdf.drop(columns=['longitude','latitude'], inplace=True)
+#    gdf.to_file("static/donneesgeos/airbnb.geojson", driver='GeoJSON')
+    
+#    results = pd.read_csv('results.csv', header='infer', index_col='id_bnb',
+#                          dtype={'id_rpls':'int', 'distance':'float'})
+#    results = results.loc[results.distance < 5]
+#    gdf = gpd.GeoDataFrame(results)
+    

@@ -1,3 +1,7 @@
+var bounds_paris = new mapboxgl.LngLatBounds(
+    new mapboxgl.LngLat(2.1565006829, 48.80361985565),
+    new mapboxgl.LngLat(2.5291462587, 48.91621970507)
+  );
 
 var map = new mapboxgl.Map({
     container: 'map',
@@ -5,7 +9,8 @@ var map = new mapboxgl.Map({
     center: [2.349014, 48.85500],
     zoom: 11.5,
     minZoom: 1,
-    maxZoom: 19
+    maxZoom: 19,
+    maxBounds: bounds_paris
     });
  
 map.addControl(new mapboxgl.NavigationControl());
@@ -37,6 +42,12 @@ map.on('load', function () {
         cluster: true,
         clusterMaxZoom: 14, // Max zoom to cluster points on
         clusterRadius: 70 // Radius of each cluster when clustering points (defaults to 50)    
+    });
+
+    map.addSource('croisements', {
+        type: 'geojson',
+        generateId: true,
+        data: '/donneesgeos/croisements.geojson',  
     });
 
     map.addLayer({
@@ -92,7 +103,7 @@ map.on('load', function () {
             "circle-color": "#000000",//"#11b4da",
             "circle-radius": 4,
             "circle-stroke-width": 1,
-            "circle-stroke-color": "#FFFfff"
+            "circle-stroke-color": "#FFFFFF"
         }
     });
 
@@ -145,6 +156,7 @@ map.on('load', function () {
         "type": "circle",
         "source": "airbnb",
         "layout": {},
+        "filter": ["!", ["has", "point_count"]],
         "paint": {
             "circle-radius": 4,
             "circle-color": "#FF0000",
@@ -179,6 +191,18 @@ map.on('load', function () {
             ]
         },
         //"filter": ["==", "$type", "Polygon"]
+    });
+
+    map.addLayer({
+        id: "croisements-points",
+        type: "circle",
+        source: "croisements",
+        paint: {
+            "circle-color": "rgba(0,255,0,0.5)",//"#11b4da",
+            "circle-radius": 5,
+            "circle-stroke-width": 1,
+            "circle-stroke-color": "#FFFFFF"
+        }
     });
 
     // When the user moves their mouse over the arrondissements-fill layer, 

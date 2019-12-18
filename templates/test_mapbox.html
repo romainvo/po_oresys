@@ -5,33 +5,16 @@
         <title>Testing Mapbox API</title>
         <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
         <style>
-            #map { height: 100%; };
+            #map { 
+                width: 100%;
+                flex: 1;
+            };
         </style>
     </head>
 
     <body>
         {% extends "template.html" %}
         {% block content %}
-        <style>
-            .mapboxgl-popup {
-                max-width: 400px;
-                font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-            }
-            .coordinates {
-                background: rgba(0,0,0,0.5);
-                color: #fff;
-                position: absolute;
-                bottom: 40px;
-                left: 10px;
-                padding:5px 10px;
-                margin: 0;
-                font-size: 11px;
-                line-height: 18px;
-                border-radius: 3px;
-                display: block;
-            }
-        </style>
-        
         <div id='map'></div>
         <pre id='coordinates' class='coordinates'></pre>
 
