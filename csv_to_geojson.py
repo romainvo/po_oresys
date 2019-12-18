@@ -8,10 +8,18 @@ Created on Fri Dec  6 13:44:10 2019
 import pandas as pd
 import geopandas as gpd
 
-df = pd.read_csv('paris_rpls_2017.csv', sep=',', header='infer',
-                 usecols=['codepostal','numvoie','typvoie','nomvoie','longitude',
-                          'latitude'])
+if __name__ == '__main__':
 
-gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
-gdf.drop(columns=['longitude','latitude'], inplace=True)
-gdf.to_file("rpls.geojson", driver='GeoJSON')
+#    df = pd.read_csv('paris_rpls_2017.csv', sep=',', header='infer',
+#                    usecols=['longitude','latitude'])
+#
+#    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
+#    gdf.drop(columns=['longitude','latitude'], inplace=True)
+#    gdf.to_file("static/donneesgeos/rpls.geojson", driver='GeoJSON')
+
+    df = pd.read_csv("airbnb.csv", sep=',', header='infer',
+                          usecols=['latitude','longitude'],
+                          dtype={'longitude':'float', 'latitude':'float'})
+    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
+    gdf.drop(columns=['longitude','latitude'], inplace=True)
+    gdf.to_file("static/donneesgeos/airbnb.geojson", driver='GeoJSON')

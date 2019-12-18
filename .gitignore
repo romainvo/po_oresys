@@ -1,9 +1,15 @@
 .vscode/settings.json
+airbnb.csv
 geo-rpls2017.csv
+paris_rpls_2017.csv
 listings.csv
 airbnb.csv
+<<<<<<< HEAD
 paris_rpls_2017.csv
 results.csv
 RPLS2018.csv
 airbnb.csv
 
+=======
+results.csv
+>>>>>>> application
