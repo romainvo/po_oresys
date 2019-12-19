@@ -62,11 +62,11 @@ map.on('load', function () {
             "circle-color": [
                 "step",
                 ["get", "point_count"],
-                "#000000", //"#51bbd6",
+                "#0000AA", //"#51bbd6",
                 100,
-                "#000000", //"#f1f075",
+                "#0000AA", //"#f1f075",
                 750,
-                "#000000", //"#f28cb1"
+                "#0000AA", //"#f28cb1"
             ],
             "circle-radius": [
                 "step",
@@ -106,7 +106,7 @@ map.on('load', function () {
         },
         filter: ["!", ["has", "point_count"]],
         paint: {
-            "circle-color": "#000000",//"#11b4da",
+            "circle-color": "#0000AA",//"#11b4da",
             "circle-radius": 4,
             "circle-stroke-width": 1,
             "circle-stroke-color": "#FFFFFF"
@@ -258,41 +258,93 @@ map.on('load', function () {
 });
 
 var toggleableLayerIds = ['RPLS', 'AirBnB', 'Croisements'];
- 
-for (var i = 0; i < toggleableLayerIds.length; i++) {
+var link1 = document.createElement('a');
+var link2 = document.createElement('a');
+var link3 = document.createElement('a');
+
+clickedLayers = [['rpls-cluster','rpls-unclustered-points'], 
+['airbnb-cluster','airbnb-unclustered-points'],
+['croisements-points']];
+
+var links = [link1, link2, link3];
+
+var layers = document.getElementById('hide_layers');
+
+for (var i = 0; i < 3; i++) {
     var id = toggleableLayerIds[i];
- 
-    var link = document.createElement('a');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
 
-    if (id == 'RPLS') {
-        var clickedLayer = ['rpls-cluster','rpls-unclustered-points'];
-    } else if (id == 'AirBnB') {
-        var clickedLayer = ['airbnb-cluster','airbnb-unclustered-points'];
-    } else if (id == 'Croisements') {
-        var clickedLayer = ['croisements-points'];
+    links[i].href = '#';
+    links[i].className = 'active';
+    links[i].textContent = id;
+
+    if (i == 0) {
+        links[i].onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+    
+            console.log(clickedLayers);
+            console.log(i);
+            var visibility = map.getLayoutProperty(clickedLayers[0][0], 'visibility');
+    
+            if (visibility === 'visible') {
+                for (var j=0; j<clickedLayers[0].length; j++) {
+                    map.setLayoutProperty(clickedLayers[0][j], 'visibility', 'none');
+                }
+                this.className = '';
+            } else {
+                this.className = 'active';
+                for (var j=0; j<clickedLayers[0].length; j++) {
+                    map.setLayoutProperty(clickedLayers[0][j], 'visibility', 'visible');
+                }
+            }
+        };
+        layers.appendChild(links[i]);
+
+    } else if (i == 1) {
+        links[i].onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+    
+            console.log(clickedLayers);
+            console.log(i);
+            var visibility = map.getLayoutProperty(clickedLayers[1][0], 'visibility');
+    
+            if (visibility === 'visible') {
+                for (var j=0; j<clickedLayers[1].length; j++) {
+                    map.setLayoutProperty(clickedLayers[1][j], 'visibility', 'none');
+                }
+                this.className = '';
+            } else {
+                this.className = 'active';
+                for (var j=0; j<clickedLayers[1].length; j++) {
+                    map.setLayoutProperty(clickedLayers[1][j], 'visibility', 'visible');
+                }
+            }
+        };
+        layers.appendChild(links[i]);
+
+    } else if (i == 2) {
+
+        links[i].onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            console.log(clickedLayers);
+            console.log(i);
+            var visibility = map.getLayoutProperty(clickedLayers[2][0], 'visibility');
+
+            if (visibility === 'visible') {
+                for (var j=0; j<clickedLayers[2].length; j++) {
+                    map.setLayoutProperty(clickedLayers[2][j], 'visibility', 'none');
+                }
+                this.className = '';
+            } else {
+                this.className = 'active';
+                for (var j=0; j<clickedLayers[2].length; j++) {
+                    map.setLayoutProperty(clickedLayers[2][j], 'visibility', 'visible');
+                }
+            }
+        };
+        layers.appendChild(links[i]);
     }
- 
-    link.onclick = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        var visibility = map.getLayoutProperty(clickedLayer[0], 'visibility');
-
-        if (visibility === 'visible') {
-            for (var j=0; j<clickedLayer.length; j++) {
-                map.setLayoutProperty(clickedLayer[j], 'visibility', 'none');
-            }
-            this.className = '';
-        } else {
-            this.className = 'active';
-            for (var j=0; j<clickedLayer.length; j++) {
-                map.setLayoutProperty(clickedLayer[j], 'visibility', 'visible');
-            }
-        }
-    };
-    var layers = document.getElementById('hide_layers');
-    layers.appendChild(link);
 }
