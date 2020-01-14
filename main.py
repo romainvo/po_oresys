@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 
 app = Flask(__name__)
 @app.route("/")
@@ -6,13 +6,17 @@ app = Flask(__name__)
 def home():
   return render_template("home.html")
 
-@app.route("/John")
-def John():
-  return "Hello John."
+@app.route('/donneesgeos/<path:path>')
+def send_donneesgeo(path):
+	return send_from_directory('static/donneesgeos', path)
 
-@app.route("/osm")
-def test_map():
-  return render_template("test_map.html")
+@app.route("/mapbox")
+def test_mapbox():
+  return render_template("test_mapbox.html")
+
+@app.route("/polygon")
+def test_polygon():
+  return render_template("test_polygon.html")
 
 @app.route("/about")
 def about():
