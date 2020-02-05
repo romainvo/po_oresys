@@ -58,6 +58,31 @@ def percentage(count, total):
 # --------------------------------------------------------------------------- #
 # --------------------------------------------------------------------------- #
 
+#. 	Wildcard, matches any character
+#^abc 	Matches some pattern abc at the start of a string
+#abc$ 	Matches some pattern abc at the end of a string
+#[abc] 	Matches one of a set of characters
+#[A-Z0-9] 	Matches one of a range of characters
+#ed|ing|s 	Matches one of the specified strings (disjunction)
+#* 	Zero or more of previous item, e.g. a*, [a-z]* (also known as Kleene Closure)
+#+ 	One or more of previous item, e.g. a+, [a-z]+
+#? 	Zero or one of the previous item (i.e. optional), e.g. a?, [a-z]?
+#{n} 	Exactly n repeats where n is a non-negative integer
+#{n,} 	At least n repeats
+#{,n} 	No more than n repeats
+#{m,n} 	At least m and no more than n repeats
+#a(b|c)+ 	Parentheses that indicate the scope of the operators
+    
+#\b 	Word boundary (zero width)
+#\d 	Any decimal digit (equivalent to [0-9])
+#\D 	Any non-digit character (equivalent to [^0-9])
+#\s 	Any whitespace character (equivalent to [ \t\n\r\f\v])
+#\S 	Any non-whitespace character (equivalent to [^ \t\n\r\f\v])
+#\w 	Any alphanumeric character (equivalent to [a-zA-Z0-9_])
+#\W 	Any non-alphanumeric character (equivalent to [^a-zA-Z0-9_])
+#\t 	The tab character
+#\n 	The newline character
+
 f = open('document.txt', encoding='utf-8')
 raw = f.read()
 
@@ -81,9 +106,11 @@ raw.find('bla') #index of first letter of string
 #Regular Expressions for Detecting Word Patterns
 wordlist = [w for w in nltk.corpus.words.words('en') if w.islower()]
 
+# $ : end of a STRING 
 #Look for words that end with 'ed'
 [w for w in wordlist if re.search('ed$', w)]
 
+# ^ : beginning of a STRING
 #Look for 8-letters words with j as 3rd and t as 6th
 [w for w in wordlist if re.search('^..j..t..$', w)]
 
@@ -122,9 +149,6 @@ wsj = sorted(set(nltk.corpus.treebank.words()))
 
 #Find words with differents endings
 [w for w in wsj if re.search('(ed|ing)$', w)]
-
-# \s : any digits -- \S : any non-digits -- \s : whitespace -- \S : any non whitespace
-# \w : any alphanumeric -- \W : any nonalphanumeric
 
 #re.findall() ("find all") method finds all (non-overlapping) matches of the 
 #given regular expression. Let's find all the vowels in a word, then count them:
