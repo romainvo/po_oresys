@@ -35,12 +35,11 @@ from nltk.text import TokenSearcher
 data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
                           dtype={'longitude':'float', 'latitude':'float'})
 
-
 summary_airbnb = data_airbnb.loc[:, 'description']
 description_airbnb = data_airbnb.loc[:, 'description'] 
 #Recherche de pattern dans 'description' jusqu'à l'index 202
 
-print((data_airbnb.is_location_exact == 't').sum(), 'b')
+#print((data_airbnb.is_location_exact == 't').sum(), 'b')
           
 #Colonnes à analyser dans les données airbnb
 # summary / space / description / neighorhood_overview / street / neighbourhood
@@ -48,42 +47,65 @@ print((data_airbnb.is_location_exact == 't').sum(), 'b')
 # room_type / bathrooms / bedrooms / beds / square_feet / property_type
 # longitude / latitude
 
-surfhab_tokens_re = dict()
-surfhab_tokens_nltk = dict()
+# --------------------------------------------------------------------------- #
+# --------------------------------------------------------------------------- #
+#surfhab_tokens_nltk = dict()
 
-pattern_surfhab_nltk = r"""(?x)
-    <.*><m.tre.><carre.*>
-    |<.*m2>
-    |<.*> <m2>
-    """
-pattern_surfhab_re = r"""(?x)
+#pattern_surfhab_nltk = r"""(?x)
+#    <.*><m.tre.><carre.*>
+#    |<.*m2>
+#    |<.*> <m2>
+#    """
+#        description_tokens = nltk.word_tokenize(row, language='english')
+#        description_nltk = nltk.Text(description_tokens)
+        
+#        temp_nltk = TokenSearcher(description_nltk).findall(pattern_surfhab_nltk)
+#
+#        if temp_nltk:
+#            surfhab_tokens_nltk[idx] = temp_nltk
+# --------------------------------------------------------------------------- #
+# --------------------------------------------------------------------------- #
+
+surfhab_tokens_mix = dict()
+
+pattern_surfhab_meter = r"""(?x)
      \d+\.?,?\d*\s+m.tre.\s+carre.
     |\d+\.?,?\d*\s?m2
     |\d+\.?,?\d*\s?sqm
-    |\d+\.?,?\d*m?\s?m?²
-    |\d+\.?,?\d*\s?square.?\s?(?:met...?)?(?:feet)?(?:ft.?)?(?:foot)?
-    |\d+\.?,?\d*\s?feet(?:²)?
-    |\d+\.?,?\d*\s?sq\.?\s?(?:f.{0,2}t)?(?:\.mts)?(?:meter.?)?(?:\.\s?m)?(?:\.\s?ft)?
+    |\d+\.?,?\d*(?:m\s|\sm)²
+    |\d+\.?,?\d*\s?square.?\s?met...?
+    |\d+\.?,?\d*\s?sq\.?\s?(?:\.mts|meter.?|\.\s?m)
     |\d+\.?,?\d*\s?sq\sm
-    |\d+\.?,?\d*\s?sq\.?f
     """
+
+pattern_surfhab_feet = r"""(?x)
+     \d+\.?,?\d*\s?square.?\s?(?:feet|ft|foot)
+    |\d+\.?,?\d*\s?feet²
+    |\d+\.?,?\d*\s?sq\.?\s?(?:f.{0,2}t|\.\s?ft|f|/ft)
+    """
+
+#pattern_surfhab_re = r"""(?x)
+#     \d+\.?,?\d*\s+m.tre.\s+carre.
+#    |\d+\.?,?\d*\s?m2
+#    |\d+\.?,?\d*\s?sqm
+#    |\d+\.?,?\d*m?\s?m?²
+#    |\d+\.?,?\d*\s?square.?\s?(?:met...?)?(?:feet)?(?:ft)?(?:foot)?
+#    |\d+\.?,?\d*\s?feet²
+#    |\d+\.?,?\d*\s?sq\.?\s?(?:f.{0,2}t)?(?:\.mts)?(?:meter.?)?(?:\.\s?m)?(?:\.\s?ft)?
+#    |\d+\.?,?\d*\s?sq\sm
+#    |\d+\.?,?\d*\s?sq\.?f
+#    """  
 
 for idx, row in enumerate(description_airbnb):
     
     if row is not np.NaN:
         row = row.lower()
-        description_tokens = nltk.word_tokenize(row, language='english')
-        description_nltk = nltk.Text(description_tokens)
-        
-        temp_nltk = TokenSearcher(description_nltk).findall(pattern_surfhab_nltk)
-        temp_re = re.findall(pattern_surfhab_re, row)
-        
-        if temp_re:
-            surfhab_tokens_re[idx] = temp_re
-        
-        if temp_nltk:
-            surfhab_tokens_nltk[idx] = temp_nltk
 
+        temp_mix = re.findall(pattern_surfhab_feet, row) \
+                 + re.findall(pattern_surfhab_meter, row)
+            
+        if temp_mix:
+            surfhab_tokens_mix[idx] = temp_mix    
     
 #for idx,row in enumerate(description_airbnb[100:]):
 #    print((100+idx))    
