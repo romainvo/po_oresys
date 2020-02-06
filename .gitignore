@@ -1,6 +1,4 @@
 .vscode/settings.json
-airbnb.csv
-geo-rpls2017.csv
 paris_rpls_2017.csv
 listings.csv
 airbnb.csv
@@ -9,4 +7,9 @@ check_bnb.csv
 check_rpls.csv
 results_sorted.csv
 results_rd150_nb100.csv
+<<<<<<< HEAD
 
+=======
+RPLS2018.csv
+geo-rpls2017.csv
+>>>>>>> master
