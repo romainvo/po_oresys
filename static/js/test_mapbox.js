@@ -47,7 +47,7 @@ map.on('load', function () {
     map.addSource('croisements', {
         type: 'geojson',
         generateId: true,
-        data: '/donneesgeos/croisements.geojson',  
+        data: '/donneesgeos/croisementBis.geojson',  
     });
 
     map.addLayer({

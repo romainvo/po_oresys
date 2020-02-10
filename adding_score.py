@@ -3,7 +3,7 @@ import pandas as pd
 
 files = 'results_rd150_nb100.csv'
 
-df = pd.read_csv(files, nrows = 500)
+df = pd.read_csv(files)
 #df = df.convert_objects(convert_numeric=True)
 count = 3
 while count<=len(df.columns) :
