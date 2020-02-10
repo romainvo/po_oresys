@@ -40,9 +40,9 @@ check_rpls = data_rpls.loc[check.id_rpls,
                             'latitude']]
 check_rpls.index.rename('id_rpls', inplace=True)
 
-results.to_csv('results_sorted.csv', header=True)
-check_bnb.to_csv('check_bnb.csv', header=True)
-check_rpls.to_csv('check_rpls.csv', header=True)
+#results.to_csv('results_sorted.csv', header=True)
+#check_bnb.to_csv('check_bnb.csv', header=True)
+#check_rpls.to_csv('check_rpls.csv', header=True)
 
 # =========================================================================== #
 # =========================================================================== #

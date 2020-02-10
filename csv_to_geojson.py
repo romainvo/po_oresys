@@ -26,6 +26,7 @@ if __name__ == '__main__':
     
 #    results = pd.read_csv('results.csv', header='infer', index_col='id_bnb',
 #                          dtype={'id_rpls':'int', 'distance':'float'})
+    
 #    results = results.loc[results.distance < 5]
 #    gdf = gpd.GeoDataFrame(results)
     
