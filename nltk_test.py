@@ -109,7 +109,7 @@ pattern_surfhab_feet = r"""(?x)
 
 surfhab_tokens_feet = dict()
 surfhab_tokens_meter = dict()
-surfhab_tokens_surface = dict()
+surfhab_tokens = dict()
 
 for idx, row in enumerate(description_airbnb):
     if row is not np.NaN:
@@ -178,15 +178,15 @@ for key, element in surfhab_tokens_feet.items():
     
 for key in set(list(surfhab_tokens_meter.keys())+list(surfhab_tokens_feet.keys())):
     if (key not in surfhab_tokens_meter) and (key in surfhab_tokens_feet):
-        surfhab_tokens_surface[key] = surfhab_tokens_feet[key]
+        surfhab_tokens[key] = surfhab_tokens_feet[key]
     elif (key in surfhab_tokens_meter) and (key not in surfhab_tokens_feet):
-        surfhab_tokens_surface[key] = surfhab_tokens_meter[key]
+        surfhab_tokens[key] = surfhab_tokens_meter[key]
     elif (key in surfhab_tokens_meter) and (key in surfhab_tokens_feet):
-        surfhab_tokens_surface[key] \
+        surfhab_tokens[key] \
         = max(surfhab_tokens_feet[key], surfhab_tokens_meter[key])
 
 # --------------------------------------------------------------------------- #
-# --------------------------------------------------------------------------- #
+# ------------------------- TEST SCORE SURFHAB ------------------------------ #
 # --------------------------------------------------------------------------- #
 
 def converter_cp(string):
@@ -200,10 +200,25 @@ data_rpls = pd.read_csv("paris_rpls_2017.csv", sep=',',error_bad_lines=False,
                         converters={'codepostal':converter_cp},
                         dtype={'longitude':'float', 'latitude':'float'})
 
-results = pd.read_csv('results_rd150_nb100.csv', header='infer'
-                      , index_col='id_bnb'
-                      , dtype={'id_rpls':'int', 'distance':'float'})
+keep_columns = ['id_bnb']
+for i in range(100):
+    keep_columns.append('id_rpls'+str(i))
+dtype = {key:'int64' for key in keep_columns}
 
+results = pd.read_csv('results_rd150_nb100.csv', header='infer'
+                      , usecols=keep_columns
+                      , index_col='id_bnb'
+                      , dtype=pd.Int64Dtype())
+
+surfhab_rpls = pd.DataFrame()
+for i in range(100):
+    surfhab_rpls.loc[:, 'surfhab{}'.format(i)] = \
+        data_rpls.surfhab.reindex(results['id_rpls{}'.format(i)]).values
+
+surfhab = pd.Series(surfhab_tokens).reindex(index=range(data_airbnb.shape[0]))
+
+surfhab_scoring = surfhab_rpls.div(surfhab, axis=0)
+surfhab_scoring = surfhab_scoring.applymap(lambda x: 1/x if x > 1 else x)
 
 #results.sort_values(by='distance', inplace=True)
 
