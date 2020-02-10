@@ -184,3 +184,27 @@ for key in set(list(surfhab_tokens_meter.keys())+list(surfhab_tokens_feet.keys()
     elif (key in surfhab_tokens_meter) and (key in surfhab_tokens_feet):
         surfhab_tokens_surface[key] \
         = max(surfhab_tokens_feet[key], surfhab_tokens_meter[key])
+
+# --------------------------------------------------------------------------- #
+# --------------------------------------------------------------------------- #
+# --------------------------------------------------------------------------- #
+
+def converter_cp(string):
+    try:
+        return int(string)
+    except:
+        return 0    
+    
+data_rpls = pd.read_csv("paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
+                        header='infer', index_col=0,
+                        converters={'codepostal':converter_cp},
+                        dtype={'longitude':'float', 'latitude':'float'})
+
+results = pd.read_csv('results_rd150_nb100.csv', header='infer'
+                      , index_col='id_bnb'
+                      , dtype={'id_rpls':'int', 'distance':'float'})
+
+
+#results.sort_values(by='distance', inplace=True)
+
+
