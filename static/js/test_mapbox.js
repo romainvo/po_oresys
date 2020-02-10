@@ -1,3 +1,7 @@
+var bounds_paris = new mapboxgl.LngLatBounds(
+    new mapboxgl.LngLat(2.1565006829, 48.80361985565),
+    new mapboxgl.LngLat(2.5291462587, 48.91621970507)
+  );
 
 var map = new mapboxgl.Map({
     container: 'map',
@@ -5,7 +9,8 @@ var map = new mapboxgl.Map({
     center: [2.349014, 48.85500],
     zoom: 11.5,
     minZoom: 1,
-    maxZoom: 19
+    maxZoom: 19,
+    maxBounds: bounds_paris
     });
  
 map.addControl(new mapboxgl.NavigationControl());
@@ -39,20 +44,29 @@ map.on('load', function () {
         clusterRadius: 70 // Radius of each cluster when clustering points (defaults to 50)    
     });
 
+    map.addSource('croisements', {
+        type: 'geojson',
+        generateId: true,
+        data: '/donneesgeos/croisements.geojson',  
+    });
+
     map.addLayer({
         id: "rpls-cluster",
         type: "circle",
         source: "rpls",
+        layout: {
+            visibility: "visible"
+        },
         filter: ["has", "point_count"],
         paint: {
             "circle-color": [
                 "step",
                 ["get", "point_count"],
-                "#000000", //"#51bbd6",
+                "#0000AA", //"#51bbd6",
                 100,
-                "#000000", //"#f1f075",
+                "#0000AA", //"#f1f075",
                 750,
-                "#000000", //"#f28cb1"
+                "#0000AA", //"#f28cb1"
             ],
             "circle-radius": [
                 "step",
@@ -84,15 +98,18 @@ map.on('load', function () {
     });
          
     map.addLayer({
-        id: "rpls-unclustered-point",
+        id: "rpls-unclustered-points",
         type: "circle",
         source: "rpls",
+        layout: {
+            visibility: "visible"
+        },
         filter: ["!", ["has", "point_count"]],
         paint: {
-            "circle-color": "#000000",//"#11b4da",
+            "circle-color": "#0000AA",//"#11b4da",
             "circle-radius": 4,
             "circle-stroke-width": 1,
-            "circle-stroke-color": "#FFFfff"
+            "circle-stroke-color": "#FFFFFF"
         }
     });
 
@@ -100,6 +117,9 @@ map.on('load', function () {
         id: "airbnb-cluster",
         type: "circle",
         source: "airbnb",
+        layout: {
+            visibility: "visible"
+        },
         filter: ["has", "point_count"],
         paint: {
             "circle-color": [
@@ -141,11 +161,14 @@ map.on('load', function () {
     });
 
     map.addLayer({
-        "id": "airbnb-unclustered-points",
-        "type": "circle",
-        "source": "airbnb",
-        "layout": {},
-        "paint": {
+        id: "airbnb-unclustered-points",
+        type: "circle",
+        source: "airbnb",
+        layout: {
+            visibility: "visible"
+        },        
+        "filter": ["!", ["has", "point_count"]],
+        paint: {
             "circle-radius": 4,
             "circle-color": "#FF0000",
             "circle-stroke-width": 1,
@@ -154,11 +177,11 @@ map.on('load', function () {
     });
 
     map.addLayer({
-        "id": "arrondissements-contour",
-        "type": "line",
-        "source": "arrondissements",
-        "layout": {},
-        "paint": {
+        id: "arrondissements-contour",
+        type: "line",
+        source: "arrondissements",
+        layout: {},
+        paint: {
             "line-color": "#000000",
             "line-width": 1
         },
@@ -179,6 +202,21 @@ map.on('load', function () {
             ]
         },
         //"filter": ["==", "$type", "Polygon"]
+    });
+
+    map.addLayer({
+        id: "croisements-points",
+        type: "circle",
+        source: "croisements",
+        layout: {
+            visibility: "visible"
+        },   
+        paint: {
+            "circle-color": "rgba(0,255,0,0.5)",//"#11b4da",
+            "circle-radius": 5,
+            "circle-stroke-width": 1,
+            "circle-stroke-color": "#FFFFFF"
+        }
     });
 
     // When the user moves their mouse over the arrondissements-fill layer, 
@@ -215,6 +253,98 @@ map.on('load', function () {
         JSON.stringify(e.point) + '<br />' +
         // e.lngLat is the longitude, latitude geographical position of the event
         JSON.stringify(e.lngLat.wrap());
-        });
+    });
 
 });
+
+var toggleableLayerIds = ['RPLS', 'AirBnB', 'Croisements'];
+var link1 = document.createElement('a');
+var link2 = document.createElement('a');
+var link3 = document.createElement('a');
+
+clickedLayers = [['rpls-cluster','rpls-unclustered-points'], 
+['airbnb-cluster','airbnb-unclustered-points'],
+['croisements-points']];
+
+var links = [link1, link2, link3];
+
+var layers = document.getElementById('hide_layers');
+
+for (var i = 0; i < 3; i++) {
+    var id = toggleableLayerIds[i];
+
+    links[i].href = '#';
+    links[i].className = 'active';
+    links[i].textContent = id;
+
+    if (i == 0) {
+        links[i].onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+    
+            console.log(clickedLayers);
+            console.log(i);
+            var visibility = map.getLayoutProperty(clickedLayers[0][0], 'visibility');
+    
+            if (visibility === 'visible') {
+                for (var j=0; j<clickedLayers[0].length; j++) {
+                    map.setLayoutProperty(clickedLayers[0][j], 'visibility', 'none');
+                }
+                this.className = '';
+            } else {
+                this.className = 'active';
+                for (var j=0; j<clickedLayers[0].length; j++) {
+                    map.setLayoutProperty(clickedLayers[0][j], 'visibility', 'visible');
+                }
+            }
+        };
+        layers.appendChild(links[i]);
+
+    } else if (i == 1) {
+        links[i].onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+    
+            console.log(clickedLayers);
+            console.log(i);
+            var visibility = map.getLayoutProperty(clickedLayers[1][0], 'visibility');
+    
+            if (visibility === 'visible') {
+                for (var j=0; j<clickedLayers[1].length; j++) {
+                    map.setLayoutProperty(clickedLayers[1][j], 'visibility', 'none');
+                }
+                this.className = '';
+            } else {
+                this.className = 'active';
+                for (var j=0; j<clickedLayers[1].length; j++) {
+                    map.setLayoutProperty(clickedLayers[1][j], 'visibility', 'visible');
+                }
+            }
+        };
+        layers.appendChild(links[i]);
+
+    } else if (i == 2) {
+
+        links[i].onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            console.log(clickedLayers);
+            console.log(i);
+            var visibility = map.getLayoutProperty(clickedLayers[2][0], 'visibility');
+
+            if (visibility === 'visible') {
+                for (var j=0; j<clickedLayers[2].length; j++) {
+                    map.setLayoutProperty(clickedLayers[2][j], 'visibility', 'none');
+                }
+                this.className = '';
+            } else {
+                this.className = 'active';
+                for (var j=0; j<clickedLayers[2].length; j++) {
+                    map.setLayoutProperty(clickedLayers[2][j], 'visibility', 'visible');
+                }
+            }
+        };
+        layers.appendChild(links[i]);
+    }
+}

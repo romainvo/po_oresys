@@ -5,35 +5,59 @@
         <title>Testing Mapbox API</title>
         <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
         <style>
-            #map { height: 100%; };
-        </style>
+            #map { 
+                width: 100%;
+                flex: 1;
+            };
+            #hide_container {
+                background: #fff;
+                position: absolute;
+            }
+            #hide_layers {
+                background: #fff;
+                position: absolute;
+                top: 45px;
+                left: 10px;
+                width: 120px;
+                border-radius: 3px;
+                border: 1px solid rgba(0, 0, 0, 0.4);
+            }
+            #hide_layers a {
+                font-size: 13px;
+                color: #404040;
+                display: block;
+                margin: 0;
+                padding: 0;
+                padding: 10px;
+                text-decoration: none;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+                text-align: center;
+            }
+            #hide_layers a:last-child {
+                border: none;
+            }
+            #hide_layers a:hover {
+                background-color: #f8f8f8;
+                color: #404040;
+            }
+            #hide_layers a.active {
+                background-color: #3887be;
+                color: #ffffff;
+            }
+            #hide_layers a.active:hover {
+                background: #3074a4;
+            }
+            </style>
     </head>
 
     <body>
         {% extends "template.html" %}
         {% block content %}
-        <style>
-            .mapboxgl-popup {
-                max-width: 400px;
-                font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-            }
-            .coordinates {
-                background: rgba(0,0,0,0.5);
-                color: #fff;
-                position: absolute;
-                bottom: 40px;
-                left: 10px;
-                padding:5px 10px;
-                margin: 0;
-                font-size: 11px;
-                line-height: 18px;
-                border-radius: 3px;
-                display: block;
-            }
-        </style>
-        
         <div id='map'></div>
         <pre id='coordinates' class='coordinates'></pre>
+        <div id='hide_container'>
+            <nav id="hide_layers"></nav>
+        </div>
 
         <script src='/static/js/test_mapbox.js'></script>
         {% endblock %}
