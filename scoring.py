@@ -6,6 +6,9 @@ def CalculScore(surfaceTheo, surfaceReel, nbpieceTheo, nbpieceReel):
     on impose un score minimum de 0.25 du fait de la proximité, les 0.75 restants etant calculés via la formule précédente
     score = 25+score
 """
-def calculScore(scoreSurface,scoreNbPiece):
-    scoreTotal=25+(scoreSurface*scoreNbPiece)*100
+def calculScore(scoreSurface,scoreNbPiece, scoreEtage):
+    PoidsEtage=0.15
+    PoidsProximite=0.15
+    """ score total borné entre 0 et 100. Si il est dans la zone de proximite, il est d'office egal à PoidsProximite*100"""
+    scoreTotal=(PoidsProximite+PoidsEtage*scoreEtage+(scoreSurface*scoreNbPiece)*(1-PoidsEtage-PoidsProximite))*100
 
