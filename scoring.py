@@ -7,8 +7,11 @@ def CalculScore(surfaceTheo, surfaceReel, nbpieceTheo, nbpieceReel):
     score = 25+score
 """
 def calculScore(scoreSurface,scoreNbPiece, scoreEtage):
-    PoidsEtage=0.15
-    PoidsProximite=0.15
+    PoidsEtage=0.25
+    PoidsProximite = 0.25
+    PoidsSurface = 0.25
+    PoidsNbPiece = 1-PoidsEtage-PoidsSurface-PoidsProximite
+
     """ score total borné entre 0 et 100. Si il est dans la zone de proximite, il est d'office egal à PoidsProximite*100"""
-    scoreTotal=(PoidsProximite+PoidsEtage*scoreEtage+(scoreSurface*scoreNbPiece)*(1-PoidsEtage-PoidsProximite))*100
+    scoreTotal=(PoidsProximite+PoidsEtage*scoreEtage+PoidsSurface*scoreSurface+PoidsNbPiece*scoreNbPiece)*100
 
