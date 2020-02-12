@@ -75,7 +75,7 @@ description_airbnb = data_airbnb.loc[:, 'description']
 pattern_surfhab_meter = r"""(?x)
     (\d+\.?,?\d*)
     (?:
-     \s+m.tre.\s+carre.
+     \s+m.tre.\s+carr.*
     |\s?m2
     |\s?sqm
     |(?:m\s|\sm|m)²

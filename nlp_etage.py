@@ -41,47 +41,41 @@ summary_airbnb = data_airbnb.loc[:, 'summary']
 space_airbnb = data_airbnb.loc[:, 'space']
 description_airbnb = data_airbnb.loc[:, 'description'] 
 
-for i in range(200):
-    print(i, description_airbnb.iloc[i])
+#for i in range(200):
+#    print(i, description_airbnb.iloc[i])
 
-pattern_surfhab_meter = r"""(?x)
+pattern_etage_number = r"""(?x)
     (\d+\.?,?\d*)
     (?:
-     \s+m.tre.\s+carre.
-    |\s?m2
-    |\s?sqm
-    |(?:m\s|\sm|m)²
-    |\s?square.?\s?met...?
-    |\s?sq\.?\s?(?:\.mts|meter.?|\.\s?m)
-    |\s?sq\sm
-    )
-    """
-
-pattern_surfhab_feet = r"""(?x)
-    (\d+\.?,?\d*)
-    (?:
-     \s?square.?\s?(?:feet|ft|foot)
-    |\s?feet²
-    |\s?sq\.?\s?(?:f.{0,2}t|\.\s?ft|f|/ft)
+     \s*(?:th|d|nd|rd|st|e|.me|°)\s*(?:floor|.tage)
+    |\s*(?:th|d|nd|rd|st|e|.me|°).*(?:floor|.tage)
+    |\s*(?:floor|.tage)
     )
     """
     
-surfhab_tokens_feet = dict()
-surfhab_tokens_meter = dict()
-surfhab_tokens = dict()
+pattern_etage_letter = r"""(?x)
+    (first|second|third|[a-z]+th|[a-z]+)
+    (?:
+     \s*(?:floor|.tage)
+    |.*(?:floor|.tage)
+    )
+    """
+    
+etage_tokens_number = dict()
+etage_tokens_letter = dict()
 
 for idx, row in enumerate(description_airbnb):
     if row is not np.NaN:
         row = row.lower()
 
-        temp_feet = re.findall(pattern_surfhab_feet, row) 
-        temp_meter = re.findall(pattern_surfhab_meter, row)
+        temp_number = re.findall(pattern_etage_number, row) 
+        temp_letter = re.findall(pattern_etage_letter, row)
             
-        if temp_feet:
-            surfhab_tokens_feet[idx] = temp_feet
+        if temp_number:
+            etage_tokens_number[idx] = temp_number
             
-        if temp_meter:
-            surfhab_tokens_meter[idx] = temp_meter
+        if temp_letter:
+            etage_tokens_letter[idx] = temp_letter
     
 #    if idx == 200:
 #        break
