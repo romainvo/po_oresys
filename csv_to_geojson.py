@@ -64,9 +64,6 @@ if __name__ == '__main__':
         df_results =pd.concat([df_results,id_sup_seuil[i]],ignore_index=False, sort=False, axis=1)
         
     df_results(id_sup_seuil.shape)    
-    print(df_results.head())
-    print(df_results.head())
-    
 
     gdf = gpd.GeoDataFrame(df_results, geometry=gpd.points_from_xy(df_results.longitude, df_results.latitude))
     gdf.drop(columns=['longitude','latitude'], inplace=True)
