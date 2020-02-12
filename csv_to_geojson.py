@@ -43,7 +43,7 @@ if __name__ == '__main__':
     seuil = 4
     condition_colonne = df_results['score0'] > seuil
     df_results.loc[:,'seuil0'] = condition_colonne
-    for i in range(1,99):
+    for i in range(1,100):
         colonne_inter = df_results['score'+str(i)] > seuil
         df_results.loc[:, 'seuil'+str(i)] = condition_colonne
         condition_colonne = condition_colonne + colonne_inter
@@ -55,16 +55,17 @@ if __name__ == '__main__':
     print(df_results.shape)
 
     id_sup_seuil = []
-    for i in range(99):
+    for i in range(100):
         id_sup_seuil.append(df_results.loc[df_results.loc[:,'seuil{}'.format(i)],'id_rpls{}'.format(i)].reindex(index=range(df_results.shape[0])))
    
     df_results = df_results[['latitude','longitude']]
 
-    for i in range(99):
+    for i in range(100):
         df_results =pd.concat([df_results,id_sup_seuil[i]],ignore_index=False, sort=False, axis=1)
         
-    df_results(id_sup_seuil.shape)    
-
+    print(df_results.head())
+    print(df_results.shape)
+    
     gdf = gpd.GeoDataFrame(df_results, geometry=gpd.points_from_xy(df_results.longitude, df_results.latitude))
     gdf.drop(columns=['longitude','latitude'], inplace=True)
    # gdf.to_file("static/donneesgeos/croisementBis.geojson", driver='GeoJSON')
