@@ -31,7 +31,6 @@ import numpy as np
 #\W 	Any non-alphanumeric character (equivalent to [^a-zA-Z0-9_])
 #\t 	The tab character
 #\n 	The newline character
-
 data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
                           dtype={'longitude':'float', 'latitude':'float'})
 
@@ -39,7 +38,6 @@ name_airbnb = data_airbnb.loc[:, 'name']
 summary_airbnb = data_airbnb.loc[:, 'summary']
 space_airbnb = data_airbnb.loc[:, 'space']
 description_airbnb = data_airbnb.loc[:, 'description'] 
-
 #for i in range(200):
 #    print(i, description_airbnb.iloc[i])
 #
@@ -246,4 +244,13 @@ surfhab = pd.Series(surfhab_tokens).reindex(index=range(data_airbnb.shape[0]))
 
 surfhab_scoring = surfhab_rpls.div(surfhab, axis=0)
 surfhab_scoring = surfhab_scoring.applymap(lambda x: 1/x if x > 1 else x)
+
+"""for i in range(110):
+    j=np.random.randint(250,60000)
+    print(name_airbnb[j],"\n",space_airbnb[j],"\n",description_airbnb[j],"\n",summary_airbnb[j])
+    if (surfhab[j]==np.NaN):
+        print("pas de resultats")
+    print(surfhab[j])
+"""
+#Résultats avec un echantillon random de 110 annonces :  38% de réussite, 2,7% d'erreur, et 59.3% d'annonces où la taille n'est pas indiquée.
 
