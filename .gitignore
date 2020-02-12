@@ -9,3 +9,5 @@ results_sorted.csv
 results_rd150_nb100.csv
 RPLS2018.csv
 geo-rpls2017.csv
+results_rd150_nb100_score.csv
+static/donneesgeos/croisementBis.geojson

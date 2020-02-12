@@ -207,6 +207,7 @@ map.on('load', function () {
     map.addLayer({
         id: "croisements-points",
         type: "circle",
+        interactive :'true',
         source: "croisements",
         layout: {
             visibility: "visible"
@@ -253,6 +254,34 @@ map.on('load', function () {
         JSON.stringify(e.point) + '<br />' +
         // e.lngLat is the longitude, latitude geographical position of the event
         JSON.stringify(e.lngLat.wrap());
+    });
+
+    map.on('click',function(e){
+        var features = map.queryRenderedFeatures(e.point, { layers: ['rpls-unclustered-points'] });
+        
+        if(features.length>0){
+
+            for(name in features[0].properties) { 
+                console.log(features[0].properties[name]); 
+            }  
+            
+            newData = {'type':'FeatureCollection',
+            'features':[{}]
+            }
+
+            for(let pas = 2.31852; pas < 3; pas++){
+                newData.features.push({'type':'Feature',
+                'geometry':  {
+                    'type':'Point',
+                    'coordinates':[pas, 48.83349]
+                }})
+            ;}
+            map.getSource('rpls').setData(newData)
+        }
+    });
+
+    map.on('click',function(e){
+        map.getSource('rpls').setData('/donneesgeos/rpls.geojson')
     });
 
 });
