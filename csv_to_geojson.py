@@ -82,7 +82,7 @@ if __name__ == '__main__':
     
 #    gdf = gpd.GeoDataFrame(df_results, geometry=gpd.points_from_xy(df_results.longitude, df_results.latitude))
 #    gdf.drop(columns=['longitude','latitude'], inplace=True)
-    
+
    # gdf.to_file("static/donneesgeos/croisementBis.geojson", driver='GeoJSON')
 
                        
