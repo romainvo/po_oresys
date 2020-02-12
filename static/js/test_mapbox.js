@@ -258,8 +258,26 @@ map.on('load', function () {
 
     map.on('click',function(e){
         var features = map.queryRenderedFeatures(e.point, { layers: ['rpls-unclustered-points'] });
+
+        function getRemoteJSON(url, throwIfNotFound) {
+            return fetch(url).then(function (response) {
+                if (response.ok) {
+                    return response.json()
+                }
+        
+                if (response.status === 404 && !throwIfNotFound) {
+                    return
+                }
+        
+                throw new Error('Impossible de récupérer les données demandées : ' + response.status)
+            })
+        }
         
         if(features.length>0){
+
+            var data =getRemoteJSON('static\donneesgeos\croisements.geojson')
+            JSON.parse(data)
+            console.log(data.id_bnb)
 
             for(name in features[0].properties) { 
                 console.log(features[0].properties[name]); 
