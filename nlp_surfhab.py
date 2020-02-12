@@ -35,6 +35,7 @@ import numpy as np
 data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
                           dtype={'longitude':'float', 'latitude':'float'})
 
+name_airbnb = data_airbnb.loc[:, 'name']
 summary_airbnb = data_airbnb.loc[:, 'summary']
 space_airbnb = data_airbnb.loc[:, 'space']
 description_airbnb = data_airbnb.loc[:, 'description'] 
@@ -131,6 +132,25 @@ for idx, row in enumerate(description_airbnb):
 #    if idx == 200:
 #        break
 
+for idx, row in enumerate(name_airbnb):
+    if row is not np.NaN:
+        row = row.lower()
+
+        temp_feet = re.findall(pattern_surfhab_feet, row) 
+        temp_meter = re.findall(pattern_surfhab_meter, row)
+            
+        if temp_feet:
+            if idx not in surfhab_tokens_feet:
+                surfhab_tokens_feet[idx] = list(temp_feet)
+            else:
+                surfhab_tokens_feet[idx] += temp_feet
+            
+        if temp_meter:
+            if idx not in surfhab_tokens_meter:
+                surfhab_tokens_meter[idx] = temp_meter  
+            else:
+                surfhab_tokens_meter[idx] += temp_meter
+
 for idx, row in enumerate(summary_airbnb):
     if row is not np.NaN:
         row = row.lower()
@@ -214,12 +234,14 @@ results = pd.read_csv('results_rd150_nb100.csv', header='infer'
                       , index_col='id_bnb'
                       , dtype=pd.Int64Dtype())
 
-re.sub("[^0-9]", "","ldkfljzg55f2cv")
+#re.sub("[^0-9]", "","ldkfljzg55f2cv")
 surfhab_rpls = pd.DataFrame()
 for i in range(100):
     surfhab_rpls.loc[:, 'surfhab_{}'.format(i)] = \
         data_rpls.surfhab.reindex(results['id_rpls{}'.format(i)]).values
 
+#surfhab contient les surface extraites pour les airbnb, avec en index l'id 
+#du airbnb (le numéro de la ligne dans data_airbnb)
 surfhab = pd.Series(surfhab_tokens).reindex(index=range(data_airbnb.shape[0]))
 
 surfhab_scoring = surfhab_rpls.div(surfhab, axis=0)
