@@ -94,7 +94,7 @@ etage_tokens_letter = dict()
 etage_tokens = dict()
 
 for idx, row in enumerate(description_airbnb):
-    if row is not np.NaN:
+    if not pd.isna(row):
         row = row.lower()
 
         temp_number = re.findall(pattern_etage_number, row) 
@@ -110,7 +110,7 @@ for idx, row in enumerate(description_airbnb):
 #        break
             
 for idx, row in enumerate(name_airbnb):
-    if row is not np.NaN:
+    if not pd.isna(row):
         row = row.lower()
 
         temp_number = re.findall(pattern_etage_number, row) 
@@ -129,7 +129,7 @@ for idx, row in enumerate(name_airbnb):
                 etage_tokens_letter[idx] += temp_letter
                 
 for idx, row in enumerate(summary_airbnb):
-    if row is not np.NaN:
+    if not pd.isna(row):
         row = row.lower()
 
         temp_number = re.findall(pattern_etage_number, row) 
@@ -148,7 +148,7 @@ for idx, row in enumerate(summary_airbnb):
                 etage_tokens_letter[idx] += temp_letter
 
 for idx, row in enumerate(space_airbnb):
-    if row is not np.NaN:
+    if not pd.isna(row):
         row = row.lower()
 
         temp_number = re.findall(pattern_etage_number, row) 
@@ -197,16 +197,16 @@ def converter_cp(string):
     
 def converter_etage(string):
     try: 
-        return int(string)
+        return float(string)
     except:
         if string == 'RC':
-            return 0
+            return 0.0
         
         match_temp = re.search(r"[1-9][0-9]*", string)
         if match_temp != None:
-            return int(match_temp.group())
+            return float(match_temp.group())
         else:
-            return pd.NA
+            return np.nan
     
 data_rpls = pd.read_csv("paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                         header='infer', index_col=0,
@@ -234,5 +234,19 @@ for i in range(100):
 #du airbnb (le numéro de la ligne dans data_airbnb)
 etage = pd.Series(etage_tokens).reindex(index=range(data_airbnb.shape[0]))
 
-#etage_scoring = etage_rpls.div(etage, axis=0)
-#etage_scoring = etage_scoring.applymap(lambda x: 1/x if x > 1 else x)
+etage_scoring = etage_rpls.subtract(etage, axis=0)
+
+def etage_score_filtering(x):
+    if x == 0:
+        return 1
+    elif abs(x) == 1:
+        return 0.20
+    elif not pd.isna(x):
+        return 0
+    else:
+        return np.NaN
+
+etage_scoring = etage_scoring.applymap(etage_score_filtering)
+
+#nombre de airbnb avec au moins 1 match exact: 
+# ((etage_scoring == 1).sum(axis=1) != 0).sum()

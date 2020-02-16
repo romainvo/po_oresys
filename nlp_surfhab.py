@@ -115,7 +115,7 @@ surfhab_tokens_meter = dict()
 surfhab_tokens = dict()
 
 for idx, row in enumerate(description_airbnb):
-    if row is not np.NaN:
+    if not pd.isna(row):
         row = row.lower()
 
         temp_feet = re.findall(pattern_surfhab_feet, row) 
@@ -131,7 +131,7 @@ for idx, row in enumerate(description_airbnb):
 #        break
 
 for idx, row in enumerate(name_airbnb):
-    if row is not np.NaN:
+    if not pd.isna(row):
         row = row.lower()
 
         temp_feet = re.findall(pattern_surfhab_feet, row) 
@@ -150,7 +150,7 @@ for idx, row in enumerate(name_airbnb):
                 surfhab_tokens_meter[idx] += temp_meter
 
 for idx, row in enumerate(summary_airbnb):
-    if row is not np.NaN:
+    if not pd.isna(row):
         row = row.lower()
 
         temp_feet = re.findall(pattern_surfhab_feet, row) 
@@ -169,7 +169,7 @@ for idx, row in enumerate(summary_airbnb):
                 surfhab_tokens_meter[idx] += temp_meter
 
 for idx, row in enumerate(space_airbnb):
-    if row is not np.NaN:
+    if not pd.isna(row):
         row = row.lower()
 
         temp_feet = re.findall(pattern_surfhab_feet, row) 
@@ -244,6 +244,9 @@ surfhab = pd.Series(surfhab_tokens).reindex(index=range(data_airbnb.shape[0]))
 
 surfhab_scoring = surfhab_rpls.div(surfhab, axis=0)
 surfhab_scoring = surfhab_scoring.applymap(lambda x: 1/x if x > 1 else x)
+
+#nombre de airbnb avec au moins 1 match exact: 
+# ((surfhab_scoring == 1).sum(axis=1) != 0).sum()
 
 """for i in range(110):
     j=np.random.randint(250,60000)
