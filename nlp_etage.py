@@ -193,19 +193,46 @@ def converter_cp(string):
     try:
         return int(string)
     except:
-        return 0    
+        return 0   
+    
+def converter_etage(string):
+    try: 
+        return int(string)
+    except:
+        if string == 'RC':
+            return 0
+        
+        match_temp = re.search(r"[1-9][0-9]*", string)
+        if match_temp != None:
+            return int(match_temp.group())
+        else:
+            return pd.NA
     
 data_rpls = pd.read_csv("paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                         header='infer', index_col=0,
-                        converters={'codepostal':converter_cp},
+                        converters={'codepostal':converter_cp
+                                    , 'etage':converter_etage},
                         dtype={'longitude':'float', 'latitude':'float'})
 
-#keep_columns = ['id_bnb']
-#for i in range(100):
-#    keep_columns.append('id_rpls'+str(i))
-#dtype = {key:'int64' for key in keep_columns}
-#
-#results = pd.read_csv('results_rd150_nb100.csv', header='infer'
-#                      , usecols=keep_columns
-#                      , index_col='id_bnb'
-#                      , dtype=pd.Int64Dtype())
+keep_columns = ['id_bnb']
+for i in range(100):
+    keep_columns.append('id_rpls{}'.format(i))
+dtype = {key:'int64' for key in keep_columns}
+
+results = pd.read_csv('results_rd150_nb100_score.csv', header='infer'
+                      , usecols=keep_columns
+                      , index_col='id_bnb'
+                      , dtype=pd.Int64Dtype())
+
+#re.sub("[^0-9]", "","ldkfljzg55f2cv")
+etage_rpls = pd.DataFrame()
+for i in range(100):
+    etage_rpls.loc[:, 'etage_{}'.format(i)] = \
+        data_rpls.etage.reindex(results['id_rpls{}'.format(i)]).values
+
+#etage contient les surface extraites pour les airbnb, avec en index l'id 
+#du airbnb (le numéro de la ligne dans data_airbnb)
+etage = pd.Series(etage_tokens).reindex(index=range(data_airbnb.shape[0]))
+
+#etage_scoring = etage_rpls.div(etage, axis=0)
+#etage_scoring = etage_scoring.applymap(lambda x: 1/x if x > 1 else x)

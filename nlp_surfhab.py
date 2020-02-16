@@ -227,7 +227,7 @@ for i in range(100):
     keep_columns.append('id_rpls'+str(i))
 dtype = {key:'int64' for key in keep_columns}
 
-results = pd.read_csv('results_rd150_nb100.csv', header='infer'
+results = pd.read_csv('results_rd150_nb100_score.csv', header='infer'
                       , usecols=keep_columns
                       , index_col='id_bnb'
                       , dtype=pd.Int64Dtype())
