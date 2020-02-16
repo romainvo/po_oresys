@@ -255,5 +255,7 @@ surfhab_scoring = surfhab_scoring.applymap(lambda x: 1/x if x > 1 else x)
         print("pas de resultats")
     print(surfhab[j])
 """
-#Résultats avec un echantillon random de 110 annonces :  38% de réussite, 2,7% d'erreur, et 59.3% d'annonces où la taille n'est pas indiquée.
+# Résultats avec un echantillon random de 110 annonces :
+# 38% de réussite, 2,7% d'erreur, et 59.3% d'annonces où la taille n'est 
+# pas indiquée.
 

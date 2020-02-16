@@ -250,3 +250,22 @@ etage_scoring = etage_scoring.applymap(etage_score_filtering)
 
 #nombre de airbnb avec au moins 1 match exact: 
 # ((etage_scoring == 1).sum(axis=1) != 0).sum()
+
+#for i in range(110):
+#    j = np.random.randint(250,60000)
+#    print(name_airbnb[j]
+#        ,"\n"
+#        ,space_airbnb[j]
+#        ,"\n"
+#        ,description_airbnb[j]
+#        ,"\n"
+#        ,summary_airbnb[j]
+#    )
+#    if pd.isna(etage[j]):
+#        print("pas de resultats")
+#        
+#    print(etage[j])
+
+#Résultats avec un echantillon random de 110 annonces :  39.09% de réussite, 
+#1.82% de détection avec 1 étage de différence, 3.64% d'erreur, et 55.45% 
+#d'annonces où la taille n'est pas indiquée.
