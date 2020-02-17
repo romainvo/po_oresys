@@ -20,11 +20,12 @@ var hoveredStateId =  null;
 var coordinates = document.getElementById('coordinates');
 
 map.on('load', function () {
+    /*
     map.addSource('arrondissements', {
         'type': 'geojson',
         'generateId' : true,
         'data': '/donneesgeos/arrondissements_municipaux-20180711.json'
-    });
+    });*/
 
     map.addSource('rpls', {
         type: 'geojson',
@@ -175,7 +176,7 @@ map.on('load', function () {
             "circle-stroke-color": "#FFFFFF"
         },
     });
-
+    /*
     map.addLayer({
         id: "arrondissements-contour",
         type: "line",
@@ -202,7 +203,7 @@ map.on('load', function () {
             ]
         },
         //"filter": ["==", "$type", "Polygon"]
-    });
+    });*/
 
     map.addLayer({
         id: "croisements-points",
@@ -222,7 +223,7 @@ map.on('load', function () {
 
     // When the user moves their mouse over the arrondissements-fill layer, 
     // we'll update the feature state for the feature under the mouse.
-    map.on("mousemove", "arrondissements-fill", function(e) {
+    /*map.on("mousemove", "arrondissements-fill", function(e) {
         var canvas = map.getCanvas();
         canvas.style.cursor = 'pointer';
 
@@ -245,7 +246,7 @@ map.on('load', function () {
             map.setFeatureState({source: 'arrondissements', id: hoveredStateId}, { hover: false});
         }
         hoveredStateId =  null;
-    });
+    });*/
 
     map.on('mousemove', function (e) {
         document.getElementById('coordinates').innerHTML =
@@ -257,49 +258,55 @@ map.on('load', function () {
     });
 
     map.on('click',function(e){
-        var features = map.queryRenderedFeatures(e.point, { layers: ['rpls-unclustered-points'] });
-
-        function getRemoteJSON(url, throwIfNotFound) {
-            return fetch(url).then(function (response) {
-                if (response.ok) {
-                    return response.json()
-                }
-        
-                if (response.status === 404 && !throwIfNotFound) {
-                    return
-                }
-        
-                throw new Error('Impossible de récupérer les données demandées : ' + response.status)
-            })
-        }
-        
+        var features = map.queryRenderedFeatures(e.point, { layers: ['croisements-points'] });
         if(features.length>0){
-
-            var data =getRemoteJSON('static\donneesgeos\croisements.geojson')
-            JSON.parse(data)
-            console.log(data.id_bnb)
-
-            for(name in features[0].properties) { 
-                console.log(features[0].properties[name]); 
-            }  
             
-            newData = {'type':'FeatureCollection',
-            'features':[{}]
+            var listIdRpls = [];
+            for(name in features[0].properties) { 
+                console.log(features[0].properties[name])
+                listIdRpls.push(features[0].properties[name])
+            }  
+
+            var requestURL = '/donneesgeos/coord_rpls.json';
+            var request = new XMLHttpRequest();
+            request.open('GET', requestURL);
+            request.responseType = 'json';
+            request.send();
+            request.onload = function() {
+                var dataRpls = request.response;
+
+                newDataRpls = {'type':'FeatureCollection',
+                'features':[{}]
+                }
+    
+                listIdRpls.forEach(function(idRpls){
+                    newDataRpls.features.push({'type':'Feature',
+                    'geometry':  {
+                        'type':'Point',
+                        'coordinates':[dataRpls.longitude[idRpls], dataRpls.latitude[idRpls]]
+                    }})
+                    console.log(idRpls)
+                ;})
+                newDataCroisement = {'type':'FeatureCollection',
+                    'features':[{
+                        'type':'Feature',
+                        'geometry':  {
+                            'type':'Point',
+                            'coordinates':[features[0].geometry.coordinates[0],features[0].geometry.coordinates[1]]
+                      }
+                    }]
+                };
+                map.getSource('rpls').setData(newDataRpls)
+                map.getSource('croisements').setData(newDataCroisement)
             }
 
-            for(let pas = 2.31852; pas < 3; pas++){
-                newData.features.push({'type':'Feature',
-                'geometry':  {
-                    'type':'Point',
-                    'coordinates':[pas, 48.83349]
-                }})
-            ;}
-            map.getSource('rpls').setData(newData)
         }
     });
-
+    
     map.on('click',function(e){
-        map.getSource('rpls').setData('/donneesgeos/rpls.geojson')
+
+        map.getSource('rpls').setData('/donneesgeos/rpls.geojson');
+        map.getSource('croisements').setData('/donneesgeos/croisementBis.geojson')
     });
 
 });

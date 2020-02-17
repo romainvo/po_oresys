@@ -40,8 +40,7 @@ if __name__ == '__main__':
     
     df_results = pd.read_csv('results_rd150_nb100_score.csv', header='infer'
                           , usecols=keep_columns
-                          , index_col='id_bnb'
-                          , dtype=pd.Int64Dtype())
+                          , index_col='id_bnb')
     
     df_results.index.rename('id_bnb', inplace=True)
 
@@ -64,6 +63,7 @@ if __name__ == '__main__':
 #    df_results = df_results.loc[df_results.seuil_total]  
 #    print(df_results.shape)
 
+    # On identifie et stocke les id_rpls pour lesquels le score est supérieur au seuil
     id_sup_seuil = []
     for i in range(100):
         id_sup_seuil.append(
@@ -79,11 +79,22 @@ if __name__ == '__main__':
                                , sort=False, axis=1)
 
     df_results = df_results.loc[df_results.isna().sum(axis=1) != 100]
+    print(df_results.head())
+    print(df_results.shape)
     
-#    gdf = gpd.GeoDataFrame(df_results, geometry=gpd.points_from_xy(df_results.longitude, df_results.latitude))
-#    gdf.drop(columns=['longitude','latitude'], inplace=True)
+    gdf = gpd.GeoDataFrame(df_results, geometry=gpd.points_from_xy(df_results.longitude, df_results.latitude))
+    gdf.drop(columns=['longitude','latitude'], inplace=True)
 
-   # gdf.to_file("static/donneesgeos/croisementBis.geojson", driver='GeoJSON')
+    #gdf.to_file("static/donneesgeos/croisementBis.geojson", driver='GeoJSON')
+
+#-----------------------------------------------------------------------------#
+#---------------------------- Création coord_rpls --------------------------- #
+#-----------------------------------------------------------------------------#
+
+df = pd.read_csv('paris_rpls_2017.csv', sep=',', header='infer',
+                      usecols=['longitude','latitude'])
+
+df.to_json('static/donneesgeos/coord_rpls.json')
 
                        
 
