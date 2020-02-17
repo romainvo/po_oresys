@@ -248,7 +248,7 @@ def etage_score_filtering(x):
 
 etage_scoring = etage_scoring.applymap(etage_score_filtering)
 
-#nombre de airbnb avec au moins 1 match exact: 
+#nombre de airbnb avec au moins 1 match exact: 19000
 # ((etage_scoring == 1).sum(axis=1) != 0).sum()
 
 #for i in range(110):

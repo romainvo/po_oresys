@@ -245,7 +245,7 @@ surfhab = pd.Series(surfhab_tokens).reindex(index=range(data_airbnb.shape[0]))
 surfhab_scoring = surfhab_rpls.div(surfhab, axis=0)
 surfhab_scoring = surfhab_scoring.applymap(lambda x: 1/x if x > 1 else x)
 
-#nombre de airbnb avec au moins 1 match exact: 
+#nombre de airbnb avec au moins 1 match exact dans le rpls: 8857
 # ((surfhab_scoring == 1).sum(axis=1) != 0).sum()
 
 """for i in range(110):
