@@ -8,6 +8,7 @@ Created on Wed Feb 12 09:34:57 2020
 import pandas as pd
 import re
 import numpy as np
+from nlp_surfhab import extraction_surfhab, score_surfhab
 
 #. 	Wildcard, matches any character
 #^abc 	Matches some pattern abc at the start of a string
@@ -34,6 +35,14 @@ import numpy as np
 #\t 	The tab character
 #\n 	The newline character
 
+#Colonnes à analyser dans les données airbnb
+# summary / space / description / neighorhood_overview / street / neighbourhood
+# neighbourhoud_cleansed / neighbourhood_group_cleansed / city / 
+# room_type / bathrooms / bedrooms / beds / square_feet / property_type
+# longitude / latitude
+
+#Recherche de règles/structures à détecter de l'indice 0 à 200 puis au feeling
+
 def etage_score_filtering(x):
     if x == 0:
         return 1
@@ -50,9 +59,6 @@ def extraction_etage(data_airbnb):
     summary_airbnb = data_airbnb.loc[:, 'summary']
     space_airbnb = data_airbnb.loc[:, 'space']
     description_airbnb = data_airbnb.loc[:, 'description'] 
-    
-    #for i in range(200):
-    #    print(i, description_airbnb.iloc[i])
     
     pattern_etage_number = r"""(?x)
         (\d+(?:\.\d+)?)
@@ -197,11 +203,7 @@ def extraction_etage(data_airbnb):
     return etage_tokens
     
 
-def score_etage(data_airbnb, etage_tokens):
-
-# --------------------------------------------------------------------------- #
-# ------------------------- TEST SCORE SURFHAB ------------------------------ #
-# --------------------------------------------------------------------------- #
+def score_etage(data_airbnb, croisement_v3, etage_tokens):
     
     def converter_cp(string):
         try:
@@ -228,21 +230,11 @@ def score_etage(data_airbnb, etage_tokens):
                                         , 'etage':converter_etage},
                             dtype={'longitude':'float', 'latitude':'float'})
     
-    keep_columns = ['id_bnb']
-    for i in range(100):
-        keep_columns.append('id_rpls{}'.format(i))
-#    dtype = {key:'int64' for key in keep_columns}
-    
-    results = pd.read_csv('results_rd150_nb100_score.csv', header='infer'
-                          , usecols=keep_columns
-                          , index_col='id_bnb'
-                          , dtype=pd.Int64Dtype())
-    
     #re.sub("[^0-9]", "","ldkfljzg55f2cv")
     etage_rpls = pd.DataFrame()
     for i in range(100):
         etage_rpls.loc[:, 'etage_{}'.format(i)] = \
-            data_rpls.etage.reindex(results['id_rpls{}'.format(i)]).values
+            data_rpls.etage.reindex(croisement_v3['id_rpls{}'.format(i)]).values
     
     #etage contient les surface extraites pour les airbnb, avec en index l'id 
     #du airbnb (le numéro de la ligne dans data_airbnb)
@@ -252,16 +244,28 @@ def score_etage(data_airbnb, etage_tokens):
     
     etage_scoring = etage_scoring.applymap(etage_score_filtering)
     
+    etage_scoring.index.rename('id_bnb', inplace=True)
+    
     return etage_scoring
 
 if __name__ == '__main__':
 
+    keep_columns = ['id_bnb']
+    for i in range(100):
+        keep_columns.append('id_rpls{}'.format(i))
+#    dtype = {key:'int64' for key in keep_columns}
+    
+    croisement_v3 = pd.read_csv('results_rd150_nb100_score.csv', header='infer'
+                          , usecols=keep_columns
+                          , index_col='id_bnb'
+                          , dtype=pd.Int64Dtype())    
+    
     data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
                               dtype={'longitude':'float', 'latitude':'float'})
     
     etage_tokens = extraction_etage(data_airbnb)
 
-    etage_scoring = score_etage(data_airbnb, etage_tokens)
+    etage_scoring = score_etage(data_airbnb, croisement_v3, etage_tokens)
     
 #    nombre de airbnb avec au moins 1 match exact: 19000
 #    ((etage_scoring == 1).sum(axis=1) != 0).sum()
@@ -289,3 +293,13 @@ if __name__ == '__main__':
 #    Résultats avec un echantillon random de 110 annonces :  39.09% de réussite, 
 #    1.82% de détection avec 1 étage de différence, 3.64% d'erreur, et 55.45% 
 #    d'annonces où la taille n'est pas indiquée.
+    
+
+    #Score total
+    
+    surfhab_tokens = extraction_surfhab(data_airbnb)
+    surfhab_scoring = score_surfhab(data_airbnb, croisement_v3, surfhab_tokens)
+    
+    score_total = pd.DataFrame(croisement_v3.isna().values*0.2 + 
+                               surfhab_scoring.fillna(0).values * 0.4 + 
+                               etage_scoring.fillna(0).values * 0.4)
