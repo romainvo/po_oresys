@@ -294,12 +294,3 @@ if __name__ == '__main__':
 #    1.82% de détection avec 1 étage de différence, 3.64% d'erreur, et 55.45% 
 #    d'annonces où la taille n'est pas indiquée.
     
-
-    #Score total
-    
-    surfhab_tokens = extraction_surfhab(data_airbnb)
-    surfhab_scoring = score_surfhab(data_airbnb, croisement_v3, surfhab_tokens)
-    
-    score_total = pd.DataFrame(croisement_v3.isna().values*0.2 + 
-                               surfhab_scoring.fillna(0).values * 0.4 + 
-                               etage_scoring.fillna(0).values * 0.4)
