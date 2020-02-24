@@ -208,7 +208,6 @@ map.on('load', function () {
     map.addLayer({
         id: "croisements-points",
         type: "circle",
-        interactive :'true',
         source: "croisements",
         layout: {
             visibility: "visible"
@@ -258,15 +257,17 @@ map.on('load', function () {
     });
 
     map.on('click',function(e){
+        // On récupère les infos (les id_rpls correspondants) du point du layer croisement sur lequel on clique
         var features = map.queryRenderedFeatures(e.point, { layers: ['croisements-points'] });
         if(features.length>0){
-            
+
             var listIdRpls = [];
             for(name in features[0].properties) { 
                 console.log(features[0].properties[name])
                 listIdRpls.push(features[0].properties[name])
             }  
 
+            // On cherche les coordonnées des id_rpls trouvés
             var requestURL = '/donneesgeos/coord_rpls.json';
             var request = new XMLHttpRequest();
             request.open('GET', requestURL);
@@ -278,7 +279,8 @@ map.on('load', function () {
                 newDataRpls = {'type':'FeatureCollection',
                 'features':[{}]
                 }
-    
+                
+                // On met à jour les data des sources avec les coordonnées des points qu'on veut afficher
                 listIdRpls.forEach(function(idRpls){
                     newDataRpls.features.push({'type':'Feature',
                     'geometry':  {
@@ -298,6 +300,8 @@ map.on('load', function () {
                 };
                 map.getSource('rpls').setData(newDataRpls)
                 map.getSource('croisements').setData(newDataCroisement)
+     
+                map.setPaintProperty('rpls-unclustered-points', 'circle-radius', 6);
             }
 
         }
@@ -305,8 +309,11 @@ map.on('load', function () {
     
     map.on('click',function(e){
 
+        // On remet à jour les data des sources pour afficher à nouveau tous les points
         map.getSource('rpls').setData('/donneesgeos/rpls.geojson');
         map.getSource('croisements').setData('/donneesgeos/croisementBis.geojson')
+        map.setPaintProperty('rpls-unclustered-points', 'circle-radius', 4);
+
     });
 
 });
