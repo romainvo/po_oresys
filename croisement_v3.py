@@ -41,8 +41,9 @@ data_airbnb.loc[:, 'id_bnb'] = data_airbnb.index.astype(int)
 #-------------------------- WITH DataFrame.apply -----------------------------#
 #-----------------------------------------------------------------------------#
 
-def func_apply(row, radius, nb_results, data_rpls=None):
-    print(row.id_bnb)
+def func_apply(row, radius,nb_results, data_rpls=None):
+    print(100*row.id_bnb/65000+"% de traitement des airbnb")
+
     distances = haversine(data_rpls.longitude, data_rpls.latitude
                           , lon2=row.longitude, lat2=row.latitude)
     pd.Series.sort_values(distances)
@@ -57,9 +58,14 @@ def func_apply(row, radius, nb_results, data_rpls=None):
     for i in range(nb_results*2-len(results)):
         results.append(None)
     return results
+
+radius = 155 #mètres
+nb_results = 250
    
-results = data_airbnb.apply(partial(func_apply,radius=100,nb_results=100,data_rpls=data_rpls)
+results = data_airbnb.apply(partial(func_apply,radius,nb_results,data_rpls=data_rpls)
 , axis=1, result_type='expand')
+
+print("Fin de l'importation du csv, debut de la phase de concatenage des colonnes d'ID et distance")
 
 columns_name = []
 for i in range(len(results.columns)//2):
@@ -68,37 +74,6 @@ for i in range(len(results.columns)//2):
 
 results.columns = columns_name
 results.index.rename('id_bnb', inplace=True)
-results.to_csv('results_rd100_nb100.csv', header=True)
+results.to_csv('results_rd{}_nb{}.csv'.format(radius, nb_results), header=True)
 
 print("Temps d'éxécution : " + str(time.time()-start))
-
-# Essai pour les résultats dans sur plusieurs lignes et non colonnes. NON FONCTIONNEL
-"""
-def func_apply(row, data_rpls=None, radius=50):
-    print(row[1].id_bnb)
-    distances = haversine(data_rpls.longitude, data_rpls.latitude
-                          , lon2=row[1].longitude, lat2=row[1].latitude)
-    results = pd.Series()
-    for index,value in pd.Series.items(distances) :
-        if value < radius:
-            results.add(np.array([index, value]))
-    return results
-
-results_df = pd.DataFrame()
-for row in data_airbnb.iterrows():
-    results = func_apply(row, data_rpls)
-    for element in pd.Series.items(results) :
-        print(element)
-        results_df.append(element)
-
-
-results = data_airbnb.apply(partial(func_apply,data_rpls=data_rpls,radius=10)
-, axis=1, result_type='expand')
-
-results_df.columns = ['id_rpls', 'distance']
-results_df.index.rename('id_bnb', inplace=True)
-results_df.to_csv('results2.csv', header=True)
-
-print(results_df.head())
-
-"""
