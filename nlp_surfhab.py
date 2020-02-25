@@ -214,19 +214,52 @@ if __name__ == '__main__':
                           dtype={'longitude':'float', 'latitude':'float'})
 
     surfhab_tokens = extraction_surfhab(data_airbnb)
-    surfhab_scoring = score_surfhab(data_airbnb, croisement_v3, surfhab_tokens)
 
-#    nombre de airbnb avec au moins 1 match exact dans le rpls: 8857
-#    ((surfhab_scoring == 1).sum(axis=1) != 0).sum()
-#    
+# -------- Évaluation des performances de l'algorithme de détection --------- # 
+
+#    nombre de détections : 30337
+#    len(surfhab_tokens)
+   
+#    name_airbnb = data_airbnb.loc[:, 'name']
+#    summary_airbnb = data_airbnb.loc[:, 'summary']
+#    space_airbnb = data_airbnb.loc[:, 'space']
+#    description_airbnb = data_airbnb.loc[:, 'description'] 
+    
 #    for i in range(110):
-#        j=np.random.randint(250,60000)
-#        print(name_airbnb[j],"\n",space_airbnb[j],"\n",description_airbnb[j],"\n",summary_airbnb[j])
-#        if (surfhab[j]==np.NaN):
+#        j = np.random.randint(250,60000)
+#        print(name_airbnb[j]
+#            ,"\n"
+#            ,space_airbnb[j]
+#            ,"\n"
+#            ,description_airbnb[j]
+#            ,"\n"
+#            ,summary_airbnb[j]
+#            ,"\n"
+#        )
+#        if j not in surfhab_tokens:
 #            print("pas de resultats")
-#        print(surfhab[j])
+#        else:    
+#           print(etage[j])
 #    
 #    Résultats avec un echantillon random de 110 annonces :
 #    38% de réussite, 2,7% d'erreur, et 59.3% d'annonces où la taille n'est 
 #    pas indiquée.
 
+# --------------------- Évaluation du scoring avec rpls --------------------- # 
+
+    surfhab_scoring = score_surfhab(data_airbnb, croisement_v3, surfhab_tokens)
+    
+#    nombre de airbnb avec au moins 1 match exact dans le rpls: 8857
+#    ((surfhab_scoring == 1).sum(axis=1) != 0).sum()
+    
+#    nombre de airbnb avec seulement des match non exacts dans rpls: 18088
+#    (((surfhab_scoring > 0).sum(axis=1) != 0) 
+#        & ((surfhab_scoring == 1).sum(axis=1) == 0)).sum()
+#    
+#    nombre de airbnb avec 0 match : 1
+#    (((surfhab_scoring == 0).sum(axis=1) != 0) 
+#        & ((surfhab_scoring > 0).sum(axis=1) == 0)).sum()
+        
+#    nombre de airbnb avec que des nan = 0 prédictions ou 0 rpls dans le
+#    rayon d'anonymisation : 38024
+#    ((~surfhab_scoring.isna()).sum(axis=1) == 0).sum()

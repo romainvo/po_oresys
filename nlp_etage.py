@@ -265,10 +265,10 @@ if __name__ == '__main__':
     
     etage_tokens = extraction_etage(data_airbnb)
 
-    etage_scoring = score_etage(data_airbnb, croisement_v3, etage_tokens)
+# -------- Évaluation des performances de l'algorithme de détection --------- # 
     
-#    nombre de airbnb avec au moins 1 match exact: 19000
-#    ((etage_scoring == 1).sum(axis=1) != 0).sum()
+#    nombre de détections : 25059
+#    len(etage_tokens)
     
 #    name_airbnb = data_airbnb.loc[:, 'name']
 #    summary_airbnb = data_airbnb.loc[:, 'summary']
@@ -284,13 +284,40 @@ if __name__ == '__main__':
 #            ,description_airbnb[j]
 #            ,"\n"
 #            ,summary_airbnb[j]
+#            ,"\n"
 #        )
-#        if pd.isna(etage[j]):
+#        if j not in etage_tokens:
 #            print("pas de resultats")
-#            
-#        print(etage[j])
+#        else:    
+#           print(etage[j])
 #    
 #    Résultats avec un echantillon random de 110 annonces :  39.09% de réussite, 
 #    1.82% de détection avec 1 étage de différence, 3.64% d'erreur, et 55.45% 
 #    d'annonces où la taille n'est pas indiquée.
+
+# --------------------- Évaluation du scoring avec rpls --------------------- # 
+
+    etage_scoring = score_etage(data_airbnb, croisement_v3, etage_tokens)
     
+#    nombre de airbnb avec au moins 1 match exact dans rpls: 19000
+#    ((etage_scoring == 1).sum(axis=1) != 0).sum()
+    
+#    nombre de airbnb avec seulement des match 1 étage de différence 
+#    dans rpls: 1203
+#    (((etage_scoring == 0.2).sum(axis=1) != 0)
+#        & ((etage_scoring == 1).sum(axis=1) == 0)).sum()
+    
+#    nombre de airbnb avec 0 match : 1243
+#    (((etage_scoring == 0).sum(axis=1) != 0) 
+#        & ((etage_scoring == 0.2).sum(axis=1) == 0)
+#        & ((etage_scoring == 1).sum(axis=1) == 0)).sum()
+        
+#    nombre de airbnb avec que des nan = 0 prédictions ou 0 rpls dans le
+#    rayon d'anonymisation : 43524
+#    ((~etage_scoring.isna()).sum(axis=1) == 0).sum()
+
+
+# combien de match exact avec couple ou triple de sous-champs
+# score moyen
+# nombre avec score > seuil
+#     

@@ -41,7 +41,7 @@ data_airbnb.loc[:, 'id_bnb'] = data_airbnb.index.astype(int)
 #-------------------------- WITH DataFrame.apply -----------------------------#
 #-----------------------------------------------------------------------------#
 
-def func_apply(row, radius,nb_results, data_rpls=None):
+def func_apply(row, radius, nb_results, data_rpls=None):
     print(row.id_bnb)
     distances = haversine(data_rpls.longitude, data_rpls.latitude
                           , lon2=row.longitude, lat2=row.latitude)

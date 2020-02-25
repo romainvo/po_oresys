@@ -66,7 +66,7 @@ if __name__ == '__main__':
 
     etage_scoring = score_etage(data_airbnb, croisement_v3, etage_tokens)    
     
-    #Score total
+    # --------------------------- SCORE TOTAL ------------------------------- #
     
     surfhab_tokens = extraction_surfhab(data_airbnb)
     surfhab_scoring = score_surfhab(data_airbnb, croisement_v3, surfhab_tokens)
@@ -109,7 +109,7 @@ if __name__ == '__main__':
         print()
         print("Detection etage : {}".format(etage_tokens[id_bnb]))
         print()
-        print("Detection surface habitable : {}".format())
+        print("Detection surface habitable : {}".format(surfhab_tokens[id_bnb]))
         print(data_rpls.loc[id_rpls
                             , ['numvoie','typvoie','nomvoie','surfhab'
                                , 'etage','nbpiece','longitude','latitude']])
