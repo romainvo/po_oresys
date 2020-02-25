@@ -42,7 +42,7 @@ data_airbnb.loc[:, 'id_bnb'] = data_airbnb.index.astype(int)
 #-----------------------------------------------------------------------------#
 
 def func_apply(row, radius,nb_results, data_rpls=None):
-    print(row.id_bnb)
+    print(100*row.id_bnb/65000+"% de traitement des airbnb")
     distances = haversine(data_rpls.longitude, data_rpls.latitude
                           , lon2=row.longitude, lat2=row.latitude)
     pd.Series.sort_values(distances)
@@ -58,9 +58,9 @@ def func_apply(row, radius,nb_results, data_rpls=None):
         results.append(None)
     return results
    
-results = data_airbnb.apply(partial(func_apply,radius=100,nb_results=100,data_rpls=data_rpls)
+results = data_airbnb.apply(partial(func_apply,radius=155,nb_results=250,data_rpls=data_rpls)
 , axis=1, result_type='expand')
-
+print("Fin de l'importation du csv, debut de la phase de concatenage des colonnes d'ID et distance")
 columns_name = []
 for i in range(len(results.columns)//2):
     columns_name.append('id_rpls'+str(i))
