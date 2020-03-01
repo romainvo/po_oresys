@@ -8,7 +8,6 @@ Created on Wed Feb 12 09:34:57 2020
 import pandas as pd
 import re
 import numpy as np
-from nlp_surfhab import extraction_surfhab, score_surfhab
 
 #. 	Wildcard, matches any character
 #^abc 	Matches some pattern abc at the start of a string
@@ -42,16 +41,6 @@ from nlp_surfhab import extraction_surfhab, score_surfhab
 # longitude / latitude
 
 #Recherche de règles/structures à détecter de l'indice 0 à 200 puis au feeling
-
-def etage_score_filtering(x):
-    if x == 0:
-        return 1
-    elif abs(x) == 1:
-        return 0.20
-    elif not pd.isna(x):
-        return 0
-    else:
-        return np.NaN
 
 def extraction_etage(data_airbnb):
     
@@ -202,7 +191,16 @@ def extraction_etage(data_airbnb):
             
     return etage_tokens
     
-
+def etage_score_filtering(x):
+    if x == 0:
+        return 1
+    elif abs(x) == 1:
+        return 0.20
+    elif not pd.isna(x):
+        return 0
+    else:
+        return np.NaN
+    
 def score_etage(data_airbnb, croisement_v3, etage_tokens):
     
     def converter_cp(string):
@@ -224,6 +222,8 @@ def score_etage(data_airbnb, croisement_v3, etage_tokens):
             else:
                 return np.nan
         
+    nb_col_croisement_v3 = croisement_v3.shape[1]
+    
     data_rpls = pd.read_csv("paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                             header='infer', index_col=0,
                             converters={'codepostal':converter_cp
@@ -232,7 +232,7 @@ def score_etage(data_airbnb, croisement_v3, etage_tokens):
     
     #re.sub("[^0-9]", "","ldkfljzg55f2cv")
     etage_rpls = pd.DataFrame()
-    for i in range(100):
+    for i in range(nb_col_croisement_v3):
         etage_rpls.loc[:, 'etage_{}'.format(i)] = \
             data_rpls.etage.reindex(croisement_v3['id_rpls{}'.format(i)]).values
     
@@ -251,11 +251,11 @@ def score_etage(data_airbnb, croisement_v3, etage_tokens):
 if __name__ == '__main__':
 
     keep_columns = ['id_bnb']
-    for i in range(100):
+    for i in range(250):
         keep_columns.append('id_rpls{}'.format(i))
 #    dtype = {key:'int64' for key in keep_columns}
     
-    croisement_v3 = pd.read_csv('results_rd150_nb100_score.csv', header='infer'
+    croisement_v3 = pd.read_csv('results_rd155_nb250.csv', header='infer'
                           , usecols=keep_columns
                           , index_col='id_bnb'
                           , dtype=pd.Int64Dtype())    
@@ -265,10 +265,10 @@ if __name__ == '__main__':
     
     etage_tokens = extraction_etage(data_airbnb)
 
-    etage_scoring = score_etage(data_airbnb, croisement_v3, etage_tokens)
+# -------- Évaluation des performances de l'algorithme de détection --------- # 
     
-#    nombre de airbnb avec au moins 1 match exact: 19000
-#    ((etage_scoring == 1).sum(axis=1) != 0).sum()
+#    nombre de détections : 25059
+#    len(etage_tokens)
     
 #    name_airbnb = data_airbnb.loc[:, 'name']
 #    summary_airbnb = data_airbnb.loc[:, 'summary']
@@ -284,13 +284,80 @@ if __name__ == '__main__':
 #            ,description_airbnb[j]
 #            ,"\n"
 #            ,summary_airbnb[j]
+#            ,"\n"
 #        )
-#        if pd.isna(etage[j]):
+#        if j not in etage_tokens:
 #            print("pas de resultats")
-#            
-#        print(etage[j])
+#        else:    
+#           print(etage[j])
 #    
 #    Résultats avec un echantillon random de 110 annonces :  39.09% de réussite, 
 #    1.82% de détection avec 1 étage de différence, 3.64% d'erreur, et 55.45% 
 #    d'annonces où la taille n'est pas indiquée.
+
+# --------------------- Évaluation du scoring avec rpls --------------------- # 
+
+    etage_scoring = score_etage(data_airbnb, croisement_v3, etage_tokens)
     
+#    nombre de airbnb avec au moins 1 match exact dans rpls: 19625
+#    ((etage_scoring == 1).sum(axis=1) != 0).sum()
+    
+#    nombre de airbnb avec seulement des match 1 étage de différence 
+#    dans rpls: 1020
+#    (((etage_scoring == 0.2).sum(axis=1) != 0)
+#        & ((etage_scoring == 1).sum(axis=1) == 0)).sum()
+    
+#    nombre de airbnb avec 0 match : 1084
+#    (((etage_scoring == 0).sum(axis=1) != 0) 
+#        & ((etage_scoring == 0.2).sum(axis=1) == 0)
+#        & ((etage_scoring == 1).sum(axis=1) == 0)).sum()
+        
+#    nombre de airbnb avec que des nan = 0 prédictions ou 0 rpls dans le
+#    rayon d'anonymisation : 43241
+#    ((~etage_scoring.isna()).sum(axis=1) == 0).sum()
+    
+    
+    #INUTILE DE RÉALISER UNE ANALYSE DES PERF PAR TRANCHE CAR LA REPARTITION DU
+    #SCORE EST DISCRETE
+    
+#    rename_col = {'etage_{}'.format(i) : i for i in range(etage_scoring.shape[1])} 
+#    etage_scoring.rename(columns=rename_col, inplace=True)
+#    
+#    #On récupère le numéro des colonnes avec le score maximal
+#    column_score_max = etage_scoring.idxmax(axis=1).values
+#    score_max = etage_scoring.max(axis=1).values
+#    
+#    best_match = -1 * np.ones((croisement_v3.shape[0],2)) 
+#    for idx in range(croisement_v3.shape[0]):
+#        if not pd.isna(column_score_max[idx]):
+#            best_match[idx,0] = croisement_v3.iloc[idx, int(column_score_max[idx])]
+#            best_match[idx,1] = score_max[idx]
+#            
+#    best_match = pd.DataFrame(best_match)
+#    
+#    best_match.index.rename('id_bnb', inplace=True)
+#    best_match.rename(columns={0:'id_rpls', 1:'score'}, inplace=True)
+#    best_match = best_match.astype({'id_rpls':'int64'})
+#
+#    best_match.replace(to_replace={'score':-1.0}, value={'score':0.0}
+#    , inplace=True)
+#    
+#    tranche_score = [0,1,30,40,50,60,62.5,65,70,75,80,90,95,97.5,98.5,99.5,100]
+#    
+#    somme_cumulee = 0
+#    for i, tranche in enumerate(tranche_score):
+#        if tranche == 100:
+#            break
+#        elif i == (len(tranche_score) - 2):
+#            nb_temp = best_match.loc[(best_match.score >= tranche/100)
+#                    & (best_match.score <= tranche_score[i+1]/100)].shape[0]
+#            
+#            somme_cumulee += nb_temp           
+#        else:            
+#            nb_temp = best_match.loc[(best_match.score >= tranche/100)
+#                        & (best_match.score < tranche_score[i+1]/100)].shape[0]
+#            
+#            somme_cumulee += nb_temp
+#        
+#        print("Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}"
+#              .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee))
