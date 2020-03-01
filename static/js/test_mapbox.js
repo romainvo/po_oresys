@@ -20,11 +20,12 @@ var hoveredStateId =  null;
 var coordinates = document.getElementById('coordinates');
 
 map.on('load', function () {
+    /*
     map.addSource('arrondissements', {
         'type': 'geojson',
         'generateId' : true,
         'data': '/donneesgeos/arrondissements_municipaux-20180711.json'
-    });
+    });*/
 
     map.addSource('rpls', {
         type: 'geojson',
@@ -47,7 +48,7 @@ map.on('load', function () {
     map.addSource('croisements', {
         type: 'geojson',
         generateId: true,
-        data: '/donneesgeos/croisements.geojson',  
+        data: '/donneesgeos/croisementBis.geojson',  
     });
 
     map.addLayer({
@@ -175,7 +176,7 @@ map.on('load', function () {
             "circle-stroke-color": "#FFFFFF"
         },
     });
-
+    /*
     map.addLayer({
         id: "arrondissements-contour",
         type: "line",
@@ -202,7 +203,7 @@ map.on('load', function () {
             ]
         },
         //"filter": ["==", "$type", "Polygon"]
-    });
+    });*/
 
     map.addLayer({
         id: "croisements-points",
@@ -221,7 +222,7 @@ map.on('load', function () {
 
     // When the user moves their mouse over the arrondissements-fill layer, 
     // we'll update the feature state for the feature under the mouse.
-    map.on("mousemove", "arrondissements-fill", function(e) {
+    /*map.on("mousemove", "arrondissements-fill", function(e) {
         var canvas = map.getCanvas();
         canvas.style.cursor = 'pointer';
 
@@ -244,7 +245,7 @@ map.on('load', function () {
             map.setFeatureState({source: 'arrondissements', id: hoveredStateId}, { hover: false});
         }
         hoveredStateId =  null;
-    });
+    });*/
 
     map.on('mousemove', function (e) {
         document.getElementById('coordinates').innerHTML =
@@ -253,6 +254,66 @@ map.on('load', function () {
         JSON.stringify(e.point) + '<br />' +
         // e.lngLat is the longitude, latitude geographical position of the event
         JSON.stringify(e.lngLat.wrap());
+    });
+
+    map.on('click',function(e){
+        // On récupère les infos (les id_rpls correspondants) du point du layer croisement sur lequel on clique
+        var features = map.queryRenderedFeatures(e.point, { layers: ['croisements-points'] });
+        if(features.length>0){
+
+            var listIdRpls = [];
+            for(name in features[0].properties) { 
+                console.log(features[0].properties[name])
+                listIdRpls.push(features[0].properties[name])
+            }  
+
+            // On cherche les coordonnées des id_rpls trouvés
+            var requestURL = '/donneesgeos/coord_rpls.json';
+            var request = new XMLHttpRequest();
+            request.open('GET', requestURL);
+            request.responseType = 'json';
+            request.send();
+            request.onload = function() {
+                var dataRpls = request.response;
+
+                newDataRpls = {'type':'FeatureCollection',
+                'features':[{}]
+                }
+                
+                // On met à jour les data des sources avec les coordonnées des points qu'on veut afficher
+                listIdRpls.forEach(function(idRpls){
+                    newDataRpls.features.push({'type':'Feature',
+                    'geometry':  {
+                        'type':'Point',
+                        'coordinates':[dataRpls.longitude[idRpls], dataRpls.latitude[idRpls]]
+                    }})
+                    console.log(idRpls)
+                ;})
+                newDataCroisement = {'type':'FeatureCollection',
+                    'features':[{
+                        'type':'Feature',
+                        'geometry':  {
+                            'type':'Point',
+                            'coordinates':[features[0].geometry.coordinates[0],features[0].geometry.coordinates[1]]
+                      }
+                    }]
+                };
+                map.getSource('rpls').setData(newDataRpls)
+                map.getSource('croisements').setData(newDataCroisement)
+     
+                map.setPaintProperty('rpls-unclustered-points', 'circle-radius', 6);
+            }
+
+        }
+    });
+    
+    map.on('click',function(e){
+
+        // On remet à jour les data des sources pour afficher à nouveau tous les points
+        map.getSource('rpls').setData('/donneesgeos/rpls.geojson');
+        map.getSource('croisements').setData('/donneesgeos/croisementBis.geojson')
+        map.setPaintProperty('rpls-unclustered-points', 'circle-radius', 4);
+
     });
 
 });

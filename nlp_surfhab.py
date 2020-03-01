@@ -175,6 +175,8 @@ def score_surfhab(data_airbnb, croisement_v3, surfhab_tokens):
             return int(string)
         except:
             return 0    
+
+    nb_col_croisement_v3 = croisement_v3.shape[1]
         
     data_rpls = pd.read_csv("paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                             header='infer', index_col=0,
@@ -183,7 +185,7 @@ def score_surfhab(data_airbnb, croisement_v3, surfhab_tokens):
     
     #re.sub("[^0-9]", "","ldkfljzg55f2cv")
     surfhab_rpls = pd.DataFrame()
-    for i in range(100):
+    for i in range(nb_col_croisement_v3):
         surfhab_rpls.loc[:, 'surfhab_{}'.format(i)] = \
         data_rpls.surfhab.reindex(croisement_v3['id_rpls{}'.format(i)]).values
     
@@ -201,11 +203,11 @@ def score_surfhab(data_airbnb, croisement_v3, surfhab_tokens):
 if __name__ == '__main__':
     
     keep_columns = ['id_bnb']
-    for i in range(100):
+    for i in range(250):
         keep_columns.append('id_rpls'+str(i))
 #    dtype = {key:'int64' for key in keep_columns}
     
-    croisement_v3 = pd.read_csv('results_rd150_nb100_score.csv', header='infer'
+    croisement_v3 = pd.read_csv('results_rd155_nb250.csv', header='infer'
                           , usecols=keep_columns
                           , index_col='id_bnb'
                           , dtype=pd.Int64Dtype())
@@ -214,19 +216,96 @@ if __name__ == '__main__':
                           dtype={'longitude':'float', 'latitude':'float'})
 
     surfhab_tokens = extraction_surfhab(data_airbnb)
-    surfhab_scoring = score_surfhab(data_airbnb, croisement_v3, surfhab_tokens)
 
-#    nombre de airbnb avec au moins 1 match exact dans le rpls: 8857
-#    ((surfhab_scoring == 1).sum(axis=1) != 0).sum()
-#    
+# -------- Évaluation des performances de l'algorithme de détection --------- # 
+
+#    nombre de détections : 30337
+#    len(surfhab_tokens)
+   
+#    name_airbnb = data_airbnb.loc[:, 'name']
+#    summary_airbnb = data_airbnb.loc[:, 'summary']
+#    space_airbnb = data_airbnb.loc[:, 'space']
+#    description_airbnb = data_airbnb.loc[:, 'description'] 
+    
 #    for i in range(110):
-#        j=np.random.randint(250,60000)
-#        print(name_airbnb[j],"\n",space_airbnb[j],"\n",description_airbnb[j],"\n",summary_airbnb[j])
-#        if (surfhab[j]==np.NaN):
+#        j = np.random.randint(250,60000)
+#        print(name_airbnb[j]
+#            ,"\n"
+#            ,space_airbnb[j]
+#            ,"\n"
+#            ,description_airbnb[j]
+#            ,"\n"
+#            ,summary_airbnb[j]
+#            ,"\n"
+#        )
+#        if j not in surfhab_tokens:
 #            print("pas de resultats")
-#        print(surfhab[j])
+#        else:    
+#           print(etage[j])
 #    
 #    Résultats avec un echantillon random de 110 annonces :
 #    38% de réussite, 2,7% d'erreur, et 59.3% d'annonces où la taille n'est 
 #    pas indiquée.
 
+# --------------------- Évaluation du scoring avec rpls --------------------- # 
+
+    surfhab_scoring = score_surfhab(data_airbnb, croisement_v3, surfhab_tokens)
+    
+#    nombre de airbnb avec au moins 1 match exact dans le rpls: 9046
+#    ((surfhab_scoring == 1).sum(axis=1) != 0).sum()
+    
+#    nombre de airbnb avec seulement des match non exacts dans rpls: 18109
+#    (((surfhab_scoring > 0).sum(axis=1) != 0) 
+#        & ((surfhab_scoring == 1).sum(axis=1) == 0)).sum()
+#    
+#    nombre de airbnb avec 0 match : 1
+#    (((surfhab_scoring == 0).sum(axis=1) != 0) 
+#        & ((surfhab_scoring > 0).sum(axis=1) == 0)).sum()
+        
+#    nombre de airbnb avec que des nan = 0 prédictions ou 0 rpls dans le
+#    rayon d'anonymisation : 37814
+##    ((~surfhab_scoring.isna()).sum(axis=1) == 0).sum() 
+#    
+# 
+#    
+#    rename_col = {'surfhab_{}'.format(i) : i for i in range(surfhab_scoring.shape[1])} 
+#    surfhab_scoring.rename(columns=rename_col, inplace=True)
+#    
+#    #On récupère le numéro des colonnes avec le score maximal
+#    column_score_max = surfhab_scoring.idxmax(axis=1).values
+#    score_max = surfhab_scoring.max(axis=1).values
+#    
+#    best_match = -1 * np.ones((croisement_v3.shape[0],2)) 
+#    for idx in range(croisement_v3.shape[0]):
+#        if not pd.isna(column_score_max[idx]):
+#            best_match[idx,0] = croisement_v3.iloc[idx, int(column_score_max[idx])]
+#            best_match[idx,1] = score_max[idx]
+#            
+#    best_match = pd.DataFrame(best_match)
+#    
+#    best_match.index.rename('id_bnb', inplace=True)
+#    best_match.rename(columns={0:'id_rpls', 1:'score'}, inplace=True)
+#    best_match = best_match.astype({'id_rpls':'int64'})
+#
+#    best_match.replace(to_replace={'score':-1.0}, value={'score':0.0}
+#    , inplace=True)
+#    
+#    tranche_score = [0,1,30,40,50,60,62.5,65,70,75,80,90,95,97.5,98.5,99.5,100]
+#    
+#    somme_cumulee = 0
+#    for i, tranche in enumerate(tranche_score):
+#        if tranche == 100:
+#            break
+#        elif i == (len(tranche_score) - 2):
+#            nb_temp = best_match.loc[(best_match.score >= tranche/100)
+#                    & (best_match.score <= tranche_score[i+1]/100)].shape[0]
+#            
+#            somme_cumulee += nb_temp           
+#        else:            
+#            nb_temp = best_match.loc[(best_match.score >= tranche/100)
+#                        & (best_match.score < tranche_score[i+1]/100)].shape[0]
+#            
+#            somme_cumulee += nb_temp
+#        
+#        print("Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}"
+#              .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee))
