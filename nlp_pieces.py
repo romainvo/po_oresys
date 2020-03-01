@@ -15,14 +15,15 @@ space_airbnb = df.loc[:, 'space']
 description_airbnb = df.loc[:, 'description'] 
 # --------------------------------------------------------------------------- #
 pattern_pieces = r"""(?x)
-    (\d | a | one | two | three)
+    (\d | \Aa | (?:\s)one | (?:\s)two | (?:\s)three)
     (?:
      (?:\s+bedroom|\-bedroom|bedroom|bedrm)
     |(?:\s?bdr|-?bdr|bdr)
     |\s?bed
     |(?:\s?br|-?br|br)
-    |(?:\sroom|\srooms|\sr\s|room|rooms|\(?r\)
-    |(?:\s?pi.ces?|\s?pi.ce?|\(?p\)|p\s|r)
+    |(?:\sroom|\srooms|room|rooms|r\s|\sr\s)
+    |(?:\spi.ce|\spi.ces|pi.ce|pi.ces|p\s|\sp\s)
+    #|(?:\s?pi.ces?|\s?pi.ce?|\(?p\)\s|p\s)
     |(?:\s?chambre|chbr?|\s?chambres?\s|chambre|chbr?|chambres?\s|-?chambre|-+chbr?|-?chambres?\s)
     )
     """
@@ -54,7 +55,8 @@ tokens_nombre = dict()
 for idx, row in enumerate(name_airbnb):
     if row is not np.NaN:
         row = row.lower()
-
+        print("____________________________")
+        print(row)
         temp_pieces = re.findall(pattern_pieces, row) 
 
 
@@ -64,11 +66,14 @@ for idx, row in enumerate(name_airbnb):
             temp_pieces=[2 if (x=='two') else x for x in temp_pieces]
             temp_pieces=[3 if (x=='three') else x for x in temp_pieces]
         
-        print('\n test' )
+        print('\n show temp' )
         print(temp_pieces)
             
         if temp_pieces:
             tokens_pieces[idx] = temp_pieces #poner elemento en el diccionario
+        print("*******************")
+        print(tokens_pieces)
+
             
 for idx, row in enumerate(summary_airbnb):#recorrer todos elementos del array 
     if row is not np.NaN:
