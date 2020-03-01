@@ -42,7 +42,8 @@ data_airbnb.loc[:, 'id_bnb'] = data_airbnb.index.astype(int)
 #-----------------------------------------------------------------------------#
 
 def func_apply(row, radius,nb_results, data_rpls=None):
-    print(100*row.id_bnb/65000+"% de traitement des airbnb")
+    print(row.id_bnb)
+    print(100*row.id_bnb/65000,"% de traitement des airbnb")
     distances = haversine(data_rpls.longitude, data_rpls.latitude
                           , lon2=row.longitude, lat2=row.latitude)
     pd.Series.sort_values(distances)
