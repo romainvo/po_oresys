@@ -4,23 +4,6 @@ import re
 from nlp_surfhab import extraction_surfhab, score_surfhab
 from nlp_etage import extraction_etage, score_etage
 
-""" surface et nombre de piece réel issu du repertoire RPLS, Théorique issu de l'extraction d'information
-
-def CalculScore(surfaceTheo, surfaceReel, nbpieceTheo, nbpieceReel):
-    score = ((np.minimum(surfaceTheo/surfaceReel,surfaceReel/surfaceTheo)*np.minimum(surfaceReel/surfaceTheo,surfaceTheo/surfaceReel))/1.25)*100
-    on impose un score minimum de 0.25 du fait de la proximité, les 0.75 restants etant calculés via la formule précédente
-    score = 25+score
-"""
-
-def calculScore(scoreSurface,scoreNbPiece, scoreEtage):
-    PoidsEtage=0.25
-    PoidsProximite = 0.25
-    PoidsSurface = 0.25
-    PoidsNbPiece = 1-PoidsEtage-PoidsSurface-PoidsProximite
-
-    """ score total borné entre 0 et 100. Si il est dans la zone de proximite, il est d'office egal à PoidsProximite*100"""
-    scoreTotal=(PoidsProximite+PoidsEtage*scoreEtage+PoidsSurface*scoreSurface+PoidsNbPiece*scoreNbPiece)*100
-
 def import_data_rpls():
 
     def converter_codepostal(string):
@@ -48,6 +31,8 @@ def import_data_rpls():
                                 , 'etage':converter_etage},
                     dtype={'longitude':'float', 'latitude':'float'})
     
+    data_rpls.index.rename('id_rpls', inplace=True)
+
     return data_rpls
 
 def import_data_airbnb():
@@ -55,6 +40,8 @@ def import_data_airbnb():
     data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
                           dtype={'longitude':'float', 'latitude':'float'})
     
+    data_airbnb.index.rename('id_bnb', inplace=True)
+
     return data_airbnb
 
 def score_total(weights, croisement, surfhab=None
@@ -125,7 +112,6 @@ def extract_best_match(scores, croisement):
     , inplace=True)
 
     return best_match    
-    
 
 if __name__ == '__main__':
 
@@ -155,7 +141,7 @@ if __name__ == '__main__':
     scores = score_total(weights, croisement=croisement_v3
                          , surfhab=surfhab_scoring, etage=etage_scoring)
     
-    best_match = extract_best_match()
+    best_match = extract_best_match(scores, croisement_v3)
     
     # ---------------------- AFFICHER LES RÉSULTATS ------------------------- #
 
