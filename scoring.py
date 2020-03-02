@@ -158,6 +158,8 @@ if __name__ == '__main__':
 
     tranche_score = [0,5,10,15,20,22.5,25,30,40,50,60,62.5,65,70,75,80,90,95
                      ,97.5,100]
+    tranche_index = []
+    tranche_nombre = []
     
     somme_cumulee = 0
     for i, tranche in enumerate(tranche_score):
@@ -174,6 +176,8 @@ if __name__ == '__main__':
             
             somme_cumulee += nb_temp
         
+        tranche_nombre.append(nb_temp)
+        tranche_index.append("{}% - {}%".format(tranche, tranche_score[i+1]))
         print("Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}"
               .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee))
       
@@ -184,5 +188,16 @@ if __name__ == '__main__':
         print("Quantile {}% : {}".format(i, best_match.score.quantile(i/100)))           
 
 
-# combien de match exact avec couple ou triple de sous-champs
-          
+    tranche_index[0] = "no detection"
+    
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    
+    plt.style.use('seaborn-darkgrid')
+#    plt.rcParams.update({'font.size':35})
+#    plt.rcParams["figure.figsize"] = (50,40)
+    
+    fig, ax = plt.subplots()
+    ax.set_title("Nombre de suspicions par tranche de score")
+    sns.barplot(y=tranche_nombre, x=tranche_index
+                , orient='v', ax=ax, edgecolor='white')          
