@@ -11,3 +11,17 @@ class Rpls(pd.DataFrame):
     @property
     def _constructor(self):
         return Rpls
+    
+
+    
+    #renvoie les coordonnées du rpls
+    def get_coordonnee(id)
+    
+    #renvoie la surface indiquée dans les données si présente.
+    def get_surface(id):
+    
+    def get_nbpiece(id):
+    
+    def get_adresse(id):
+
+    def get_
