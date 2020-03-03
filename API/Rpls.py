@@ -1,7 +1,17 @@
 import pandas as pd
 class Rpls(pd.DataFrame): 
+      """ Classe modélisant la base de donnée des logements sociaux parisiens.
+         c'est une extension de la classe DataFrame de la bibliothèque Pandas. 
+
+    """
+    
     def __init__(self,data):
+         """ Initialise un objet Rpls comme un dataframe en extrayant les informations d'un csv.
         
+        Parameters:
+            data : une adresse menant au csv contenant les informations sur le rpls parisien que l'utilisateur souhaite exploiter.
+                  
+        """
         data_rpls = pd.read_csv(data sep=',',error_bad_lines=False, 
                                 header='infer', index_col=0,
                                 converters={'codepostal':self.converter_cp
@@ -13,16 +23,23 @@ class Rpls(pd.DataFrame):
     def _constructor(self):
         return Rpls
     
-
     
     #renvoie les coordonnées du rpls
-    def get_coordonnee(id)
+    def coordonnee(id):
     
     #renvoie la surface indiquée dans les données si présente.
-    def get_surface(id):
+    def surface(id):
     
-    def get_nbpiece(id):
+    #renvoie le nombre de piece du logement social concerné
+    def nbpiece(id):
     
-    def get_adresse(id):
+    #renvoie l'arrondissement du logement social concerné
+    def arrondissement(id):
 
-    def get_
+    #renvoie l'étage du logement social concerné
+    def etage(id):
+    
+    #renvoie l'adresse du logement social concerné
+    def adresse(id):
+
+    
