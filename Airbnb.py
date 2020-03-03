@@ -1,7 +1,40 @@
 import pandas as pd
 
+@pd.api.extensions.register_dataframe_accessor("bnb")
+class GeoAccessor:
+    def __init__(self, pandas_obj):
+        self._validate(pandas_obj)
+        self._obj = pandas_obj
+
+    @staticmethod
+    def _validate(obj):
+        # verify there is a column latitude and a column longitude
+        if 'latitude' not in obj.columns or 'longitude' not in obj.columns:
+            raise AttributeError("Must have 'latitude' and 'longitude'.")
+
+    def complete_description(self, id : int):
+        
+        columns = ['name', 'summary', 'space', 'description']
+        print("Champs affichés :", " ")
+        for elt in columns:
+            print(", ", elt)
+            
+        return self._obj.loc[id, columns]  
+
+    @property
+    def center(self):
+        # return the geographic center point of this DataFrame
+        lat = self._obj.latitude
+        lon = self._obj.longitude
+        return (float(lon.mean()), float(lat.mean()))
+
+    def plot(self):
+        # plot this array's data on a map, e.g., using Cartopy
+        pass
+
 class Airbnb(pd.DataFrame): 
-    """ Classe modélisant un problème de flowshop de permutation. 
+    """ Classe modélisant l'ensemble des annonces airbnb. Hérite de la classe
+    DataFrame de pandas.
     
     Attributes:
         nb_jobs (int): Nombre de jobs dans le problème.
@@ -13,7 +46,7 @@ class Airbnb(pd.DataFrame):
     """
     
     def __init__(self, *args, **kwargs):
-        """ Initialise un objet Fourmi.
+        """ Initialise un objet Airbnb.
         
         Parameters:
             flowshop (Flowshop): Instance d'un problème de flowshop de permutation
@@ -42,8 +75,15 @@ class Airbnb(pd.DataFrame):
 #        return Airbnb
     
     #renvoie l'ensemble des descriptions textuelles du logement airbnb
-#    def complete_description(id):
-#    
+    def complete_description(self, id : int):
+        
+        columns = ['name', 'summary', 'space', 'description']
+        print("Champs affichés :", " ")
+        for elt in columns:
+            print(", ", elt)
+            
+        return self.loc[id, columns]
+    
 #    #renvoie les coordonnées du airbnb
 #    def coordonnee(id):
 #
@@ -67,3 +107,8 @@ class Airbnb(pd.DataFrame):
 #    
 #    #extraction de l'étage dans la description du airbnb id
 #    def extraire_nb_piece(id):
+        
+if __name__ == '__main__':
+
+    data_airbnb = pd.read_csv("csv/airbnb.csv", sep=',', header='infer',
+                          dtype={'longitude':'float', 'latitude':'float'})
