@@ -255,12 +255,12 @@ if __name__ == '__main__':
         keep_columns.append('id_rpls{}'.format(i))
 #    dtype = {key:'int64' for key in keep_columns}
     
-    croisement_v3 = pd.read_csv('results_rd155_nb250.csv', header='infer'
+    croisement_v3 = pd.read_csv('csv/results_rd155_nb250.csv', header='infer'
                           , usecols=keep_columns
                           , index_col='id_bnb'
                           , dtype=pd.Int64Dtype())    
     
-    data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
+    data_airbnb = pd.read_csv("csv/airbnb.csv", sep=',', header='infer',
                               dtype={'longitude':'float', 'latitude':'float'})
     
     etage_tokens = extraction_etage(data_airbnb)
@@ -316,48 +316,44 @@ if __name__ == '__main__':
 #    rayon d'anonymisation : 43241
 #    ((~etage_scoring.isna()).sum(axis=1) == 0).sum()
     
-    
     #INUTILE DE RÉALISER UNE ANALYSE DES PERF PAR TRANCHE CAR LA REPARTITION DU
     #SCORE EST DISCRETE
     
-#    rename_col = {'etage_{}'.format(i) : i for i in range(etage_scoring.shape[1])} 
-#    etage_scoring.rename(columns=rename_col, inplace=True)
-#    
-#    #On récupère le numéro des colonnes avec le score maximal
-#    column_score_max = etage_scoring.idxmax(axis=1).values
-#    score_max = etage_scoring.max(axis=1).values
-#    
-#    best_match = -1 * np.ones((croisement_v3.shape[0],2)) 
-#    for idx in range(croisement_v3.shape[0]):
-#        if not pd.isna(column_score_max[idx]):
-#            best_match[idx,0] = croisement_v3.iloc[idx, int(column_score_max[idx])]
-#            best_match[idx,1] = score_max[idx]
-#            
-#    best_match = pd.DataFrame(best_match)
-#    
-#    best_match.index.rename('id_bnb', inplace=True)
-#    best_match.rename(columns={0:'id_rpls', 1:'score'}, inplace=True)
-#    best_match = best_match.astype({'id_rpls':'int64'})
-#
+    rename_col = {'etage_{}'.format(i) : i for i in range(etage_scoring.shape[1])} 
+    etage_scoring.rename(columns=rename_col, inplace=True)
+    
+    #On récupère le numéro des colonnes avec le score maximal
+    column_score_max = etage_scoring.idxmax(axis=1).values
+    score_max = etage_scoring.max(axis=1).values
+    
+    best_match = -1 * np.ones((croisement_v3.shape[0],2)) 
+    for idx in range(croisement_v3.shape[0]):
+        if not pd.isna(column_score_max[idx]):
+            best_match[idx,0] = croisement_v3.iloc[idx, int(column_score_max[idx])]
+            best_match[idx,1] = score_max[idx]
+            
+    best_match = pd.DataFrame(best_match)
+    
+    best_match.index.rename('id_bnb', inplace=True)
+    best_match.rename(columns={0:'id_rpls', 1:'score'}, inplace=True)
+    best_match = best_match.astype({'id_rpls':'int64'})
+
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
 #    best_match.replace(to_replace={'score':-1.0}, value={'score':0.0}
 #    , inplace=True)
-#    
-#    tranche_score = [0,1,30,40,50,60,62.5,65,70,75,80,90,95,97.5,98.5,99.5,100]
-#    
-#    somme_cumulee = 0
-#    for i, tranche in enumerate(tranche_score):
-#        if tranche == 100:
-#            break
-#        elif i == (len(tranche_score) - 2):
-#            nb_temp = best_match.loc[(best_match.score >= tranche/100)
-#                    & (best_match.score <= tranche_score[i+1]/100)].shape[0]
-#            
-#            somme_cumulee += nb_temp           
-#        else:            
-#            nb_temp = best_match.loc[(best_match.score >= tranche/100)
-#                        & (best_match.score < tranche_score[i+1]/100)].shape[0]
-#            
-#            somme_cumulee += nb_temp
-#        
-#        print("Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}"
-#              .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee))
+    
+    tranche_index = ["no detection", "0%", "20%", "100%"]
+    tranche_nombre = [0]
+    tranche_nombre.append((best_match.score == 0).sum())
+    tranche_nombre.append((best_match.score == 0.2).sum())
+    tranche_nombre.append((best_match.score == 1).sum())
+    tranche_nombre[0] = best_match.shape[0] - np.sum(tranche_nombre[1:])
+
+    plt.style.use('seaborn-darkgrid')
+    
+    fig, ax = plt.subplots()
+    ax.set_title("Nombre de suspicions par tranche de score - étage")
+    sns.barplot(y=tranche_nombre, x=tranche_index
+                , orient='v', ax=ax, edgecolor='white')

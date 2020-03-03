@@ -6,6 +6,7 @@ import numpy as np
 def extraction_pieces(data_airbnb):
     data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
                           dtype={'longitude':'float', 'latitude':'float'})
+<<<<<<< HEAD
     keep_cols = ["name", "summary", "space", "description"]
     df = data_airbnb[keep_cols]
     #df=df.head(200000)
@@ -18,6 +19,20 @@ def extraction_pieces(data_airbnb):
     
     
     pattern_pieces = r"""(?x)
+=======
+keep_cols = ["name", "summary", "space", "description"]
+df = data_airbnb[keep_cols]
+#df=df.head(200000)
+df
+name_airbnb=df.loc[:, 'name']
+summary_airbnb = df.loc[:, 'summary']
+space_airbnb = df.loc[:, 'space']
+description_airbnb = df.loc[:, 'description'] 
+
+# --------------------------------------------------------------------------- #
+
+pattern_pieces = r"""(?x)
+>>>>>>> 1341188af98e865f15051281e24e9b8140fcc8ac
     (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three)
     (?:
      (?:\s+bedroom|\-bedroom|bedroom|bedrm)
@@ -30,6 +45,7 @@ def extraction_pieces(data_airbnb):
     |(?:\s?chambre|chbr?|\s?chambres?\s|chambre|chbr?|chambres?\s|-?chambre|-+chbr?|-?chambres?\s)
     )
     """
+<<<<<<< HEAD
     tokens_pieces = dict()
     pieces_tokens = dict()
         
@@ -39,6 +55,11 @@ def extraction_pieces(data_airbnb):
             #print("____________________________")
             #print(row)
             temp_pieces = re.findall(pattern_pieces, row) 
+=======
+    
+tokens_pieces = dict()
+tokens_nombre = dict()
+>>>>>>> 1341188af98e865f15051281e24e9b8140fcc8ac
 
 
             if (temp_pieces == (' a') or (' one') or (' two') or (' three')):
@@ -54,6 +75,7 @@ def extraction_pieces(data_airbnb):
             #print("*******************")
             #print(tokens_pieces)
 
+<<<<<<< HEAD
             
     for idx, row in enumerate(summary_airbnb):#recorrer todos elementos del array 
         if row is not np.NaN:
@@ -102,6 +124,17 @@ def extraction_pieces(data_airbnb):
                     tokens_pieces[idx] = temp_pieces 
                 else:
                     tokens_pieces[idx] += temp_pieces 
+=======
+#----------------------------------------------------------------------------#
+
+#surfhab_tokens_feet = dict()
+#surfhab_tokens_meter = dict()
+#surfhab_tokens_surface = dict()
+#name_airbnb=df.loc[:, 'name']
+#summary_airbnb = df.loc[:, 'summary']
+#space_airbnb = df.loc[:, 'space']
+#description_airbnb = df.loc[:, 'description'] 
+>>>>>>> 1341188af98e865f15051281e24e9b8140fcc8ac
 
     # for key in set(list(tokens_pieces.keys())):
 

@@ -4,23 +4,6 @@ import re
 from nlp_surfhab import extraction_surfhab, score_surfhab
 from nlp_etage import extraction_etage, score_etage
 
-""" surface et nombre de piece réel issu du repertoire RPLS, Théorique issu de l'extraction d'information
-
-def CalculScore(surfaceTheo, surfaceReel, nbpieceTheo, nbpieceReel):
-    score = ((np.minimum(surfaceTheo/surfaceReel,surfaceReel/surfaceTheo)*np.minimum(surfaceReel/surfaceTheo,surfaceTheo/surfaceReel))/1.25)*100
-    on impose un score minimum de 0.25 du fait de la proximité, les 0.75 restants etant calculés via la formule précédente
-    score = 25+score
-"""
-
-def calculScore(scoreSurface,scoreNbPiece, scoreEtage):
-    PoidsEtage=0.25
-    PoidsProximite = 0.25
-    PoidsSurface = 0.25
-    PoidsNbPiece = 1-PoidsEtage-PoidsSurface-PoidsProximite
-
-    """ score total borné entre 0 et 100. Si il est dans la zone de proximite, il est d'office egal à PoidsProximite*100"""
-    scoreTotal=(PoidsProximite+PoidsEtage*scoreEtage+PoidsSurface*scoreSurface+PoidsNbPiece*scoreNbPiece)*100
-
 def import_data_rpls():
 
     def converter_codepostal(string):
@@ -42,19 +25,23 @@ def import_data_rpls():
             else:
                 return np.nan
             
-    data_rpls = pd.read_csv("paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
+    data_rpls = pd.read_csv("csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                     header='infer', index_col=0,
                     converters={'codepostal':converter_codepostal
                                 , 'etage':converter_etage},
                     dtype={'longitude':'float', 'latitude':'float'})
     
+    data_rpls.index.rename('id_rpls', inplace=True)
+
     return data_rpls
 
 def import_data_airbnb():
     
-    data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
+    data_airbnb = pd.read_csv("csv/airbnb.csv", sep=',', header='infer',
                           dtype={'longitude':'float', 'latitude':'float'})
     
+    data_airbnb.index.rename('id_bnb', inplace=True)
+
     return data_airbnb
 
 def score_total(weights, croisement, surfhab=None
@@ -125,7 +112,6 @@ def extract_best_match(scores, croisement):
     , inplace=True)
 
     return best_match    
-    
 
 if __name__ == '__main__':
 
@@ -138,7 +124,7 @@ if __name__ == '__main__':
         keep_columns.append('id_rpls{}'.format(i))
 #    dtype = {key:'int64' for key in keep_columns}
     
-    croisement_v3 = pd.read_csv('results_rd155_nb250.csv', header='infer'
+    croisement_v3 = pd.read_csv('csv/results_rd155_nb250.csv', header='infer'
                           , usecols=keep_columns
                           , index_col='id_bnb'
                           , dtype=pd.Int64Dtype())    
@@ -155,7 +141,7 @@ if __name__ == '__main__':
     scores = score_total(weights, croisement=croisement_v3
                          , surfhab=surfhab_scoring, etage=etage_scoring)
     
-    best_match = extract_best_match()
+    best_match = extract_best_match(scores, croisement_v3)
     
     # ---------------------- AFFICHER LES RÉSULTATS ------------------------- #
 
@@ -172,6 +158,8 @@ if __name__ == '__main__':
 
     tranche_score = [0,5,10,15,20,22.5,25,30,40,50,60,62.5,65,70,75,80,90,95
                      ,97.5,100]
+    tranche_index = []
+    tranche_nombre = []
     
     somme_cumulee = 0
     for i, tranche in enumerate(tranche_score):
@@ -188,6 +176,8 @@ if __name__ == '__main__':
             
             somme_cumulee += nb_temp
         
+        tranche_nombre.append(nb_temp)
+        tranche_index.append("{}% - {}%".format(tranche, tranche_score[i+1]))
         print("Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}"
               .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee))
       
@@ -198,5 +188,16 @@ if __name__ == '__main__':
         print("Quantile {}% : {}".format(i, best_match.score.quantile(i/100)))           
 
 
-# combien de match exact avec couple ou triple de sous-champs
-          
+    tranche_index[0] = "no detection"
+    
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    
+    plt.style.use('seaborn-darkgrid')
+#    plt.rcParams.update({'font.size':35})
+#    plt.rcParams["figure.figsize"] = (50,40)
+    
+    fig, ax = plt.subplots()
+    ax.set_title("Nombre de suspicions par tranche de score")
+    sns.barplot(y=tranche_nombre, x=tranche_index
+                , orient='v', ax=ax, edgecolor='white')          
