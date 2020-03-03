@@ -189,24 +189,30 @@ class AirbnbAccessor:
         if rreturn:
             return extractions
 
-    def extraire_surfhab(self, id : int):    
+    def extraire_surfhab(self, id):    
         """Retourne la surface habitable (en mètres carrés) indiquée dans 
         l'annonce airbnb si présente.
         
         Parameters:
-            id (int): identifiant de l'annonce airbnb. Index de la ligne dans 
+            id (int or [int]): identifiant de l'annonce airbnb ou liste
+            d'identifiants des annonces airbnb à traiter. Index de la ligne dans 
             la DataFrame.
             
         Returns:
-            surfhab(float): surface habitable indiquée dans l'annonce, np.nan 
-            si non détectée.
+            surfhab (float or {id:surfhab}): surface habitable indiquée dans 
+            l'annonce, np.nan si non détectée.
         """
         
-        name_airbnb = self._obj.loc[id, 'name']
-        summary_airbnb = self._obj.loc[id, 'summary']
-        space_airbnb = self._obj.loc[id, 'space']
-        description_airbnb = self._obj.loc[id, 'description'] 
-        
+        if not hasattr(id, '__iter__'):
+            indexes = [id]
+        else :
+            indexes = id
+            
+        name_airbnb = self._obj.loc[indexes, 'name']
+        summary_airbnb = self._obj.loc[indexes, 'summary']
+        space_airbnb = self._obj.loc[indexes, 'space']
+        description_airbnb = self._obj.loc[indexes, 'description'] 
+    
         pattern_surfhab_meter = r"""(?x)
             (\d+\.?,?\d*)
             (?:
@@ -228,104 +234,111 @@ class AirbnbAccessor:
             )
             """
         
-        surfhab_feet = []
-        surfhab_meter = []
+        surfhab_tokens_feet = dict()
+        surfhab_tokens_meter = dict()
+        surfhab_tokens = dict()
         
-        if not pd.isna(description_airbnb):
-            row = description_airbnb.lower()
-            temp_feet = re.findall(pattern_surfhab_feet, row) 
-            temp_meter = re.findall(pattern_surfhab_meter, row)
-                
-            if temp_feet:
-                surfhab_feet = list(temp_feet)
-            if temp_meter:
-                surfhab_meter = list(temp_meter)
+        for idx, row in zip(indexes, description_airbnb.values):
+            if not pd.isna(row):
+                row = row.lower()
+                temp_feet = re.findall(pattern_surfhab_feet, row) 
+                temp_meter = re.findall(pattern_surfhab_meter, row)
+                    
+                if temp_feet:
+                    surfhab_tokens_feet[idx] = temp_feet
+                    
+                if temp_meter:
+                    surfhab_tokens_meter[idx] = temp_meter
         
-        if not pd.isna(name_airbnb):
-            row = name_airbnb.lower()
-            temp_feet = re.findall(pattern_surfhab_feet, row) 
-            temp_meter = re.findall(pattern_surfhab_meter, row)
-                
-            if temp_feet:
-                if len(surfhab_feet) == 0: 
-                    surfhab_feet = list(temp_feet)
-                else:
-                    surfhab_feet += temp_feet
-            if temp_meter:
-                if len(surfhab_meter) == 0:
-                    surfhab_meter = list(temp_feet)  
-                else:
-                    surfhab_meter += temp_meter
+        for idx, row in zip(indexes, name_airbnb):
+            if not pd.isna(row):
+                row = row.lower()
+                temp_feet = re.findall(pattern_surfhab_feet, row) 
+                temp_meter = re.findall(pattern_surfhab_meter, row)
+                    
+                if temp_feet:
+                    if idx not in surfhab_tokens_feet:
+                        surfhab_tokens_feet[idx] = list(temp_feet)
+                    else:
+                        surfhab_tokens_feet[idx] += temp_feet
+                    
+                if temp_meter:
+                    if idx not in surfhab_tokens_meter:
+                        surfhab_tokens_meter[idx] = temp_meter  
+                    else:
+                        surfhab_tokens_meter[idx] += temp_meter
         
-        if not pd.isna(summary_airbnb):
-            row = summary_airbnb.lower()
-            temp_feet = re.findall(pattern_surfhab_feet, row) 
-            temp_meter = re.findall(pattern_surfhab_meter, row)
-                
-            if temp_feet:
-                if len(surfhab_feet) == 0: 
-                    surfhab_feet = list(temp_feet)
-                else:
-                    surfhab_feet += temp_feet 
-            if temp_meter:
-                if len(surfhab_meter) == 0:
-                    surfhab_meter = list(temp_feet)  
-                else:
-                    surfhab_meter += temp_meter
+        for idx, row in zip(indexes, summary_airbnb):
+            if not pd.isna(row):
+                row = row.lower()
+                temp_feet = re.findall(pattern_surfhab_feet, row) 
+                temp_meter = re.findall(pattern_surfhab_meter, row)
+                    
+                if temp_feet:
+                    if idx not in surfhab_tokens_feet:
+                        surfhab_tokens_feet[idx] = list(temp_feet)
+                    else:
+                        surfhab_tokens_feet[idx] += temp_feet
+                    
+                if temp_meter:
+                    if idx not in surfhab_tokens_meter:
+                        surfhab_tokens_meter[idx] = temp_meter  
+                    else:
+                        surfhab_tokens_meter[idx] += temp_meter
         
-        if not pd.isna(space_airbnb):
-            row = space_airbnb.lower()
-            temp_feet = re.findall(pattern_surfhab_feet, row) 
-            temp_meter = re.findall(pattern_surfhab_meter, row)
-                
-            if temp_feet:
-                if len(surfhab_feet) == 0: 
-                    surfhab_feet = list(temp_feet)
-                else:
-                    surfhab_feet += temp_feet        
-            if temp_meter:
-                if len(surfhab_meter) == 0:
-                    surfhab_meter = list(temp_feet)  
-                else:
-                    surfhab_meter += temp_meter
+        for idx, row in zip(indexes, space_airbnb):
+            if not pd.isna(row):
+                row = row.lower()
+                temp_feet = re.findall(pattern_surfhab_feet, row) 
+                temp_meter = re.findall(pattern_surfhab_meter, row)
+                    
+                if temp_feet:
+                    if idx not in surfhab_tokens_feet:
+                        surfhab_tokens_feet[idx] = temp_feet
+                    else:
+                        surfhab_tokens_feet[idx] += temp_feet
+                    
+                if temp_meter:
+                    if idx not in surfhab_tokens_meter:
+                        surfhab_tokens_meter[idx] = temp_meter  
+                    else:
+                        surfhab_tokens_meter[idx] += temp_meter
         
-        if (len(surfhab_feet) != 0) and (len(surfhab_meter) == 0):
-            surfhab_feet = list(map(lambda x: x.replace(',','.')
-                        , surfhab_feet))
-            surfhab_feet = list(map(float, surfhab_feet))
-            surfhab_feet = max(surfhab_feet)
-            surfhab_feet = surfhab_feet / 10.764 #1m² = 10.764 feet²
+        for key, element in surfhab_tokens_meter.items():
+            surfhab_tokens_meter[key] = list(map(lambda x: x.replace(',','.'), element))
+            surfhab_tokens_meter[key] = list(map(float, surfhab_tokens_meter[key]))
+            surfhab_tokens_meter[key] = max(surfhab_tokens_meter[key])
+        
+        for key, element in surfhab_tokens_feet.items():
+            surfhab_tokens_feet[key] = list(map(lambda x: x.replace(',','.'), element))
+            surfhab_tokens_feet[key] = list(map(float, surfhab_tokens_feet[key]))
+            surfhab_tokens_feet[key] = max(surfhab_tokens_feet[key])
+            surfhab_tokens_feet[key] = surfhab_tokens_feet[key] / 10.764 #1m² = 10.764 feet²
             
-            return surfhab_feet
-        elif (len(surfhab_feet) == 0) and (len(surfhab_meter) != 0):
-            surfhab_meter = list(map(lambda x: x.replace(',','.')
-                                    , surfhab_meter))
-            surfhab_meter = list(map(float, surfhab_meter))
-            surfhab_meter = max(surfhab_meter)
-            
-            return surfhab_meter
-        elif (len(surfhab_feet) != 0) and (len(surfhab_meter) != 0):
-            surfhab_feet = list(map(lambda x: x.replace(',','.')
-                        , surfhab_feet))
-            surfhab_feet = list(map(float, surfhab_feet))
-            surfhab_feet = max(surfhab_feet)
-            surfhab_feet = surfhab_feet / 10.764 #1m² = 10.764 feet²
-
-            surfhab_meter = list(map(lambda x: x.replace(',','.')
-                                    , surfhab_meter))
-            surfhab_meter = list(map(float, surfhab_meter))
-            surfhab_meter = max(surfhab_meter)
-            
-            return max(surfhab_feet, surfhab_meter)
+        for key in set(list(surfhab_tokens_meter.keys())+list(surfhab_tokens_feet.keys())):
+            if (key not in surfhab_tokens_meter) and (key in surfhab_tokens_feet):
+                surfhab_tokens[key] = surfhab_tokens_feet[key]
+            elif (key in surfhab_tokens_meter) and (key not in surfhab_tokens_feet):
+                surfhab_tokens[key] = surfhab_tokens_meter[key]
+            elif (key in surfhab_tokens_meter) and (key in surfhab_tokens_feet):
+                surfhab_tokens[key] \
+                = max(surfhab_tokens_feet[key], surfhab_tokens_meter[key])
+        
+        if type(id) is int:
+            if id in surfhab_tokens:
+                return surfhab_tokens[id]
+            else:
+                return np.nan
         else:
-            return np.nan
+            return surfhab_tokens
         
     def extraire_etage(self, id : int):
         """Retourne le numéro de l'étage (en mètres carrés) indiquée dans 
         l'annonce airbnb si présente.
         
         Parameters:
-            id (int): identifiant de l'annonce airbnb. Index de la ligne dans 
+            id (int or [int]): identifiant de l'annonce airbnb ou liste
+            d'identifiants des annonces airbnb à traiter. Index de la ligne dans 
             la DataFrame.
             
         Returns:
@@ -333,10 +346,15 @@ class AirbnbAccessor:
             non-détecté.
         """
         
-        name_airbnb = self._obj.loc[id, 'name']
-        summary_airbnb = self._obj.loc[id, 'summary']
-        space_airbnb = self._obj.loc[id, 'space']
-        description_airbnb = self._obj.loc[id, 'description'] 
+        if not hasattr(id, '__iter__'):
+            indexes = [id]
+        else :
+            indexes = id
+            
+        name_airbnb = self._obj.loc[indexes, 'name']
+        summary_airbnb = self._obj.loc[indexes, 'summary']
+        space_airbnb = self._obj.loc[indexes, 'space']
+        description_airbnb = self._obj.loc[indexes, 'description'] 
         
         pattern_etage_number = r"""(?x)
             (\d+(?:\.\d+)?)
@@ -363,106 +381,120 @@ class AirbnbAccessor:
         
         letter_to_number \
         = {'first':1,'second':2,'third':3,'fourth':4,'fifth':5
-        ,'sixth':6,'seventh':7,'eighth':8,'ninth':9,'nineth':9
-        ,'tenth':10,'eleventh':11,'twelveth':12,'thirteenth':13
-        ,'fourteenth':14,'fifteenth':15,'sixteenth':16
-        ,'seventeenth':17,'eighteenth':18,'nineteenth':19
-        ,'twentieth':20,'ground':0,'premier':1,'deuxieme':2
-        ,'deuxième':2,'troisieme':3,'troisième':3,'quatrieme':4
-        ,'quatrième':4,'cinquieme':5,'cinquième':5,'sixieme':6
-        ,'sixième':6,'septieme':7,'septième':7,'huitieme':8
-        ,'huitième':8,'neuvieme':9,'neuvième':9,'dixieme':10
-        ,'dixième':10,'onzieme':11,'onzième':11,'douzieme':12
-        ,'douzième':12,'treizieme':13,'treizième':13,'quatorzieme':14
-        ,'quatorzième':14,'quinzieme':15,'quinzième':15
-        ,'seizieme':16,'seizième':16,'dix-septieme':17
-        ,'dix-septième':17,'dix-huitieme':18,'dix-huitième':18
-        ,'dix-neuvieme':19,'dix-neuvième':19,'vingtieme':20
-        ,'vingtième':20,'rez-de-chaussée':0,'rez-de-chausee':0
-        ,'rez-de-chaussé':0,'rez-de-chausse':0,'rez de chaussée':0
-        ,'rez de chaussé':0, 'rez de chaussez':0}  
-
-        etage_number = []
-        etage_letter = []
-    
-        if not pd.isna(description_airbnb):
-            row = description_airbnb.lower()
-            temp_number = re.findall(pattern_etage_number, row) 
-            temp_letter = re.findall(pattern_etage_letter, row)
-                
-            if temp_number:
-                etage_number = list(temp_number)
-            if temp_letter:
-                etage_letter = list(temp_letter)
+            ,'sixth':6,'seventh':7,'eighth':8,'ninth':9,'nineth':9
+            ,'tenth':10,'eleventh':11,'twelveth':12,'thirteenth':13
+            ,'fourteenth':14,'fifteenth':15,'sixteenth':16
+            ,'seventeenth':17,'eighteenth':18,'nineteenth':19
+            ,'twentieth':20,'ground':0,'premier':1,'deuxieme':2
+            ,'deuxième':2,'troisieme':3,'troisième':3,'quatrieme':4
+            ,'quatrième':4,'cinquieme':5,'cinquième':5,'sixieme':6
+            ,'sixième':6,'septieme':7,'septième':7,'huitieme':8
+            ,'huitième':8,'neuvieme':9,'neuvième':9,'dixieme':10
+            ,'dixième':10,'onzieme':11,'onzième':11,'douzieme':12
+            ,'douzième':12,'treizieme':13,'treizième':13,'quatorzieme':14
+            ,'quatorzième':14,'quinzieme':15,'quinzième':15
+            ,'seizieme':16,'seizième':16,'dix-septieme':17
+            ,'dix-septième':17,'dix-huitieme':18,'dix-huitième':18
+            ,'dix-neuvieme':19,'dix-neuvième':19,'vingtieme':20
+            ,'vingtième':20,'rez-de-chaussée':0,'rez-de-chausee':0
+            ,'rez-de-chaussé':0,'rez-de-chausse':0,'rez de chaussée':0
+            ,'rez de chaussé':0, 'rez de chaussez':0} 
+           
+        etage_tokens_number = dict()
+        etage_tokens_letter = dict()
+        etage_tokens = dict()
         
-        if not pd.isna(name_airbnb):
-            row = name_airbnb.lower()
-            temp_number = re.findall(pattern_etage_number, row) 
-            temp_letter = re.findall(pattern_etage_letter, row)
-                
-            if temp_number:
-                if len(etage_number) == 0: 
-                    etage_number = list(temp_number)
-                else:
-                    etage_number += temp_number
-            if temp_letter:
-                if len(etage_letter) == 0:
-                    etage_letter = list(temp_letter)  
-                else:
-                    etage_letter += temp_letter
+        for idx, row in zip(indexes, description_airbnb.values):
+            if not pd.isna(row):
+                row = row.lower()
+                temp_number = re.findall(pattern_etage_number, row) 
+                temp_letter = re.findall(pattern_etage_letter, row)
+                    
+                if temp_number:
+                    etage_tokens_number[idx] = temp_number
+                    
+                if temp_letter:
+                    etage_tokens_letter[idx] = temp_letter
+                    
+        for idx, row in zip(indexes, name_airbnb.values):
+            if not pd.isna(row):
+                row = row.lower()
+                temp_number = re.findall(pattern_etage_number, row) 
+                temp_letter = re.findall(pattern_etage_letter, row)
+                    
+                if temp_number:
+                    if idx not in etage_tokens_number:
+                        etage_tokens_number[idx] = list(temp_number)
+                    else:
+                        etage_tokens_number[idx] += temp_number
         
-        if not pd.isna(summary_airbnb):
-            row = summary_airbnb.lower()
-            temp_number = re.findall(pattern_etage_number, row) 
-            temp_letter = re.findall(pattern_etage_letter, row)
-                
-            if temp_number:
-                if len(etage_number) == 0: 
-                    etage_number = list(temp_number)
-                else:
-                    etage_number += temp_number
-            if temp_letter:
-                if len(etage_letter) == 0:
-                    etage_letter = list(temp_letter)  
-                else:
-                    etage_letter += temp_letter
+                if temp_letter:
+                    if idx not in etage_tokens_letter:
+                        etage_tokens_letter[idx] = list(temp_letter)
+                    else:
+                        etage_tokens_letter[idx] += temp_letter
+                        
+        for idx, row in zip(indexes, summary_airbnb.values):
+            if not pd.isna(row):
+                row = row.lower()
+                temp_number = re.findall(pattern_etage_number, row) 
+                temp_letter = re.findall(pattern_etage_letter, row)
+                    
+                if temp_number:
+                    if idx not in etage_tokens_number:
+                        etage_tokens_number[idx] = list(temp_number)
+                    else:
+                        etage_tokens_number[idx] += temp_number
         
-        if not pd.isna(space_airbnb):
-            row = space_airbnb.lower()
-            temp_number = re.findall(pattern_etage_number, row) 
-            temp_letter = re.findall(pattern_etage_letter, row)
-                
-            if temp_number:
-                if len(etage_number) == 0: 
-                    etage_number = list(temp_number)
-                else:
-                    etage_number += temp_number
-            if temp_letter:
-                if len(etage_letter) == 0:
-                    etage_letter = list(temp_letter)  
-                else:
-                    etage_letter += temp_letter
+                if temp_letter:
+                    if idx not in etage_tokens_letter:
+                        etage_tokens_letter[idx] = list(temp_letter)
+                    else:
+                        etage_tokens_letter[idx] += temp_letter
         
-        if (len(etage_number) != 0) and (len(etage_letter) == 0):
-            etage_number = list(map(float, etage_number))
-            etage_number = min(etage_number)
+        for idx, row in zip(indexes, space_airbnb.values):
+            if not pd.isna(row):
+                row = row.lower()
+                temp_number = re.findall(pattern_etage_number, row) 
+                temp_letter = re.findall(pattern_etage_letter, row)
+                    
+                if temp_number:
+                    if idx not in etage_tokens_number:
+                        etage_tokens_number[idx] = list(temp_number)
+                    else:
+                        etage_tokens_number[idx] += temp_number
+        
+                if temp_letter:
+                    if idx not in etage_tokens_letter:
+                        etage_tokens_letter[idx] = list(temp_letter)
+                    else:
+                        etage_tokens_letter[idx] += temp_letter
+                              
+        for key, element in etage_tokens_number.items():
+            etage_tokens_number[key] = list(map(float, element))
+            etage_tokens_number[key] = min(etage_tokens_number[key])
+        
+        for key, element in etage_tokens_letter.items():
+            etage_tokens_letter[key] \
+            = list(map(lambda x: letter_to_number[x], element))
+            etage_tokens_letter[key] = min(etage_tokens_letter[key])
             
-            return etage_number
-        elif (len(etage_number) == 0) and (len(etage_letter) != 0):
-            etage_letter = list(map(lambda x: letter_to_number[x], etage_letter))
-            etage_letter = min(etage_letter)
-            
-            return etage_letter
-        elif (len(etage_number) != 0) and (len(etage_letter) != 0):
-            etage_number = list(map(float, etage_number))
-            etage_number = min(etage_number) 
-            
-            etage_letter = list(map(lambda x: letter_to_number[x], etage_letter))
-            etage_letter = min(etage_letter)
-            
-            return min(etage_number, etage_letter)
+        for key in set(list(etage_tokens_number.keys())+list(etage_tokens_letter.keys())):
+            if (key not in etage_tokens_number) and (key in etage_tokens_letter):
+                etage_tokens[key] = etage_tokens_letter[key]
+            elif (key not in etage_tokens_letter) and (key in etage_tokens_number):
+                etage_tokens[key] = etage_tokens_number[key]
+            elif (key in etage_tokens_number) and (key in etage_tokens_letter):
+                etage_tokens[key] \
+                = min(etage_tokens_number[key], etage_tokens_letter[key])
+                
+        if type(id) is int:
+            if id in etage_tokens:
+                return etage_tokens[id]
+            else:
+                return np.nan
         else:
-            return np.nan
+            return etage_tokens
           
     #extraction de l'étage dans la description du airbnb id
     def extraire_nbpiece(self, id : int):
