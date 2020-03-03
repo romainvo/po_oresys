@@ -1,32 +1,64 @@
 import pandas as pd
+
 class Airbnb(pd.DataFrame): 
-     def __init__(self,data):
-        data_airbnb = pd.read_csv(data, sep=',', header='infer',
+    """ Classe modélisant un problème de flowshop de permutation. 
+    
+    Attributes:
+        nb_jobs (int): Nombre de jobs dans le problème.
+
+        nb_machines (int): Nombre de machine dans le problème.
+
+        l_job (list<Job>): Liste contenant les objets Job.
+
+    """
+    
+    def __init__(self):
+        """ Initialise un objet Fourmi.
+        
+        Parameters:
+            flowshop (Flowshop): Instance d'un problème de flowshop de permutation
+
+            piste (Piste): Instance d'une piste, aggrège les principales caractéristiques
+            de la piste parcourue par les fourmis.
+            
+        Keyword arguments:
+            nb_jobs (int): Nombre de jobs dans le problème.
+
+            nb_machines (int): Nombre de machine dans le problème.
+
+            l_job (list<Job>): Liste contenant les objets Job.
+                        
+        """
+        
+        self = pd.read_csv("csv/airbnb.csv", sep=',', header='infer',
                           dtype={'longitude':'float', 'latitude':'float'})
-        self.data_airbnb.loc[:, 'id_bnb'] = self.data_airbnb.index.astype(int)
+    
+        self.index.rename('id_bnb', inplace=True)
+        
         self =  data_airbnb.copy(deep=True)
 
 
     @property
     def _constructor(self):
         return Airbnb
+    
     #renvoie l'ensemble des descriptions textuelles du logement airbnb
-    def get_complete_description(id):
+    def complete_description(id):
     
     #renvoie les coordonnées du airbnb
-    def get_coordonnee(id)
+    def coordonnee(id)
 
     #renvoie le nom de l'annonce si présent
-    def get_name(id):
+    def name(id):
     
     #renvoie le sommaire de l'annonce si présent
-    def get_summary(id):
+    def summary(id):
     
     #renvoie la description de l'annonce si présente
-    def get_description(id):
+    def description(id):
     
     #renvoie la surface indiquée dans les données si présente.
-    def get_surface(id):
+    def surface(id):
     
     #extraction de l'étage dans la description du airbnb id
     def extraire_etage(id):

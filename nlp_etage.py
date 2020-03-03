@@ -255,12 +255,12 @@ if __name__ == '__main__':
         keep_columns.append('id_rpls{}'.format(i))
 #    dtype = {key:'int64' for key in keep_columns}
     
-    croisement_v3 = pd.read_csv('results_rd155_nb250.csv', header='infer'
+    croisement_v3 = pd.read_csv('csv/results_rd155_nb250.csv', header='infer'
                           , usecols=keep_columns
                           , index_col='id_bnb'
                           , dtype=pd.Int64Dtype())    
     
-    data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
+    data_airbnb = pd.read_csv("csv/airbnb.csv", sep=',', header='infer',
                               dtype={'longitude':'float', 'latitude':'float'})
     
     etage_tokens = extraction_etage(data_airbnb)

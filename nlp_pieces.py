@@ -13,7 +13,9 @@ name_airbnb=df.loc[:, 'name']
 summary_airbnb = df.loc[:, 'summary']
 space_airbnb = df.loc[:, 'space']
 description_airbnb = df.loc[:, 'description'] 
+
 # --------------------------------------------------------------------------- #
+
 pattern_pieces = r"""(?x)
     (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three)
     (?:
@@ -27,6 +29,7 @@ pattern_pieces = r"""(?x)
     |(?:\s?chambre|chbr?|\s?chambres?\s|chambre|chbr?|chambres?\s|-?chambre|-+chbr?|-?chambres?\s)
     )
     """
+    
 tokens_pieces = dict()
 tokens_nombre = dict()
 
@@ -39,10 +42,7 @@ tokens_nombre = dict()
     #print(test_string)
     #print(result)
 
-
-
 #----------------------------------------------------------------------------#
-
 
 #surfhab_tokens_feet = dict()
 #surfhab_tokens_meter = dict()
