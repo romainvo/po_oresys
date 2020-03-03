@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 import re
-import Airbnb,Comparateur,Rpls
+from decorators import AirbnbAccessor, RPLSAccessor
+
 class API:
     def __init__(self,airbnb='airbnb.csv',rpls='paris_rpls_2017',croisement='results_rd155_nb250',score=''):
         self.airbnb = Airbnb.Airbnb(airbnb)
