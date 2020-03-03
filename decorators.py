@@ -12,12 +12,12 @@ class RPLSAccessor:
         sociaux.
     """
     
-    def __init__(self, pandas_obj):
+    def __init__(self, pandas_obj : pd.DataFrame):
         self._validate(pandas_obj)
         self._obj = pandas_obj
 
     @staticmethod
-    def _validate(obj):
+    def _validate(obj : pd.DataFrame):
         """ Vérifie si la DataFrame regroupe bien un ensemble de logements 
         sociaux. Utilisé au moment de "l'instanciation" du décorateur.
         
@@ -63,12 +63,12 @@ class AirbnbAccessor:
         airbnb.
     """
     
-    def __init__(self, pandas_obj):
+    def __init__(self, pandas_obj : pd.DataFrame):
         self._validate(pandas_obj)
         self._obj = pandas_obj
 
     @staticmethod
-    def _validate(obj):
+    def _validate(obj : pd.DataFrame):
         """ Vérifie si la DataFrame regroupe bien un ensemble d'annonces airbnb,
         utilisé au moment de "l'instanciation" du décorateur.
         
