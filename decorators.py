@@ -34,6 +34,45 @@ class RPLSAccessor:
         if not columns.issubset(set(obj.columns)):
             raise AttributeError("Must have {}".format(list(columns)))
 
+    def coordonnees(self, id : int):
+        return (self._obj.loc[id,'latitude'], self._obj.loc[id,'longitude'])
+
+    def complete_description(self, id : int, pprint=True, rreturn=False):
+        """Print l'ensemble des champs textuels pertinents pour le logement
+        social d'iditifiant 'id'
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+            
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l'annonce spécifié sous forme de Series.
+        
+        Returns:
+            (pd.Series): en index les noms des champs textuels retournés, en 
+            élements les string des champs textuels pertinents.
+        """
+        
+        columns = ['libcom','numvoie','typvoie','nomvoie','surfhab', 'etage'
+                   ,'nbpiece']
+        print("Champs affichés : {}".format(columns[0]), end=" ")
+        for elt in columns[1:]:
+            print(",",elt, end="")
+        print(" - coordonnées gps = {}".format(self.coordonnees(id), "\n"))
+        print()
+        
+        if pprint:
+            for elt in columns :
+                print("{} :".format(elt), end=" ")
+                print(self._obj.loc[id, elt])
+            print()
+        
+        if rreturn:
+            return self._obj.loc[id, columns]  
+        
 #    #renvoie les coordonnées du rpls
 #    def coordonnee(id):
 #    
@@ -114,7 +153,8 @@ class AirbnbAccessor:
         print("Champs affichés : {}".format(columns[0]), end=" ")
         for elt in columns[1:]:
             print(",",elt, end="")
-        print("\n")
+        print(" - coordonnées gps = {}".format(self.coordonnees(id), "\n"))
+        print()
         
         if pprint:
             for elt in columns :
@@ -135,6 +175,19 @@ class AirbnbAccessor:
     
     def description(self, id : int):
         return self._obj.loc[id, 'description']
+    
+    def all_extractions(self, id : int, pprint=False, rreturn=True):
+        extractions = dict()
+        extractions['surfhab'] = self.extraire_surfhab(id)
+        extractions['etage'] = self.extraire_etage(id)
+        extractions['nbpiece'] = self.extraire_nbpiece(id)
+        
+        if pprint:
+            print("Ensemble des champs textuels extraits :")
+            print(extractions)
+            
+        if rreturn:
+            return extractions
 
     def extraire_surfhab(self, id : int):    
         """Retourne la surface habitable (en mètres carrés) indiquée dans 
@@ -149,10 +202,10 @@ class AirbnbAccessor:
             si non détectée.
         """
         
-        name_airbnb = data_airbnb.loc[id, 'name']
-        summary_airbnb = data_airbnb.loc[id, 'summary']
-        space_airbnb = data_airbnb.loc[id, 'space']
-        description_airbnb = data_airbnb.loc[id, 'description'] 
+        name_airbnb = self._obj.loc[id, 'name']
+        summary_airbnb = self._obj.loc[id, 'summary']
+        space_airbnb = self._obj.loc[id, 'space']
+        description_airbnb = self._obj.loc[id, 'description'] 
         
         pattern_surfhab_meter = r"""(?x)
             (\d+\.?,?\d*)
@@ -280,10 +333,10 @@ class AirbnbAccessor:
             non-détecté.
         """
         
-        name_airbnb = data_airbnb.loc[id, 'name']
-        summary_airbnb = data_airbnb.loc[id, 'summary']
-        space_airbnb = data_airbnb.loc[id, 'space']
-        description_airbnb = data_airbnb.loc[id, 'description'] 
+        name_airbnb = self._obj.loc[id, 'name']
+        summary_airbnb = self._obj.loc[id, 'summary']
+        space_airbnb = self._obj.loc[id, 'space']
+        description_airbnb = self._obj.loc[id, 'description'] 
         
         pattern_etage_number = r"""(?x)
             (\d+(?:\.\d+)?)
@@ -411,8 +464,10 @@ class AirbnbAccessor:
         else:
             return np.nan
           
-#    #extraction de l'étage dans la description du airbnb id
-#    def extraire_nb_piece(id): 
+    #extraction de l'étage dans la description du airbnb id
+    def extraire_nbpiece(self, id : int):
+        
+        return np.nan
         
 if __name__ == '__main__':
 

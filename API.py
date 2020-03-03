@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import re
 from decorators import AirbnbAccessor, RPLSAccessor
+from comparateur import Comparateur
 
 def import_data_rpls(path : str):
 
@@ -43,12 +44,25 @@ def import_data_airbnb(path : str):
 
     return data_airbnb
 
+def import_croisement(path : str):
+    
+    keep_columns = ['id_bnb']
+    for i in range(250):
+        keep_columns.append('id_rpls{}'.format(i))
+    croisement= pd.read_csv(path, header='infer', usecols=keep_columns
+                          , index_col='id_bnb'
+                          , dtype=pd.Int64Dtype())   
+    
+    return croisement
+
 class API:
     
-    def __init__(self, airbnb='csv/airbnb.csv', rpls='csv/paris_rpls_2017'
-                 , croisement='csv/results_rd155_nb250', score=''):
+    def __init__(self, path_airbnb='csv/airbnb.csv', path_rpls='csv/paris_rpls_2017'
+                 , path_croisement='csv/results_rd155_nb250', score=''):
         
-        self.airbnb = import_data_airbnb(airbnb)
-        self.rpls = import_data_rpls(rpls)
-        #self.comparateur = Comparateur.Comparateur(airbnb,rpls,croisement,score)
+        self.data_airbnb = import_data_airbnb(path_airbnb)
+        self.data_rpls = import_data_rpls(path_rpls)
+        self.croisement = import_croisement(path_croisement)
+        self.comparateur = Comparateur(self.data_airbnb, self.data_rpls
+                                       , self.croisement)
 
