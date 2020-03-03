@@ -224,7 +224,7 @@ def score_etage(data_airbnb, croisement_v3, etage_tokens):
         
     nb_col_croisement_v3 = croisement_v3.shape[1]
     
-    data_rpls = pd.read_csv("paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
+    data_rpls = pd.read_csv("csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                             header='infer', index_col=0,
                             converters={'codepostal':converter_cp
                                         , 'etage':converter_etage},
