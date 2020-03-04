@@ -162,6 +162,7 @@ class Comparateur:
             
         return self.surfhab_scoring
 
+    @staticmethod
     def _etage_score_filtering(x):
         if x == 0:
             return 1
@@ -200,13 +201,13 @@ class Comparateur:
             = pd.Series(etage_tokens).reindex(index=range(data_airbnb.shape[0]))
             
             etage_scoring = etage_rpls.subtract(etage, axis=0)
-            etage_scoring = etage_scoring.applymap(self._etage_score_filtering)
+            etage_scoring = etage_scoring.applymap(Comparateur._etage_score_filtering)
             etage_scoring.index.rename('id_bnb', inplace=True)
             self.etage_scoring = etage_scoring
             
         return self.etage_scoring
 
-#    def calculer_nbpiece_scoring(self):
+    def calculer_nbpiece_scoring(self):
 #        if hasattr(self, 'nbpiece_scoring'):
 #            print("Les sous_scores de nombre de pièces de chaque airbnb et"
 #                  ,"leur logement sociaux respectifs sont déjà calculés")
@@ -221,6 +222,12 @@ class Comparateur:
 #                = self.data_airbnb.bnb.extraire_nbpiece(self.data_airbnb.index.values)
 #        
 #        return self.nbpiece_scoring
+        
+        print("Méthode calculer_nbpiece_scoring non implémentée")
+        nbpiece_scoring = pd.DataFrame(np.zeros(self.croisement.shape))
+        self.nbpiece_scoring = nbpiece_scoring
+        
+        return self.nbpiece_scoring
     
     def calculer_all_scores(self):
         

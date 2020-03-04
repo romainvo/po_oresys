@@ -73,24 +73,147 @@ class RPLSAccessor:
         if rreturn:
             return self._obj.loc[id, columns]  
         
-#    #renvoie les coordonnées du rpls
-#    def coordonnee(id):
-#    
-#    #renvoie la surface indiquée dans les données si présente.
-#    def surfhab(id):
-#    
-#    #renvoie le nombre de piece du logement social concerné
-#    def nbpiece(id):
-#    
-#    #renvoie l'arrondissement du logement social concerné
-#    def arrondissement(id):
-#
-#    #renvoie l'étage du logement social concerné
-#    def etage(id):
-#    
-#    #renvoie l'adresse du logement social concerné
-#    def adresse(id):
+    """ renvoie la surface habitable du rpls caractérisé par l'id id
+    Parameters:
+        id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+    Key arguments:
+        pprint (boolean): True si on affiche la description complète
 
+        rreturn (boolean): True si on retourne la description complète de 
+            l'annonce spécifié sous forme de Series.
+    Return:
+        valeur de la surface habitable du rpls id dans le dataframe.(float)
+    """
+    def surface_habitable(self,id,pprint = True,rreturn = False):
+        if(pprint):
+            print(self._obj.loc[id,'surfhab'])
+        
+        if(rreturn):
+            return self._obj.loc[id,'surfhab']
+ 
+    
+    def nombre_piece(self,id,pprint = True,rreturn = False):
+        """ renvoie le nombre de piece du rpls caractérisé par l'id id
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+        Key arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+            l'annonce spécifié sous forme de Series.
+        Return:
+        valeur du nombre de piece du rpls id dans le dataframe.(float)
+        """
+        if(pprint):
+            print(self._obj.loc[id,'nbpiece'])
+        
+        if(rreturn):
+            return self._obj.loc[id,'nbpiece']
+ 
+
+    def arrondissement(self,id,pprint = True,rreturn = False):
+        """ renvoie l'arrondissement' du rpls caractérisé par l'id id
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+        Key arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+            l'annonce spécifié sous forme de Series.
+        Return:
+        arrondissement du rpls id dans le dataframe (string).
+        """
+        if(pprint):
+            print(self._obj.loc[id,'libcom'])
+        
+        if(rreturn):
+            return self._obj.loc[id,'libcom']
+
+    def etage(self,id,pprint = True,rreturn = False):
+        """ renvoie l'etage' du rpls caractérisé par l'id id
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+        Key arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+            l'annonce spécifié sous forme de Series.
+        Return:
+        etage du rpls id dans le dataframe (float).
+        """
+        if(pprint):
+            print(self._obj.loc[id,'etage'])
+        
+        if(rreturn):
+            return self._obj.loc[id,'etage']
+
+    def adresse(self,id,pprint = True,rreturn = False):
+        """ renvoie l'adresse du rpls caractérisé par l'id id
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+        Key arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+            l'annonce spécifié sous forme de Series.
+        Return:
+        adresse du rpls id dans le dataframe (string).
+        """
+        S = self._obj.loc[id,'numvoie']+" "
+        if(self._obj.loc[id,'indrep']!=np.nan):
+            S=S+self._obj.loc[id,'indrep']
+        S=S+self._obj.loc[id,'typvoie']+" "+self._obj.loc[id,'nomvoie']
+        if(self._obj.loc[id,'bat']!=np.nan):
+            S=S+", batiment "+self.batiment(id,pprint=False,rreturn=True)
+        if(self._obj.loc[id,'numappt']!=np.nan):
+            S=S+", appartement "+self.numero_appartement(id,pprint=False,rreturn=True)
+        if(pprint):
+            print(S)
+        if(rreturn):
+            return S
+    
+    def batiment(self,id,pprint = True,rreturn = False):
+        """ renvoie le batiment du rpls caractérisé par l'id id
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+        Key arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+            l'annonce spécifié sous forme de Series.
+        Return:
+        batiment du rpls id dans le dataframe (float).
+        """
+
+        if(pprint):
+            print(self._obj.loc[id,'bat'])
+        
+        if(rreturn):
+            return self._obj.loc[id,'bat']
+    
+    def numero_appartement(self,id,pprint = True,rreturn = False):
+        """ renvoie le numero d'appartement du rpls caractérisé par l'id id
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+        Key arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+            l'annonce spécifié sous forme de Series.
+        Return:
+        numero d'appartement du rpls id dans le dataframe (float).
+        """
+        if(pprint):
+            print(self._obj.loc[id,'numappt'])
+        if(rreturn):
+            return self._obj.loc[id,'numappt']
 
 @pd.api.extensions.register_dataframe_accessor("bnb")
 class AirbnbAccessor:
@@ -122,13 +245,6 @@ class AirbnbAccessor:
         columns = {'name','summary','space','description','longitude','latitude'}
         if not columns.issubset(set(obj.columns)):
             raise AttributeError("Must have {}".format(list(columns)))
-            
-    @property
-    def center(self):
-        # return the geographic center point of this DataFrame
-        lat = self._obj.latitude
-        lon = self._obj.longitude
-        return (float(lon.mean()), float(lat.mean()))
    
     def complete_description(self, id : int, pprint=True, rreturn=False):
         """Print l'ensemble des champs textuels pertinents pour l'annonce 
@@ -532,3 +648,4 @@ if __name__ == '__main__':
                     dtype={'longitude':'float', 'latitude':'float'})
     
     data_rpls.index.rename('id_rpls', inplace=True)
+
