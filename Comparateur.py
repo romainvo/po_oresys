@@ -10,6 +10,7 @@ class Comparateur:
                                       , 'etage':8/30, 'nbpiece':8/30}
                  , surfhab_tokens=None, etage_tokens=None, nbpiece_tokens=None
                  , all_scores=None):
+
         self.data_airbnb = data_airbnb
         self.data_rpls = data_rpls
         self.croisement = croisement
