@@ -11,16 +11,9 @@ class Rpls(pd.DataFrame):
             Parameters:
             data : une adresse menant au csv contenant les informations sur le rpls parisien que l'utilisateur souhaite exploiter.        
             """
-            data_rpls = pd.read_csv(data,sep = ',',error_bad_lines=False, 
-                                    header='infer', index_col=0,
-                                    converters={'codepostal':self.converter_cp
-                                                , 'etage':self.converter_etage},
-                                    dtype={'longitude':'float', 'latitude':'float'})
-            self = data_rpls
-    
-        @property
-        def _constructor(self):
-            return Rpls
+            super(Rpls, self).__init__(
+                pd.read_csv(data, sep=',', header='infer',
+                          dtype={'longitude':'float', 'latitude':'float'}))
     
         def converter_cp(self,string):
             try:
@@ -41,23 +34,23 @@ class Rpls(pd.DataFrame):
                     return np.nan
 
         #renvoie les coordonnées du rpls
-        def coordonnee(id):
-            return null
+        def coordonnee(self,id):
+            return 0
         
         #renvoie la surface indiquée dans les données si présente.
-        def surface(id):
-            return null
+        def surface(self,id):
+            return 0
         
         #renvoie le nombre de piece du logement social concerné
-        def nbpiece(id):
-            return null
+        def nbpiece(self,id):
+            return 0
         #renvoie l'arrondissement du logement social concerné
-        def arrondissement(id):
-            return null
+        def arrondissement(self,id):
+            return 0
         #renvoie l'étage du logement social concerné
-        def etage(id):
-            return null
+        def etage(self,id):
+            return 0
         #renvoie l'adresse du logement social concerné
-        def adresse(id):
-            return null
+        def adresse(self,id):
+            return 0
     
