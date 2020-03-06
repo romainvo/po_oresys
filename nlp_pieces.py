@@ -6,7 +6,6 @@ import numpy as np
 def extraction_pieces(data_airbnb):
     data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
                           dtype={'longitude':'float', 'latitude':'float'})
-<<<<<<< HEAD
     keep_cols = ["name", "summary", "space", "description"]
     df = data_airbnb[keep_cols]
     #df=df.head(200000)
@@ -17,22 +16,7 @@ def extraction_pieces(data_airbnb):
     space_airbnb = df.loc[:, 'space']
     description_airbnb = df.loc[:, 'description'] 
     
-    
     pattern_pieces = r"""(?x)
-=======
-keep_cols = ["name", "summary", "space", "description"]
-df = data_airbnb[keep_cols]
-#df=df.head(200000)
-df
-name_airbnb=df.loc[:, 'name']
-summary_airbnb = df.loc[:, 'summary']
-space_airbnb = df.loc[:, 'space']
-description_airbnb = df.loc[:, 'description'] 
-
-# --------------------------------------------------------------------------- #
-
-pattern_pieces = r"""(?x)
->>>>>>> 1341188af98e865f15051281e24e9b8140fcc8ac
     (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three)
     (?:
      (?:\s+bedroom|\-bedroom|bedroom|bedrm)
@@ -45,7 +29,7 @@ pattern_pieces = r"""(?x)
     |(?:\s?chambre|chbr?|\s?chambres?\s|chambre|chbr?|chambres?\s|-?chambre|-+chbr?|-?chambres?\s)
     )
     """
-<<<<<<< HEAD
+
     tokens_pieces = dict()
     pieces_tokens = dict()
         
@@ -55,12 +39,6 @@ pattern_pieces = r"""(?x)
             #print("____________________________")
             #print(row)
             temp_pieces = re.findall(pattern_pieces, row) 
-=======
-    
-tokens_pieces = dict()
-tokens_nombre = dict()
->>>>>>> 1341188af98e865f15051281e24e9b8140fcc8ac
-
 
             if (temp_pieces == (' a') or (' one') or (' two') or (' three')):
                 temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a') else x for x in temp_pieces]
@@ -75,7 +53,7 @@ tokens_nombre = dict()
             #print("*******************")
             #print(tokens_pieces)
 
-<<<<<<< HEAD
+
             
     for idx, row in enumerate(summary_airbnb):#recorrer todos elementos del array 
         if row is not np.NaN:
@@ -124,17 +102,6 @@ tokens_nombre = dict()
                     tokens_pieces[idx] = temp_pieces 
                 else:
                     tokens_pieces[idx] += temp_pieces 
-=======
-#----------------------------------------------------------------------------#
-
-#surfhab_tokens_feet = dict()
-#surfhab_tokens_meter = dict()
-#surfhab_tokens_surface = dict()
-#name_airbnb=df.loc[:, 'name']
-#summary_airbnb = df.loc[:, 'summary']
-#space_airbnb = df.loc[:, 'space']
-#description_airbnb = df.loc[:, 'description'] 
->>>>>>> 1341188af98e865f15051281e24e9b8140fcc8ac
 
     # for key in set(list(tokens_pieces.keys())):
 
@@ -171,7 +138,7 @@ def pieces_score_filtering(x):
     else:
         return np.NaN
     
-def score_etage(data_airbnb, croisement_v3, pieces_tokens):
+def score_pieces(data_airbnb, croisement_v3, pieces_tokens):
     
     def converter_cp(string):
         try:
@@ -179,7 +146,7 @@ def score_etage(data_airbnb, croisement_v3, pieces_tokens):
         except:
             return 0   
         
-    def converter_etage(string):
+    def converter_pieces(string):
         try: 
             return float(string)
         except:
@@ -197,14 +164,14 @@ def score_etage(data_airbnb, croisement_v3, pieces_tokens):
     data_rpls = pd.read_csv("paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                             header='infer', index_col=0,
                             converters={'codepostal':converter_cp
-                                        , 'etage':converter_etage},
+                                        , 'nbpiece':converter_pieces},
                             dtype={'longitude':'float', 'latitude':'float'})
     
     #re.sub("[^0-9]", "","ldkfljzg55f2cv")
     pieces_rpls = pd.DataFrame()    
-    for i in range(nb_col_croisement_v3):
+    for i in range(nb_col_croisement_v3): #pour chaque col
         pieces_rpls.loc[:, 'nbpiece_{}'.format(i)] = \
-            data_rpls.nbpiece.reindex(croisement_v3['id_rpls{}'.format(i)]).values
+        data_rpls.nbpiece.reindex(croisement_v3['id_rpls{}'.format(i)]).values
     
     #etage contient les surface extraites pour les airbnb, avec en index l'id 
     #du airbnb (le numéro de la ligne dans data_airbnb)
@@ -245,29 +212,31 @@ if __name__ == '__main__':
     space_airbnb = data_airbnb.loc[:, 'space']
     description_airbnb = data_airbnb.loc[:, 'description'] 
 
-    for i in range(110):
-        j = np.random.randint(250,60000)
-        print(name_airbnb[j]
-            ,"\n"
-            ,space_airbnb[j]
-            ,"\n"   
-            ,description_airbnb[j]
-            ,"\n"
-            ,summary_airbnb[j]
-            ,"\n")
-        if j not in pieces_tokens:
-            print("pas de resultats \n")
-        else:    
-            print(pieces_tokens[j])
-
+    # for i in range(110):
+    #     j = np.random.randint(250,60000)
+    #     print("_______name________", "\n", name_airbnb[j]
+    #         ,"\n"
+    #         ,"_______Space________", "\n",space_airbnb[j]
+    #         ,"\n"   
+    #         ,"_______Description________", "\n",description_airbnb[j]
+    #         ,"\n"
+    #         ,"_______Summary________", "\n",summary_airbnb[j]
+    #         ,"\n")
+    #     if j not in pieces_tokens:
+    #         print("pas de resultats \n")
+    #         print('******************************************************')
+    #     else:    
+    #         print(pieces_tokens[j])
+    #         print('******************************************************')
+#
 #    
-#    Résultats avec un echantillon random de 110 annonces :  39.09% de réussite, 
-#    1.82% de détection avec 1 étage de différence, 3.64% d'erreur, et 55.45% 
-#    d'annonces où la taille n'est pas indiquée.
+#    Résultats avec un echantillon random de 110 annonces :
+#    31,8% de réussite, 17,2% d'erreur, et 56.3% d'annonces où le nombre de pieces  
+#    n'est pas indiquée.
 
 # --------------------- Évaluation du scoring avec rpls --------------------- # 
 
-    etage_scoring = score_etage(data_airbnb, croisement_v3, pieces_tokens)
+    pieces_scoring = score_pieces(data_airbnb, croisement_v3, pieces_tokens)
     
 #    nombre de airbnb avec au moins 1 match exact dans rpls: 19625
 #    ((etage_scoring == 1).sum(axis=1) != 0).sum()
