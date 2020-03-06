@@ -6,8 +6,8 @@ import decorators
 class Comparateur:
     
     def __init__(self, data_airbnb, data_rpls, croisement
-                 , poids_sous_scores={'croisement':0.2, 'surfhab':8/30
-                                      , 'etage':8/30, 'nbpiece':8/30}
+                 , poids_sous_scores={'croisement':0.2, 'surfhab':0.3
+                                      , 'etage':0.3, 'nbpiece':0.2}
                  , surfhab_tokens=None, etage_tokens=None, nbpiece_tokens=None
                  , all_scores=None):
 
@@ -30,7 +30,7 @@ class Comparateur:
         return self.croisement.loc[id_airbnb]
         
     def correspondance_distance(self, id_airbnb : int, id_rpls : int):
-#        -> renvoie true si la distance correspond, false sinon
+#       renvoie true si le airbnb et le rpls sontà moins de 150m l'un de l'autre
         
         return id_rpls in self.croisement.loc[id_airbnb].values
 
@@ -139,6 +139,7 @@ class Comparateur:
             if hasattr(self, 'surfhab_tokens'):
                 surfhab_tokens = self.surfhab_tokens
             else:
+                print("Text mining en cours - surfhab non extrait")
                 surfhab_tokens \
                 = self.data_airbnb.bnb.extraire_surfhab(self.data_airbnb.index.values)
             
@@ -184,10 +185,11 @@ class Comparateur:
             if hasattr(self, 'etage_tokens'):
                 etage_tokens = self.etage_tokens
             else:
+                print("Text mining - etage non extrait")
                 etage_tokens \
                 = self.data_airbnb.bnb.extraire_etage(self.data_airbnb.index.values)
           
-            nb_col_croisement = croisement_v3.shape[1]
+            nb_col_croisement = self.croisement.shape[1]
             etage_rpls = pd.DataFrame()
             
             for i in range(nb_col_croisement):
@@ -207,25 +209,48 @@ class Comparateur:
             
         return self.etage_scoring
 
+    def _nbpiece_score_filtering(x):
+        if x == 0:
+            return 1
+        elif abs(x) == 1:
+            return 0.50
+        elif abs(x) == 2:
+            return 0.20
+        elif not pd.isna(x):
+            return 0
+        else:
+            return np.NaN
+
     def calculer_nbpiece_scoring(self):
-#        if hasattr(self, 'nbpiece_scoring'):
-#            print("Les sous_scores de nombre de pièces de chaque airbnb et"
-#                  ,"leur logement sociaux respectifs sont déjà calculés")
-#        
-#        else:
-#            print("Calcul des sous_scores d'étage")
-#            
-#            if hasattr(self, 'nbpiece_tokens'):
-#                nbpiece_tokens = self.nbpiece_tokens
-#            else:
-#                nbpiece_tokens \
-#                = self.data_airbnb.bnb.extraire_nbpiece(self.data_airbnb.index.values)
-#        
-#        return self.nbpiece_scoring
+        if hasattr(self, 'nbpiece_scoring'):
+            print("Les sous_scores de nombre de pièces de chaque airbnb et"
+                  ,"leur logement sociaux respectifs sont déjà calculés")
         
-        print("Méthode calculer_nbpiece_scoring non implémentée")
-        nbpiece_scoring = pd.DataFrame(np.zeros(self.croisement.shape))
-        self.nbpiece_scoring = nbpiece_scoring
+        else:
+            print("Calcul des sous_scores d'étage")
+            
+            if hasattr(self, 'nbpiece_tokens'):
+                nbpiece_tokens = self.nbpiece_tokens
+            else:
+                nbpiece_tokens \
+                = self.data_airbnb.bnb.extraire_nbpiece(self.data_airbnb.index.values)
+        
+            nb_col_croisement = self.croisement.shape[1]
+            nbpiece_rpls = pd.DataFrame()    
+            for i in range(nb_col_croisement): #pour chaque col
+                nbpiece_rpls.loc[:, 'nbpiece_{}'.format(i)] = \
+                    self.data_rpls.nbpiece.reindex(
+                            self.croisement['id_rpls{}'.format(i)]).values
+            
+            #etage contient les surface extraites pour les airbnb, avec en index l'id 
+            #du airbnb (le numéro de la ligne dans data_airbnb)
+            pieces \
+            = pd.Series(nbpiece_tokens).reindex(index=range(data_airbnb.shape[0]))
+            
+            nbpiece_scoring = nbpiece_rpls.subtract(pieces, axis=0)
+            nbpiece_scoring = nbpiece_scoring.applymap(Comparateur._nbpiece_score_filtering)
+            nbpiece_scoring.index.rename('id_bnb', inplace=True)
+            self.nbpiece_scoring = nbpiece_scoring
         
         return self.nbpiece_scoring
     
