@@ -239,32 +239,32 @@ if __name__ == '__main__':
     pieces_scoring = score_pieces(data_airbnb, croisement_v3, pieces_tokens)
     
 #    nombre de airbnb avec au moins 1 match exact dans rpls: 19625
-#    ((etage_scoring == 1).sum(axis=1) != 0).sum()
+#    ((pieces_scoring == 1).sum(axis=1) != 0).sum()
     
 #    nombre de airbnb avec seulement des match 1 étage de différence 
 #    dans rpls: 1020
-#    (((etage_scoring == 0.2).sum(axis=1) != 0)
-#        & ((etage_scoring == 1).sum(axis=1) == 0)).sum()
+#    (((pieces_scoring == 0.2).sum(axis=1) != 0)
+#        & ((pieces_scoring == 1).sum(axis=1) == 0)).sum()
     
 #    nombre de airbnb avec 0 match : 1084
-#    (((etage_scoring == 0).sum(axis=1) != 0) 
-#        & ((etage_scoring == 0.2).sum(axis=1) == 0)
-#        & ((etage_scoring == 1).sum(axis=1) == 0)).sum()
+#    (((pieces_scoring == 0).sum(axis=1) != 0) 
+#        & ((pieces_scoring == 0.2).sum(axis=1) == 0)
+#        & ((pieces_scoring == 1).sum(axis=1) == 0)).sum()
         
 #    nombre de airbnb avec que des nan = 0 prédictions ou 0 rpls dans le
 #    rayon d'anonymisation : 43241
-#    ((~etage_scoring.isna()).sum(axis=1) == 0).sum()
+#    ((~pieces_scoring.isna()).sum(axis=1) == 0).sum()
     
     
     #INUTILE DE RÉALISER UNE ANALYSE DES PERF PAR TRANCHE CAR LA REPARTITION DU
     #SCORE EST DISCRETE
     
-#    rename_col = {'etage_{}'.format(i) : i for i in range(etage_scoring.shape[1])} 
-#    etage_scoring.rename(columns=rename_col, inplace=True)
+#    rename_col = {'nbpiece_{}'.format(i) : i for i in range(pieces_scoring.shape[1])} 
+#    pieces_scoring.rename(columns=rename_col, inplace=True)
 #    
 #    #On récupère le numéro des colonnes avec le score maximal
-#    column_score_max = etage_scoring.idxmax(axis=1).values
-#    score_max = etage_scoring.max(axis=1).values
+#    column_score_max = pieces_scoring.idxmax(axis=1).values
+#    score_max = pieces_scoring.max(axis=1).values
 #    
 #    best_match = -1 * np.ones((croisement_v3.shape[0],2)) 
 #    for idx in range(croisement_v3.shape[0]):

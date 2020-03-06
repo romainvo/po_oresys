@@ -1,4 +1,6 @@
 .vscode/settings.json
+__pycache__
+csv/__pycache__
 paris_rpls_2017.csv
 listings.csv
 airbnb.csv

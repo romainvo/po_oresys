@@ -3,10 +3,10 @@ import numpy as np
 import re
 import Airbnb,Comparateur,Rpls
 class API:
-    def __init__(self,airbnb,rpls,croisement,score):
-        self.airbnb = Airbnb.Airbnb(self.airbnb)
-        self.rpls = Rpls.Rpls(self.rpls)
-        self.comparateur = Comparateur.Comparateur(self.airbnb,self.rpls,self.data_croisement,self.data_scoring)
+    def __init__(self,airbnb='airbnb.csv',rpls='paris_rpls_2017',croisement='results_rd155_nb250',score=''):
+        self.airbnb = Airbnb.Airbnb(airbnb)
+        self.rpls = Rpls.Rpls(rpls)
+        #self.comparateur = Comparateur.Comparateur(airbnb,rpls,croisement,score)
 
     def converter_cp(self,string):
         try:
