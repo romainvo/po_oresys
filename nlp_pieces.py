@@ -3,21 +3,15 @@ import re
 import numpy as np
 
 
-def extraction_pieces(data_airbnb):
-    data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
-                          dtype={'longitude':'float', 'latitude':'float'})
-    keep_cols = ["name", "summary", "space", "description"]
-    df = data_airbnb[keep_cols]
-    #df=df.head(200000)
-    df
+def extraction_nbpiece(data_airbnb):
 
-    name_airbnb=df.loc[:, 'name']
-    summary_airbnb = df.loc[:, 'summary']
-    space_airbnb = df.loc[:, 'space']
-    description_airbnb = df.loc[:, 'description'] 
+    name_airbnb = data_airbnb.loc[:, 'name']
+    summary_airbnb = data_airbnb.loc[:, 'summary']
+    space_airbnb = data_airbnb.loc[:, 'space']
+    description_airbnb = data_airbnb.loc[:, 'description'] 
     
     pattern_pieces = r"""(?x)
-    (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three)
+    (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three | une | deux | trois)
     (?:
      (?:\s+bedroom|\-bedroom|bedroom|bedrm)
     |(?:\s?bdr|-?bdr|bdr)
@@ -31,10 +25,9 @@ def extraction_pieces(data_airbnb):
     """
 
     tokens_pieces = dict()
-    pieces_tokens = dict()
         
     for idx, row in enumerate(name_airbnb):
-        if row is not np.NaN:
+        if not pd.isna(row):
             row = row.lower()
             #print("____________________________")
             #print(row)
@@ -49,14 +42,12 @@ def extraction_pieces(data_airbnb):
             #print(temp_pieces)
                 
             if temp_pieces:
-                tokens_pieces[idx] = temp_pieces  #poner elemento en el diccionario
+                tokens_pieces[idx] = list(temp_pieces)  #poner elemento en el diccionario
             #print("*******************")
             #print(tokens_pieces)
-
-
             
     for idx, row in enumerate(summary_airbnb):#recorrer todos elementos del array 
-        if row is not np.NaN:
+        if not pd.isna(row):
             row = row.lower() #Ponerlos en minuscula
 
             temp_pieces = re.findall(pattern_pieces, row) 
@@ -67,12 +58,12 @@ def extraction_pieces(data_airbnb):
                 
             if temp_pieces:
                 if idx not in tokens_pieces:
-                    tokens_pieces[idx] = temp_pieces 
+                    tokens_pieces[idx] = list(temp_pieces) 
                 else:
                     tokens_pieces[idx] += temp_pieces 
 
     for idx, row in enumerate(space_airbnb):
-        if row is not np.NaN:
+        if not pd.isna(row):
             row = row.lower()
 
             temp_pieces = re.findall(pattern_pieces, row) 
@@ -83,12 +74,12 @@ def extraction_pieces(data_airbnb):
                 
             if temp_pieces:
                 if idx not in tokens_pieces:
-                    tokens_pieces[idx] = temp_pieces 
+                    tokens_pieces[idx] = list(temp_pieces) 
                 else:
                     tokens_pieces[idx] += temp_pieces 
                 
     for idx, row in enumerate(description_airbnb):
-        if row is not np.NaN:
+        if not pd.isna(row):
             row = row.lower()
 
             temp_pieces = re.findall(pattern_pieces, row) 
@@ -99,32 +90,19 @@ def extraction_pieces(data_airbnb):
                 
             if temp_pieces:
                 if idx not in tokens_pieces:
-                    tokens_pieces[idx] = temp_pieces 
+                    tokens_pieces[idx] = list(temp_pieces) 
                 else:
                     tokens_pieces[idx] += temp_pieces 
-
-    # for key in set(list(tokens_pieces.keys())):
-
-    #         tokens_pieces[key] \
-    #         = max(tokens_pieces[key])
     
     for key, element in tokens_pieces.items():
-        tokens_pieces[key] = list(map(float, tokens_pieces[key]))
-
+        tokens_pieces[key] = list(map(float, element))
     
-    for key in set(list(tokens_pieces.keys())):
+    for key, element in tokens_pieces.items():
 
-        pieces_tokens[key] \
-        = max(tokens_pieces[key])
-        pieces_tokens[key] \
-        = pieces_tokens[key]+1
-
-    print (len(pieces_tokens))
+        tokens_pieces[key] = max(element)
+        tokens_pieces[key] = tokens_pieces[key] + 1
     
-    return pieces_tokens
-                    
-                    
-
+    return tokens_pieces
     
 def pieces_score_filtering(x):
     if x == 0:
@@ -146,7 +124,7 @@ def score_pieces(data_airbnb, croisement_v3, pieces_tokens):
         except:
             return 0   
         
-    def converter_pieces(string):
+    def converter_etage(string):
         try: 
             return float(string)
         except:
@@ -161,23 +139,23 @@ def score_pieces(data_airbnb, croisement_v3, pieces_tokens):
         
     nb_col_croisement_v3 = croisement_v3.shape[1]
     
-    data_rpls = pd.read_csv("paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
+    data_rpls = pd.read_csv("csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                             header='infer', index_col=0,
                             converters={'codepostal':converter_cp
-                                        , 'nbpiece':converter_pieces},
+                                        , 'etage':converter_etage},
                             dtype={'longitude':'float', 'latitude':'float'})
     
     #re.sub("[^0-9]", "","ldkfljzg55f2cv")
-    pieces_rpls = pd.DataFrame()    
+    nbpiece_rpls = pd.DataFrame()    
     for i in range(nb_col_croisement_v3): #pour chaque col
-        pieces_rpls.loc[:, 'nbpiece_{}'.format(i)] = \
+        nbpiece_rpls.loc[:, 'nbpiece_{}'.format(i)] = \
         data_rpls.nbpiece.reindex(croisement_v3['id_rpls{}'.format(i)]).values
     
     #etage contient les surface extraites pour les airbnb, avec en index l'id 
     #du airbnb (le numéro de la ligne dans data_airbnb)
     pieces = pd.Series(pieces_tokens).reindex(index=range(data_airbnb.shape[0]))
     
-    pieces_scoring = pieces_rpls.subtract(pieces, axis=0)
+    pieces_scoring = nbpiece_rpls.subtract(pieces, axis=0)
     
     pieces_scoring = pieces_scoring.applymap(pieces_score_filtering)
     
@@ -192,25 +170,22 @@ if __name__ == '__main__':
         keep_columns.append('id_rpls{}'.format(i))
 #    dtype = {key:'int64' for key in keep_columns}
     
-    croisement_v3 = pd.read_csv('results_rd155_nb250.csv', header='infer'
+    croisement_v3 = pd.read_csv('csv/results_rd155_nb250.csv', header='infer'
                           , usecols=keep_columns
                           , index_col='id_bnb'
                           , dtype=pd.Int64Dtype())    
     
-    data_airbnb = pd.read_csv("airbnb.csv", sep=',', header='infer',
+    data_airbnb = pd.read_csv("csv/airbnb.csv", sep=',', header='infer',
                               dtype={'longitude':'float', 'latitude':'float'})
     
-    pieces_tokens = extraction_pieces(data_airbnb)
+    nbpiece_tokens = extraction_nbpiece(data_airbnb)
 
 # -------- Évaluation des performances de l'algorithme de détection --------- # 
 
-#    nombre de détections : 25059
-#    len(etage_tokens)
-
-    name_airbnb = data_airbnb.loc[:, 'name']
-    summary_airbnb = data_airbnb.loc[:, 'summary']
-    space_airbnb = data_airbnb.loc[:, 'space']
-    description_airbnb = data_airbnb.loc[:, 'description'] 
+#    name_airbnb = data_airbnb.loc[:, 'name']
+#    summary_airbnb = data_airbnb.loc[:, 'summary']
+#    space_airbnb = data_airbnb.loc[:, 'space']
+#    description_airbnb = data_airbnb.loc[:, 'description'] 
 
     # for i in range(110):
     #     j = np.random.randint(250,60000)
@@ -236,7 +211,7 @@ if __name__ == '__main__':
 
 # --------------------- Évaluation du scoring avec rpls --------------------- # 
 
-    pieces_scoring = score_pieces(data_airbnb, croisement_v3, pieces_tokens)
+    pieces_scoring = score_pieces(data_airbnb, croisement_v3, nbpiece_tokens)
     
 #    nombre de airbnb avec au moins 1 match exact dans rpls: 19625
 #    ((pieces_scoring == 1).sum(axis=1) != 0).sum()
