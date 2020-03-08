@@ -635,7 +635,7 @@ class AirbnbAccessor:
         description_airbnb = self._obj.loc[indexes, 'description'] 
         
         pattern_pieces = r"""(?x)
-        (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three | une | deux | trois)
+        (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three)
         (?:
          (?:\s+bedroom|\-bedroom|bedroom|bedrm)
         |(?:\s?bdr|-?bdr|bdr)

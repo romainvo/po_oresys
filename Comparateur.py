@@ -1,7 +1,7 @@
 import numpy as np 
 import pandas as pd 
 import re
-import decorators
+import decorators 
 
 class Comparateur:
     
@@ -227,7 +227,7 @@ class Comparateur:
                   ,"leur logement sociaux respectifs sont déjà calculés")
         
         else:
-            print("Calcul des sous_scores d'étage")
+            print("Calcul des sous_scores du nombre de pièce")
             
             if hasattr(self, 'nbpiece_tokens'):
                 nbpiece_tokens = self.nbpiece_tokens
@@ -260,7 +260,10 @@ class Comparateur:
             print("Les scores de chaque airbnb et leur logement sociaux"
                   ,"respectifs sont déjà calculés")
         
-        else:    
+        else:  
+            #Un par un on calcule ou récupère les sous_scores correspondant aux 
+            #champs textuels analysés par l'algorithme.
+            
             scores = (~self.croisement.isna()).values * self.weights['croisement']
                 
             if 'surfhab' in self.weights and hasattr(self, 'surfhab_scoring'):
@@ -293,7 +296,7 @@ class Comparateur:
             
         return self.all_scores
 
-    def _extract_best_match(self):
+    def extract_best_match(self):
         
         if hasattr(self, 'all_scores'):
             #On récupère le numéro des colonnes avec le score maximal
@@ -319,7 +322,14 @@ class Comparateur:
         
         else:
             self.calculer_all_scores()
-            return self._extract_best_match()
+            return self.extract_best_match()
+        
+    def sort_best_match(self):
+        if hasattr(self, 'best_match'):
+            self.best_match.sort_values(by='score', ascending=False)
+        else:
+            raise AttributeError("L'ensemble des scores n'a pas été calculé :",
+                                 "exécutez la méthode 'calculer_all_scores")
 
 if __name__ == '__main__':
 
