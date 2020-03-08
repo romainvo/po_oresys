@@ -1,7 +1,7 @@
 import numpy as np 
 import pandas as pd 
 import re
-import decorators 
+import po_oresys.api.decorators 
 
 class Comparateur:
     
@@ -333,7 +333,7 @@ class Comparateur:
 
 if __name__ == '__main__':
 
-    data_airbnb = pd.read_csv("csv/airbnb.csv", sep=',', header='infer',
+    data_airbnb = pd.read_csv("../csv/airbnb.csv", sep=',', header='infer',
                           dtype={'longitude':'float', 'latitude':'float'})
     
     def converter_codepostal(string):
@@ -355,7 +355,7 @@ if __name__ == '__main__':
             else:
                 return np.nan
             
-    data_rpls = pd.read_csv("csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
+    data_rpls = pd.read_csv("../csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                     header='infer', index_col=0,
                     converters={'codepostal':converter_codepostal
                                 , 'etage':converter_etage},
@@ -368,7 +368,7 @@ if __name__ == '__main__':
         keep_columns.append('id_rpls{}'.format(i))
 #    dtype = {key:'int64' for key in keep_columns}
     
-    croisement_v3 = pd.read_csv('csv/results_rd155_nb250.csv', header='infer'
+    croisement_v3 = pd.read_csv('../csv/results_rd155_nb250.csv', header='infer'
                           , usecols=keep_columns
                           , index_col='id_bnb'
                           , dtype=pd.Int64Dtype()) 
