@@ -374,3 +374,5 @@ if __name__ == '__main__':
                           , dtype=pd.Int64Dtype()) 
     
     comparateur = Comparateur(data_airbnb, data_rpls, croisement_v3)
+    
+    all_scores = comparateur.calculer_all_scores()
