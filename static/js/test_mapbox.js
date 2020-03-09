@@ -48,7 +48,7 @@ map.on('load', function () {
     map.addSource('croisements', {
         type: 'geojson',
         generateId: true,
-        data: '/donneesgeos/croisementBis.geojson',  
+        data: '/donneesgeos/croisementBis2.geojson',  
     });
 
     map.addLayer({
@@ -208,6 +208,7 @@ map.on('load', function () {
     map.addLayer({
         id: "croisements-points",
         type: "circle",
+        interactive: "true",
         source: "croisements",
         layout: {
             visibility: "visible"
@@ -311,7 +312,7 @@ map.on('load', function () {
 
         // On remet à jour les data des sources pour afficher à nouveau tous les points
         map.getSource('rpls').setData('/donneesgeos/rpls.geojson');
-        map.getSource('croisements').setData('/donneesgeos/croisementBis.geojson')
+        map.getSource('croisements').setData('/donneesgeos/croisementBis2.geojson')
         map.setPaintProperty('rpls-unclustered-points', 'circle-radius', 4);
 
     });
