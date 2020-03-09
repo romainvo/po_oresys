@@ -11,15 +11,15 @@ def extraction_nbpiece(data_airbnb):
     description_airbnb = data_airbnb.loc[:, 'description'] 
     
     pattern_pieces = r"""(?x)
-    (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three | une | deux | trois)
+    (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three | (?:\s)four | (?:\s)une | (?:\s)deux | (?:\s)trois | (?:\s)quatre )
     (?:
-     (?:\s+bedroom|\-bedroom|bedroom|bedrm)
-    |(?:\s?bdr|-?bdr|bdr)
-    |\s?bed
-    |(?:\s?br|-?br|br)
-    |(?:\sroom|\srooms|room|rooms|r\s|\sr\s)
-    |(?:\spi.ce|\spi.ces|pi.ce|pi.ces|p\s|\sp\s)
-    #|(?:\s?pi.ces?|\s?pi.ce?|\(?p\)\s|p\s)
+     (?:\s+bedroom\s|\-bedroom\s|bedroom\s|bedrm\s)
+    |(?:\s?bdr\s|-?bdr\s|bdr\s)
+    |(?:\s?studio\s)
+    |\s?bed\s
+    |(?:\s?br\s|-?br\s|br\s)
+    |(?:\sroom\s|\srooms\s|room\s|rooms\s|r\s|\sr\s)
+    |(?:\spi.ce\s|\spi.ces\s|pi.ce\s|pi.ces\s|p\s|\sp\s)
     |(?:\s?chambre|chbr?|\s?chambres?\s|chambre|chbr?|chambres?\s|-?chambre|-+chbr?|-?chambres?\s)
     )
     """
@@ -34,9 +34,10 @@ def extraction_nbpiece(data_airbnb):
             temp_pieces = re.findall(pattern_pieces, row) 
 
             if (temp_pieces == (' a') or (' one') or (' two') or (' three')):
-                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a') else x for x in temp_pieces]
-                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two') else x for x in temp_pieces]
-                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three') else x for x in temp_pieces]
+                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+                temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
             
             #print('\n show temp' )
             #print(temp_pieces)
@@ -52,9 +53,10 @@ def extraction_nbpiece(data_airbnb):
 
             temp_pieces = re.findall(pattern_pieces, row) 
             if (temp_pieces == (' a') or (' one') or (' two') or (' three')):
-                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a') else x for x in temp_pieces]
-                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two') else x for x in temp_pieces]
-                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three') else x for x in temp_pieces]
+                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+                temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
                 
             if temp_pieces:
                 if idx not in tokens_pieces:
@@ -68,9 +70,10 @@ def extraction_nbpiece(data_airbnb):
 
             temp_pieces = re.findall(pattern_pieces, row) 
             if (temp_pieces == (' a') or (' one') or (' two') or (' three')):
-                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a') else x for x in temp_pieces]
-                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two') else x for x in temp_pieces]
-                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three') else x for x in temp_pieces]
+                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+                temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
                 
             if temp_pieces:
                 if idx not in tokens_pieces:
@@ -84,10 +87,11 @@ def extraction_nbpiece(data_airbnb):
 
             temp_pieces = re.findall(pattern_pieces, row) 
             if (temp_pieces == (' a') or (' one') or (' two') or (' three')):
-                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a') else x for x in temp_pieces]
-                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two') else x for x in temp_pieces]
-                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three') else x for x in temp_pieces]
-                
+                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+                temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+               
             if temp_pieces:
                 if idx not in tokens_pieces:
                     tokens_pieces[idx] = list(temp_pieces) 
@@ -182,27 +186,30 @@ if __name__ == '__main__':
 
 # -------- Évaluation des performances de l'algorithme de détection --------- # 
 
-#    name_airbnb = data_airbnb.loc[:, 'name']
-#    summary_airbnb = data_airbnb.loc[:, 'summary']
-#    space_airbnb = data_airbnb.loc[:, 'space']
-#    description_airbnb = data_airbnb.loc[:, 'description'] 
+#    nombre de détections :  21766
+#    len(pieces_tokens)
 
-    # for i in range(110):
-    #     j = np.random.randint(250,60000)
-    #     print("_______name________", "\n", name_airbnb[j]
-    #         ,"\n"
-    #         ,"_______Space________", "\n",space_airbnb[j]
-    #         ,"\n"   
-    #         ,"_______Description________", "\n",description_airbnb[j]
-    #         ,"\n"
-    #         ,"_______Summary________", "\n",summary_airbnb[j]
-    #         ,"\n")
-    #     if j not in pieces_tokens:
-    #         print("pas de resultats \n")
-    #         print('******************************************************')
-    #     else:    
-    #         print(pieces_tokens[j])
-    #         print('******************************************************')
+    name_airbnb = data_airbnb.loc[:, 'name']
+    summary_airbnb = data_airbnb.loc[:, 'summary']
+    space_airbnb = data_airbnb.loc[:, 'space']
+    description_airbnb = data_airbnb.loc[:, 'description'] 
+
+    for i in range(110):
+        j = np.random.randint(250,60000)
+        print("_______name________", "\n", name_airbnb[j]
+            ,"\n"
+            ,"_______Space________", "\n",space_airbnb[j]
+            ,"\n"   
+            ,"_______Description________", "\n",description_airbnb[j]
+            ,"\n"
+            ,"_______Summary________", "\n",summary_airbnb[j]
+            ,"\n")
+        if j not in pieces_tokens:
+            print("pas de resultats \n")
+            print('******************************************************')
+        else:    
+            print(pieces_tokens[j])
+            print('******************************************************')
 #
 #    
 #    Résultats avec un echantillon random de 110 annonces :
@@ -211,67 +218,67 @@ if __name__ == '__main__':
 
 # --------------------- Évaluation du scoring avec rpls --------------------- # 
 
-    pieces_scoring = score_pieces(data_airbnb, croisement_v3, nbpiece_tokens)
+    pieces_scoring = score_pieces(data_airbnb, croisement_v3, pieces_tokens)
     
 #    nombre de airbnb avec au moins 1 match exact dans rpls: 19625
-#    ((pieces_scoring == 1).sum(axis=1) != 0).sum()
+    ((pieces_scoring == 1).sum(axis=1) != 0).sum()
     
 #    nombre de airbnb avec seulement des match 1 étage de différence 
 #    dans rpls: 1020
-#    (((pieces_scoring == 0.2).sum(axis=1) != 0)
-#        & ((pieces_scoring == 1).sum(axis=1) == 0)).sum()
+    (((pieces_scoring == 0.2).sum(axis=1) != 0)
+        & ((pieces_scoring == 1).sum(axis=1) == 0)).sum()
     
 #    nombre de airbnb avec 0 match : 1084
-#    (((pieces_scoring == 0).sum(axis=1) != 0) 
-#        & ((pieces_scoring == 0.2).sum(axis=1) == 0)
-#        & ((pieces_scoring == 1).sum(axis=1) == 0)).sum()
+    (((pieces_scoring == 0).sum(axis=1) != 0) 
+        & ((pieces_scoring == 0.2).sum(axis=1) == 0)
+        & ((pieces_scoring == 1).sum(axis=1) == 0)).sum()
         
 #    nombre de airbnb avec que des nan = 0 prédictions ou 0 rpls dans le
 #    rayon d'anonymisation : 43241
-#    ((~pieces_scoring.isna()).sum(axis=1) == 0).sum()
+    ((~pieces_scoring.isna()).sum(axis=1) == 0).sum()
     
     
-    #INUTILE DE RÉALISER UNE ANALYSE DES PERF PAR TRANCHE CAR LA REPARTITION DU
-    #SCORE EST DISCRETE
+   #INUTILE DE RÉALISER UNE ANALYSE DES PERF PAR TRANCHE CAR LA REPARTITION DU
+   #SCORE EST DISCRETE
     
-#    rename_col = {'nbpiece_{}'.format(i) : i for i in range(pieces_scoring.shape[1])} 
-#    pieces_scoring.rename(columns=rename_col, inplace=True)
-#    
-#    #On récupère le numéro des colonnes avec le score maximal
-#    column_score_max = pieces_scoring.idxmax(axis=1).values
-#    score_max = pieces_scoring.max(axis=1).values
-#    
-#    best_match = -1 * np.ones((croisement_v3.shape[0],2)) 
-#    for idx in range(croisement_v3.shape[0]):
-#        if not pd.isna(column_score_max[idx]):
-#            best_match[idx,0] = croisement_v3.iloc[idx, int(column_score_max[idx])]
-#            best_match[idx,1] = score_max[idx]
-#            
-#    best_match = pd.DataFrame(best_match)
-#    
-#    best_match.index.rename('id_bnb', inplace=True)
-#    best_match.rename(columns={0:'id_rpls', 1:'score'}, inplace=True)
-#    best_match = best_match.astype({'id_rpls':'int64'})
-#
-#    best_match.replace(to_replace={'score':-1.0}, value={'score':0.0}
-#    , inplace=True)
-#    
-#    tranche_score = [0,1,30,40,50,60,62.5,65,70,75,80,90,95,97.5,98.5,99.5,100]
-#    
-#    somme_cumulee = 0
-#    for i, tranche in enumerate(tranche_score):
-#        if tranche == 100:
-#            break
-#        elif i == (len(tranche_score) - 2):
-#            nb_temp = best_match.loc[(best_match.score >= tranche/100)
-#                    & (best_match.score <= tranche_score[i+1]/100)].shape[0]
-#            
-#            somme_cumulee += nb_temp           
-#        else:            
-#            nb_temp = best_match.loc[(best_match.score >= tranche/100)
-#                        & (best_match.score < tranche_score[i+1]/100)].shape[0]
-#            
-#            somme_cumulee += nb_temp
-#        
-#        print("Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}"
-#              .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee))
+    rename_col = {'nbpiece_{}'.format(i) : i for i in range(pieces_scoring.shape[1])} 
+    pieces_scoring.rename(columns=rename_col, inplace=True)
+   
+   #On récupère le numéro des colonnes avec le score maximal
+    column_score_max = pieces_scoring.idxmax(axis=1).values
+    score_max = pieces_scoring.max(axis=1).values
+   
+    best_match = -1 * np.ones((croisement_v3.shape[0],2)) 
+    for idx in range(croisement_v3.shape[0]):
+        if not pd.isna(column_score_max[idx]):
+            best_match[idx,0] = croisement_v3.iloc[idx, int(column_score_max[idx])]
+            best_match[idx,1] = score_max[idx]
+           
+    best_match = pd.DataFrame(best_match)
+   
+    best_match.index.rename('id_bnb', inplace=True)
+    best_match.rename(columns={0:'id_rpls', 1:'score'}, inplace=True)
+    best_match = best_match.astype({'id_rpls':'int64'})
+
+    best_match.replace(to_replace={'score':-1.0}, value={'score':0.0}
+    , inplace=True)
+   
+    tranche_score = [0,1,30,40,50,60,62.5,65,70,75,80,90,95,97.5,98.5,99.5,100]
+   
+    somme_cumulee = 0
+    for i, tranche in enumerate(tranche_score):
+        if tranche == 100:
+            break
+        elif i == (len(tranche_score) - 2):
+            nb_temp = best_match.loc[(best_match.score >= tranche/100)
+                    & (best_match.score <= tranche_score[i+1]/100)].shape[0]
+           
+            somme_cumulee += nb_temp           
+        else:            
+            nb_temp = best_match.loc[(best_match.score >= tranche/100)
+                        & (best_match.score < tranche_score[i+1]/100)].shape[0]
+           
+            somme_cumulee += nb_temp
+       
+        print("Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}"
+            .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee))
