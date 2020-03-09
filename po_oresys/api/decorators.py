@@ -635,15 +635,16 @@ class AirbnbAccessor:
         description_airbnb = self._obj.loc[indexes, 'description'] 
         
         pattern_pieces = r"""(?x)
-        (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three)
+        (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three | (?:\s)four 
+        | (?:\s)une | (?:\s)deux | (?:\s)trois | (?:\s)quatre )
         (?:
-         (?:\s+bedroom|\-bedroom|bedroom|bedrm)
-        |(?:\s?bdr|-?bdr|bdr)
-        |\s?bed
-        |(?:\s?br|-?br|br)
-        |(?:\sroom|\srooms|room|rooms|r\s|\sr\s)
-        |(?:\spi.ce|\spi.ces|pi.ce|pi.ces|p\s|\sp\s)
-        #|(?:\s?pi.ces?|\s?pi.ce?|\(?p\)\s|p\s)
+         (?:\s+bedroom\s|\-bedroom\s|bedroom\s|bedrm\s)
+        |(?:\s?bdr\s|-?bdr\s|bdr\s)
+        |(?:\s?studio\s)
+        |\s?bed\s
+        |(?:\s?br\s|-?br\s|br\s)
+        |(?:\sroom\s|\srooms\s|room\s|rooms\s|r\s|\sr\s)
+        |(?:\spi.ce\s|\spi.ces\s|pi.ce\s|pi.ces\s|p\s|\sp\s)
         |(?:\s?chambre|chbr?|\s?chambres?\s|chambre|chbr?|chambres?\s|-?chambre|-+chbr?|-?chambres?\s)
         )
         """
@@ -655,11 +656,11 @@ class AirbnbAccessor:
                 row = row.lower()
                 temp_pieces = re.findall(pattern_pieces, row) 
     
-                if (temp_pieces == (' a') or (' one') or (' two') or (' three')):
-                    temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a') else x for x in temp_pieces]
-                    temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two') else x for x in temp_pieces]
-                    temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three') else x for x in temp_pieces]
-
+                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+                temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+  
                 if temp_pieces:
                     tokens_pieces[idx] = list(temp_pieces)
                 
@@ -668,11 +669,11 @@ class AirbnbAccessor:
                 row = row.lower() 
                 temp_pieces = re.findall(pattern_pieces, row) 
                 
-                if (temp_pieces == (' a') or (' one') or (' two') or (' three')):
-                    temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a') else x for x in temp_pieces]
-                    temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two') else x for x in temp_pieces]
-                    temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three') else x for x in temp_pieces]
-                    
+                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+                temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+                      
                 if temp_pieces:
                     if idx not in tokens_pieces:
                         tokens_pieces[idx] = list(temp_pieces) 
@@ -684,11 +685,11 @@ class AirbnbAccessor:
                 row = row.lower()
                 temp_pieces = re.findall(pattern_pieces, row) 
                 
-                if (temp_pieces == (' a') or (' one') or (' two') or (' three')):
-                    temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a') else x for x in temp_pieces]
-                    temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two') else x for x in temp_pieces]
-                    temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three') else x for x in temp_pieces]
-                    
+                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+                temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+                      
                 if temp_pieces:
                     if idx not in tokens_pieces:
                         tokens_pieces[idx] = list(temp_pieces) 
@@ -700,11 +701,11 @@ class AirbnbAccessor:
                 row = row.lower()
                 temp_pieces = re.findall(pattern_pieces, row) 
                 
-                if (temp_pieces == (' a') or (' one') or (' two') or (' three')):
-                    temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a') else x for x in temp_pieces]
-                    temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two') else x for x in temp_pieces]
-                    temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three') else x for x in temp_pieces]
-                    
+                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+                temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+                      
                 if temp_pieces:
                     if idx not in tokens_pieces:
                         tokens_pieces[idx] = list(temp_pieces) 
