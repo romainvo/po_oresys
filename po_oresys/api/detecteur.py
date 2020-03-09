@@ -4,7 +4,7 @@ import re
 from po_oresys.api.comparateur import Comparateur
 import po_oresys.api.decorators
 
-class detecteur:
+class Detecteur:
     
     def __init__(self , airbnb=None, rpls=None, croisement=None,score=None):
         
