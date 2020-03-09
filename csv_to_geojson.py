@@ -86,16 +86,17 @@ if __name__ == '__main__':
     gdf = gpd.GeoDataFrame(df_results, geometry=gpd.points_from_xy(df_results.longitude, df_results.latitude))
     gdf.drop(columns=['longitude','latitude'], inplace=True)
 
-    #gdf.to_file("static/donneesgeos/croisementBis.geojson", driver='GeoJSON')
+    gdf.to_file("static/donneesgeos/croisementBis.geojson", driver='GeoJSON')
 
 #-----------------------------------------------------------------------------#
 #---------------------------- Création coord_rpls --------------------------- #
 #-----------------------------------------------------------------------------#
-
+"""
 df = pd.read_csv('paris_rpls_2017.csv', sep=',', header='infer',
                       usecols=['longitude','latitude'])
 
 df.to_json('static/donneesgeos/coord_rpls.json')
+"""
 
                        
 
