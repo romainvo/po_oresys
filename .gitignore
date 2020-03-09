@@ -1,5 +1,5 @@
 .idea
-.vscode/settings.json
+.vscode
 __pycache__
 csv
 paris_rpls_2017.csv

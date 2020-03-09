@@ -94,7 +94,7 @@ class detecteur:
                 else:
                     return np.nan
                 
-        data_rpls = pd.read_csv("../csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
+        data_rpls = pd.read_csv("po_oresys/csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                         header='infer', index_col=0,
                         converters={'codepostal':converter_codepostal
                                     , 'etage':converter_etage},
@@ -107,7 +107,7 @@ class detecteur:
     @staticmethod
     def import_data_airbnb():
         
-        data_airbnb = pd.read_csv("../csv/airbnb.csv", sep=',', header='infer',
+        data_airbnb = pd.read_csv("po_oresys/csv/airbnb.csv", sep=',', header='infer',
                               dtype={'longitude':'float', 'latitude':'float'})
         
         data_airbnb.index.rename('id_bnb', inplace=True)
@@ -122,7 +122,7 @@ class detecteur:
             keep_columns.append('id_rpls{}'.format(i))
     #    dtype = {key:'int64' for key in keep_columns}
         
-        croisement_v3 = pd.read_csv('../csv/results_rd155_nb250.csv', header='infer'
+        croisement_v3 = pd.read_csv('po_oresys/csv/results_rd155_nb250.csv', header='infer'
                               , usecols=keep_columns
                               , index_col='id_bnb'
                               , dtype=pd.Int64Dtype()) 

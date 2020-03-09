@@ -728,7 +728,7 @@ class AirbnbAccessor:
         
 if __name__ == '__main__':
 
-    data_airbnb = pd.read_csv("../csv/airbnb.csv", sep=',', header='infer',
+    data_airbnb = pd.read_csv("po_oresys/csv/airbnb.csv", sep=',', header='infer',
                           dtype={'longitude':'float', 'latitude':'float'})
     
     def converter_codepostal(string):
@@ -750,7 +750,7 @@ if __name__ == '__main__':
             else:
                 return np.nan
             
-    data_rpls = pd.read_csv("../csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
+    data_rpls = pd.read_csv("po_oresys/csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                     header='infer', index_col=0,
                     converters={'codepostal':converter_codepostal
                                 , 'etage':converter_etage},
