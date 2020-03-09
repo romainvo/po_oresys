@@ -20,12 +20,6 @@ var hoveredStateId =  null;
 var coordinates = document.getElementById('coordinates');
 
 map.on('load', function () {
-    /*
-    map.addSource('arrondissements', {
-        'type': 'geojson',
-        'generateId' : true,
-        'data': '/donneesgeos/arrondissements_municipaux-20180711.json'
-    });*/
 
     map.addSource('rpls', {
         type: 'geojson',
@@ -48,7 +42,7 @@ map.on('load', function () {
     map.addSource('croisements', {
         type: 'geojson',
         generateId: true,
-        data: '/donneesgeos/croisementBis2.geojson',  
+        data: '/donneesgeos/croisementBis3.geojson',  
     });
 
     map.addLayer({
@@ -176,34 +170,7 @@ map.on('load', function () {
             "circle-stroke-color": "#FFFFFF"
         },
     });
-    /*
-    map.addLayer({
-        id: "arrondissements-contour",
-        type: "line",
-        source: "arrondissements",
-        layout: {},
-        paint: {
-            "line-color": "#000000",
-            "line-width": 1
-        },
-        //"filter": ["==", "$type", "Polygon"]
-    });
-         
-    map.addLayer({
-        "id": "arrondissements-fill",
-        "type": "fill",
-        "source": "arrondissements",
-        "layout": {},
-        "paint": {
-            "fill-color": "#627BC1",
-            "fill-opacity": ["case",
-                ["boolean", ["feature-state", "hover"], false],
-                0.5,
-                0
-            ]
-        },
-        //"filter": ["==", "$type", "Polygon"]
-    });*/
+    
 
     map.addLayer({
         id: "croisements-points",
@@ -221,32 +188,6 @@ map.on('load', function () {
         }
     });
 
-    // When the user moves their mouse over the arrondissements-fill layer, 
-    // we'll update the feature state for the feature under the mouse.
-    /*map.on("mousemove", "arrondissements-fill", function(e) {
-        var canvas = map.getCanvas();
-        canvas.style.cursor = 'pointer';
-
-        if (e.features.length > 0) {
-            if (hoveredStateId) {
-            map.setFeatureState({source: 'arrondissements', id: hoveredStateId}, { hover: false});
-            }
-            hoveredStateId = e.features[0].id;
-            map.setFeatureState({source: 'arrondissements', id: hoveredStateId}, { hover: true});
-        }
-    });
-        
-    // When the mouse leaves the state-fill layer, update the feature state of the
-    // previously hovered feature.
-    map.on("mouseleave", "arrondissements-fill", function() {
-        var canvas = map.getCanvas();
-        canvas.style.cursor = '';
-
-        if (hoveredStateId) {
-            map.setFeatureState({source: 'arrondissements', id: hoveredStateId}, { hover: false});
-        }
-        hoveredStateId =  null;
-    });*/
 
     map.on('mousemove', function (e) {
         document.getElementById('coordinates').innerHTML =
@@ -263,9 +204,15 @@ map.on('load', function () {
         if(features.length>0){
 
             var listIdRpls = [];
+            count=0;
             for(name in features[0].properties) { 
-                console.log(features[0].properties[name])
-                listIdRpls.push(features[0].properties[name])
+                if(count<1) {
+                    count= count+1
+                } 
+                else{
+                    console.log(features[0].properties[name])
+                    listIdRpls.push(features[0].properties[name])
+                }
             }  
 
             // On cherche les coordonnées des id_rpls trouvés
@@ -284,6 +231,7 @@ map.on('load', function () {
                 // On met à jour les data des sources avec les coordonnées des points qu'on veut afficher
                 listIdRpls.forEach(function(idRpls){
                     newDataRpls.features.push({'type':'Feature',
+                    'properties': {'id_rpls': idRpls},
                     'geometry':  {
                         'type':'Point',
                         'coordinates':[dataRpls.longitude[idRpls], dataRpls.latitude[idRpls]]
@@ -293,6 +241,7 @@ map.on('load', function () {
                 newDataCroisement = {'type':'FeatureCollection',
                     'features':[{
                         'type':'Feature',
+                        'properties': {'id_bnb': features[0].properties.id_bnb},
                         'geometry':  {
                             'type':'Point',
                             'coordinates':[features[0].geometry.coordinates[0],features[0].geometry.coordinates[1]]
@@ -301,21 +250,45 @@ map.on('load', function () {
                 };
                 map.getSource('rpls').setData(newDataRpls)
                 map.getSource('croisements').setData(newDataCroisement)
-     
                 map.setPaintProperty('rpls-unclustered-points', 'circle-radius', 6);
             }
-
         }
     });
     
+    // On remet à jour les data des sources pour afficher à nouveau tous les points
     map.on('click',function(e){
-
-        // On remet à jour les data des sources pour afficher à nouveau tous les points
         map.getSource('rpls').setData('/donneesgeos/rpls.geojson');
-        map.getSource('croisements').setData('/donneesgeos/croisementBis2.geojson')
+        map.getSource('croisements').setData('/donneesgeos/croisementBis3.geojson')
         map.setPaintProperty('rpls-unclustered-points', 'circle-radius', 4);
-
     });
+
+    // Create a popup, but don't add it to the map yet.
+    var popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: true
+    });
+
+    map.on('mouseenter','rpls-unclustered-points',function(e){
+        var features = map.queryRenderedFeatures(e.point, { layers: ['rpls-unclustered-points'] });
+        popup
+            .setLngLat(features[0].geometry.coordinates)
+            .setHTML(features[0].properties.id_rpls)
+            .addTo(map); 
+    })
+
+    // Create a popup, but don't add it to the map yet.
+    var popup2 = new mapboxgl.Popup({
+        closeButton: true,
+        closeOnClick: true
+    });
+    
+    map.on('mouseenter','croisements-points',function(e){
+        var features = map.queryRenderedFeatures(e.point, { layers: ['croisements-points'] });
+        popup2
+            .setLngLat(features[0].geometry.coordinates)
+            .setHTML(features[0].properties.id_bnb)
+            .addTo(map); 
+    })
 
 });
 

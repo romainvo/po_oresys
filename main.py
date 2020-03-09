@@ -1,10 +1,10 @@
 from flask import Flask, render_template, send_from_directory
 
 app = Flask(__name__)
-@app.route("/")
 
+@app.route("/")
 def home():
-  return render_template("home.html")
+  return render_template("test_mapbox.html")
 
 @app.route('/donneesgeos/<path:path>')
 def send_donneesgeo(path):

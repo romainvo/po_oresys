@@ -13,5 +13,6 @@ geo-rpls2017.csv
 results_rd155_nb250.csv
 results_rd150_nb100_score.csv
 static/donneesgeos/croisementBis.geojson
-static/donneesgeos/croisementBis.geojson
 static/donneesgeos/croisementBis2.geojson
+all_scores_090320.csv
+static/donneesgeos/croisementBis3.geojson

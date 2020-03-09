@@ -34,14 +34,15 @@ if __name__ == '__main__':
 # Création croisement.geojson avec pour airbnb avec au moins un score > seuil #
 #-----------------------------------------------------------------------------#
     keep_columns = ['id_bnb']
-    for i in range(100):
+    for i in range(250):
         keep_columns.append('id_rpls{}'.format(i))
         keep_columns.append('score{}'.format(i))
     dtype = {key:'int64' for key in keep_columns}
     
-    df_results = pd.read_csv('results_rd150_nb100_score.csv', header='infer'
-                          , usecols=keep_columns
-                          , index_col='id_bnb')
+    df_results = pd.read_csv('results_rd155_nb250.csv', header='infer'
+                          , usecols=keep_columns,
+                          index_col='id_bnb'
+                          )
     
     df_results.index.rename('id_bnb', inplace=True)
 
@@ -50,10 +51,10 @@ if __name__ == '__main__':
                         dtype={'longitude':'float', 'latitude':'float'})
 
     # On crée des colonnes de booléens pour la condition score > seuil
-    seuil = 4
+    seuil = 0.8
     condition_colonne = df_results['score0'] > seuil
     df_results.loc[:,'seuil0'] = condition_colonne
-    for i in range(1,100):
+    for i in range(1,250):
         colonne_inter = df_results['score'+str(i)] > seuil
         df_results.loc[:, 'seuil'+str(i)] = condition_colonne
         condition_colonne = condition_colonne + colonne_inter
@@ -66,7 +67,7 @@ if __name__ == '__main__':
 
     # On identifie et stocke les id_rpls pour lesquels le score est supérieur au seuil
     id_sup_seuil = []
-    for i in range(100):
+    for i in range(250):
         id_sup_seuil.append(
                 df_results.loc[
                         df_results.loc[:,'seuil{}'.format(i)]
@@ -74,19 +75,22 @@ if __name__ == '__main__':
                         ].reindex(index=range(df_results.shape[0])))
    
     df_results = df_results.loc[:,['latitude','longitude']]
+    
+    # On crée une colonne 'id_bnb' pour que l'id_bnb apparaisse dans les properties du geojson
+    df_results['id_bnb']=df_results.index
 
-    for i in range(100):
+    for i in range(250):
         df_results = pd.concat([df_results,id_sup_seuil[i]], ignore_index=False
                                , sort=False, axis=1)
 
-    df_results = df_results.loc[df_results.isna().sum(axis=1) != 100]
+    df_results = df_results.loc[df_results.isna().sum(axis=1) != 250]
     print(df_results.head())
     print(df_results.shape)
     
     gdf = gpd.GeoDataFrame(df_results, geometry=gpd.points_from_xy(df_results.longitude, df_results.latitude))
     gdf.drop(columns=['longitude','latitude'], inplace=True)
 
-    gdf.to_file("static/donneesgeos/croisementBis2.geojson", driver='GeoJSON')
+    gdf.to_file("static/donneesgeos/croisementBis3.geojson", driver='GeoJSON')
 
 #-----------------------------------------------------------------------------#
 #---------------------------- Création coord_rpls --------------------------- #
