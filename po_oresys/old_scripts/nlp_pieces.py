@@ -150,7 +150,7 @@ def score_pieces(data_airbnb, croisement_v3, pieces_tokens):
         
     nb_col_croisement_v3 = croisement_v3.shape[1]
     
-    data_rpls = pd.read_csv("C:/Users/alejo/Documents/Alejo!/SemestreA3S1/Projet d'option/PO ORESYS/po_oresys/csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
+    data_rpls = pd.read_csv("../csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                             header='infer', index_col=0,
                             converters={'codepostal':converter_cp
                                         , 'etage':converter_etage},
@@ -181,12 +181,12 @@ if __name__ == '__main__':
         keep_columns.append('id_rpls{}'.format(i))
 #    dtype = {key:'int64' for key in keep_columns}
     
-    croisement_v3 = pd.read_csv("C:/Users/alejo/Documents/Alejo!/SemestreA3S1/Projet d'option/PO ORESYS/po_oresys/csv/results_rd155_nb250.csv", header='infer'
+    croisement_v3 = pd.read_csv('../csv/results_rd155_nb250.csv', header='infer'
                           , usecols=keep_columns
                           , index_col='id_bnb'
                           , dtype=pd.Int64Dtype())    
     
-    data_airbnb = pd.read_csv("C:/Users/alejo/Documents/Alejo!/SemestreA3S1/Projet d'option/PO ORESYS/po_oresys/csv/airbnb.csv", sep=',', header='infer',
+    data_airbnb = pd.read_csv("../csv/airbnb.csv", sep=',', header='infer',
                               dtype={'longitude':'float', 'latitude':'float'})
     
     nbpiece_tokens = extraction_nbpiece(data_airbnb)
@@ -196,27 +196,27 @@ if __name__ == '__main__':
 #    nombre de détections :  40534
     len(nbpiece_tokens)
 
-    name_airbnb = data_airbnb.loc[:, 'namex`']
+    name_airbnb = data_airbnb.loc[:, 'name']
     summary_airbnb = data_airbnb.loc[:, 'summary']
     space_airbnb = data_airbnb.loc[:, 'space']
     description_airbnb = data_airbnb.loc[:, 'description'] 
 
-    for i in range(110):
-        j = np.random.randint(250,60000)
-        print("_______name________", "\n", name_airbnb[j]
-            ,"\n"
-            ,"_______Space________", "\n",space_airbnb[j]
-            ,"\n"   
-            ,"_______Description________", "\n",description_airbnb[j]
-            ,"\n"
-            ,"_______Summary________", "\n",summary_airbnb[j]
-            ,"\n")
-        if j not in nbpiece_tokens:
-            print("pas de resultats \n")
-            print('******************************************************')
-        else:    
-            print(nbpiece_tokens[j])
-            print('******************************************************')
+#    for i in range(110):
+#        j = np.random.randint(250,60000)
+#        print("_______name________", "\n", name_airbnb[j]
+#            ,"\n"
+#            ,"_______Space________", "\n",space_airbnb[j]
+#            ,"\n"   
+#            ,"_______Description________", "\n",description_airbnb[j]
+#            ,"\n"
+#            ,"_______Summary________", "\n",summary_airbnb[j]
+#            ,"\n")
+#        if j not in nbpiece_tokens:
+#            print("pas de resultats \n")
+#            print('******************************************************')
+#        else:    
+#            print(nbpiece_tokens[j])
+#            print('******************************************************')
 
 
 #    Résultats avec un echantillon random de 110 annonces :
@@ -226,63 +226,51 @@ if __name__ == '__main__':
 # --------------------- Évaluation du scoring avec rpls --------------------- # 
 
     pieces_scoring = score_pieces(data_airbnb, croisement_v3, nbpiece_tokens)
-    
-#    nombre de airbnb avec au moins 1 match exact dans rpls: 19625
-    ((pieces_scoring == 1).sum(axis=1) != 0).sum()
-    
-#    nombre de airbnb avec seulement des match 1 étage de différence 
-#    dans rpls: 1020
-    (((pieces_scoring == 0.2).sum(axis=1) != 0)
-        & ((pieces_scoring == 1).sum(axis=1) == 0)).sum()
-    
-#    nombre de airbnb avec 0 match : 1084
-    (((pieces_scoring == 0).sum(axis=1) != 0) 
-        & ((pieces_scoring == 0.2).sum(axis=1) == 0)
-        & ((pieces_scoring == 1).sum(axis=1) == 0)).sum()
-        
-#    nombre de airbnb avec que des nan = 0 prédictions ou 0 rpls dans le
-#    rayon d'anonymisation : 43241
-    ((~pieces_scoring.isna()).sum(axis=1) == 0).sum()
 
+    #INUTILE DE RÉALISER UNE ANALYSE DES PERF PAR TRANCHE CAR LA REPARTITION DU
+    #SCORE EST DISCRETE
     
     rename_col = {'nbpiece_{}'.format(i) : i for i in range(pieces_scoring.shape[1])} 
     pieces_scoring.rename(columns=rename_col, inplace=True)
-   
-   #On récupère le numéro des colonnes avec le score maximal
+    
+    #On récupère le numéro des colonnes avec le score maximal
     column_score_max = pieces_scoring.idxmax(axis=1).values
     score_max = pieces_scoring.max(axis=1).values
-   
+    
     best_match = -1 * np.ones((croisement_v3.shape[0],2)) 
     for idx in range(croisement_v3.shape[0]):
         if not pd.isna(column_score_max[idx]):
             best_match[idx,0] = croisement_v3.iloc[idx, int(column_score_max[idx])]
             best_match[idx,1] = score_max[idx]
-           
+            
     best_match = pd.DataFrame(best_match)
-   
+    
     best_match.index.rename('id_bnb', inplace=True)
     best_match.rename(columns={0:'id_rpls', 1:'score'}, inplace=True)
     best_match = best_match.astype({'id_rpls':'int64'})
 
-    best_match.replace(to_replace={'score':-1.0}, value={'score':0.0}
-    , inplace=True)
-   
-    tranche_score = [0,1,30,40,50,60,62.5,65,70,75,80,90,95,97.5,98.5,99.5,100]
-   
-    somme_cumulee = 0
-    for i, tranche in enumerate(tranche_score):
-        if tranche == 100:
-            break
-        elif i == (len(tranche_score) - 2):
-            nb_temp = best_match.loc[(best_match.score >= tranche/100)
-                    & (best_match.score <= tranche_score[i+1]/100)].shape[0]
-           
-            somme_cumulee += nb_temp           
-        else:            
-            nb_temp = best_match.loc[(best_match.score >= tranche/100)
-                        & (best_match.score < tranche_score[i+1]/100)].shape[0]
-           
-            somme_cumulee += nb_temp
-       
-        print("Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}"
-            .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee))
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+#    best_match.replace(to_replace={'score':-1.0}, value={'score':0.0}
+#    , inplace=True)
+    
+    tranche_index = ["no detection", "0%", "20%", "50%", "100%"]
+    tranche_nombre = [0]
+    tranche_nombre.append((best_match.score == 0).sum())
+    tranche_nombre.append((best_match.score == 0.2).sum())
+    tranche_nombre.append((best_match.score == 0.5).sum())
+    tranche_nombre.append((best_match.score == 1).sum())
+    tranche_nombre[0] = best_match.shape[0] - np.sum(tranche_nombre[1:])
+
+    plt.style.use('seaborn-darkgrid')
+    plt.rcParams.update({'font.size':15})
+#    plt.rcParams["figure.figsize"] = (50,40)    
+    fig, ax = plt.subplots()
+    ax.set_title("Distribution des scores - nombre de pièces")
+    sns.barplot(y=tranche_nombre, x=tranche_index
+                , orient='v', ax=ax, edgecolor='white')
+    
+    #Distribution du nombre de logements sociaux autour de chaque airbnb ayant
+    #le même nombre de pièces
+    #sns.distplot((pieces_scoring == 1).sum(axis=1)

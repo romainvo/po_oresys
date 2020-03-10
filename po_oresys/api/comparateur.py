@@ -139,7 +139,7 @@ class Comparateur:
             if hasattr(self, 'surfhab_tokens'):
                 surfhab_tokens = self.surfhab_tokens
             else:
-                print("Text mining en cours - surfhab non extrait")
+                print("...Text mining en cours - surfhab non extrait")
                 surfhab_tokens \
                 = self.data_airbnb.bnb.extraire_surfhab(self.data_airbnb.index.values)
             
@@ -185,7 +185,7 @@ class Comparateur:
             if hasattr(self, 'etage_tokens'):
                 etage_tokens = self.etage_tokens
             else:
-                print("Text mining - etage non extrait")
+                print("...Text mining en cours - etage non extrait")
                 etage_tokens \
                 = self.data_airbnb.bnb.extraire_etage(self.data_airbnb.index.values)
           
@@ -232,6 +232,7 @@ class Comparateur:
             if hasattr(self, 'nbpiece_tokens'):
                 nbpiece_tokens = self.nbpiece_tokens
             else:
+                print("...Text mining en cours - nombre de pièce non extrait")
                 nbpiece_tokens \
                 = self.data_airbnb.bnb.extraire_nbpiece(self.data_airbnb.index.values)
         
@@ -376,3 +377,63 @@ if __name__ == '__main__':
     comparateur = Comparateur(data_airbnb, data_rpls, croisement_v3)
     
     all_scores = comparateur.calculer_all_scores()
+    
+    best_match = comparateur.extract_best_match()
+
+    # ----------------------- EVALUER LE SCORING ---------------------------- #
+
+    #Nombre de airbnb avec 0 rpls dans le rayon d'anonymisation de 150m
+    #((~croisement_v3.isna()).sum(axis=1) == 0).sum()
+    #Statistique nombre de croisements : 
+    #(~croisement_v3.isna()).sum(axis=1).describe()
+
+    tranche_score = [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]
+    tranche_index = []
+    tranche_nombre = []
+    quantiles = []
+    
+    somme_cumulee = 0
+    for i, tranche in enumerate(tranche_score):
+        if tranche == 100:
+            break
+        elif i == (len(tranche_score) - 2):
+            nb_temp = best_match.loc[(best_match.score >= tranche/100)
+                    & (best_match.score <= tranche_score[i+1]/100)].shape[0]
+            
+            somme_cumulee += nb_temp           
+        else:            
+            nb_temp = best_match.loc[(best_match.score >= tranche/100)
+                        & (best_match.score < tranche_score[i+1]/100)].shape[0]
+            
+            somme_cumulee += nb_temp
+        
+        tranche_nombre.append(nb_temp)
+        tranche_index.append("{}% - {}%".format(tranche, tranche_score[i+1]))
+        print("Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}"
+              .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee))
+    
+    tranche_index[0] = "no detection"
+    print("\n","Moyenne des score : {}".format(best_match.score.mean()))
+    print("Ecart-type : {}".format(best_match.score.std()))
+    print("On affiche les différents déciles", "\n")      
+    
+    for i, score in enumerate(tranche_score):
+        quantiles.append(best_match.score.quantile(score/100))
+        print("Quantile {}% : {}".format(i, quantiles[i]))           
+    
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    
+    plt.style.use('seaborn-darkgrid')
+#    plt.rcParams.update({'font.size':15})
+#    plt.rcParams["figure.figsize"] = (50,40)
+    
+    fig, ax = plt.subplots()
+    ax.set_title("Distribution des scores")
+    sns.barplot(y=tranche_nombre, x=tranche_index
+                , orient='v', ax=ax, edgecolor='white')  
+    
+    fig_q, ax_q = plt.subplots()
+    ax_q.set_title("Quantiles des scores")
+    sns.barplot(y=quantiles, x=tranche_score
+                , orient='v', ax=ax_q, edgecolor='white')  

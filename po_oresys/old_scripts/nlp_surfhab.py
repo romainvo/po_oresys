@@ -1,5 +1,5 @@
 import pandas as pd
-import re, pprint
+import re
 import numpy as np
 
 #import nltk 
@@ -178,7 +178,7 @@ def score_surfhab(data_airbnb, croisement_v3, surfhab_tokens):
 
     nb_col_croisement_v3 = croisement_v3.shape[1]
         
-    data_rpls = pd.read_csv("csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
+    data_rpls = pd.read_csv("../csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                             header='infer', index_col=0,
                             converters={'codepostal':converter_cp},
                             dtype={'longitude':'float', 'latitude':'float'})
@@ -207,13 +207,13 @@ if __name__ == '__main__':
         keep_columns.append('id_rpls'+str(i))
 #    dtype = {key:'int64' for key in keep_columns}
     
-    croisement_v3 = pd.read_csv('csv/results_rd155_nb250.csv', header='infer'
+    croisement_v3 = pd.read_csv('../csv/results_rd155_nb250.csv', header='infer'
                           , usecols=keep_columns
                           , index_col='id_bnb'
-                          , dtype=pd.Int64Dtype())
+                          , dtype=pd.Int64Dtype())    
     
-    data_airbnb = pd.read_csv("csv/airbnb.csv", sep=',', header='infer',
-                          dtype={'longitude':'float', 'latitude':'float'})
+    data_airbnb = pd.read_csv("../csv/airbnb.csv", sep=',', header='infer',
+                              dtype={'longitude':'float', 'latitude':'float'})
 
     surfhab_tokens = extraction_surfhab(data_airbnb)
 
@@ -250,24 +250,7 @@ if __name__ == '__main__':
 # --------------------- Évaluation du scoring avec rpls --------------------- # 
 
     surfhab_scoring = score_surfhab(data_airbnb, croisement_v3, surfhab_tokens)
-    
-#    nombre de airbnb avec au moins 1 match exact dans le rpls: 9046
-#    ((surfhab_scoring == 1).sum(axis=1) != 0).sum()
-    
-#    nombre de airbnb avec seulement des match non exacts dans rpls: 18109
-#    (((surfhab_scoring > 0).sum(axis=1) != 0) 
-#        & ((surfhab_scoring == 1).sum(axis=1) == 0)).sum()
-#    
-#    nombre de airbnb avec 0 match : 1
-#    (((surfhab_scoring == 0).sum(axis=1) != 0) 
-#        & ((surfhab_scoring > 0).sum(axis=1) == 0)).sum()
-        
-#    nombre de airbnb avec que des nan = 0 prédictions ou 0 rpls dans le
-#    rayon d'anonymisation : 37814
-##    ((~surfhab_scoring.isna()).sum(axis=1) == 0).sum() 
-#    
-# 
-#    
+   
     rename_col = {'surfhab_{}'.format(i) : i for i in range(surfhab_scoring.shape[1])} 
     surfhab_scoring.rename(columns=rename_col, inplace=True)
     
@@ -290,10 +273,11 @@ if __name__ == '__main__':
     best_match.replace(to_replace={'score':-1.0}, value={'score':0.0}
     , inplace=True)
     
-    tranche_score = [0,1,30,40,50,60,62.5,65,70,75,80,90,95,97.5,98.5,99.5,100]
+    tranche_score = [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]
     tranche_index = []
     tranche_nombre = []
     
+    n = best_match.shape[0]
     somme_cumulee = 0
     for i, tranche in enumerate(tranche_score):
         if tranche == 100:
@@ -312,7 +296,7 @@ if __name__ == '__main__':
         tranche_nombre.append(nb_temp)
         tranche_index.append("{}% - {}%".format(tranche, tranche_score[i+1]))
         print("Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}"
-              .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee))
+              .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee/n))
     
     tranche_index[0] = "no detection"
     
@@ -320,11 +304,10 @@ if __name__ == '__main__':
     import seaborn as sns
     
     plt.style.use('seaborn-darkgrid')
-#    plt.rcParams.update({'font.size':35})
-#    plt.rcParams["figure.figsize"] = (50,40)
-    
-    fig, ax = plt.subplots()
-    ax.set_title("Nombre de suspicions par tranche de score - surface habitable")
-    sns.barplot(y=tranche_nombre, x=tranche_index
-                , orient='v', ax=ax, edgecolor='white')
 
+    fig, ax = plt.subplots()
+    plt.rcParams.update({'font.size':15})
+#    plt.rcParams["figure.figsize"] = (50,40)
+    ax.set_title("Nombre de suspicions par tranche de score - surface habitable")
+    sns.barplot(x=tranche_nombre, y=tranche_index
+                , orient='h', ax=ax, edgecolor='white')

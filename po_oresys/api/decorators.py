@@ -635,17 +635,19 @@ class AirbnbAccessor:
         description_airbnb = self._obj.loc[indexes, 'description'] 
         
         pattern_pieces = r"""(?x)
-        (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three | (?:\s)four 
-        | (?:\s)une | (?:\s)deux | (?:\s)trois | (?:\s)quatre )
+        (\d | (?:\s|\A)a | (?:\s|\A)one | (?:\s|\A)two | (?:\s|\A)three | (?:\s|\A)four | (?:\s|\A)une | (?:\s|\A)deux | (?:\s|\A)trois | (?:\s|\A)quatre )
         (?:
-         (?:\s+bedroom\s|\-bedroom\s|bedroom\s|bedrm\s)
-        |(?:\s?bdr\s|-?bdr\s|bdr\s)
-        |(?:\s?studio\s)
-        |\s?bed\s
-        |(?:\s?br\s|-?br\s|br\s)
-        |(?:\sroom\s|\srooms\s|room\s|rooms\s|r\s|\sr\s)
-        |(?:\spi.ce\s|\spi.ces\s|pi.ce\s|pi.ces\s|p\s|\sp\s)
-        |(?:\s?chambre|chbr?|\s?chambres?\s|chambre|chbr?|chambres?\s|-?chambre|-+chbr?|-?chambres?\s)
+         (?:(?:\s|\-)bedroom(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|bedroom(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
+        |(?:(?:\s|\-)bedrm(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|bedrm(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
+        |(?:(?:\s|\-)bdr(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|bdr(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
+        |(?:(?:\s|\-)bed(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|\/)|bed(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|\/))
+        |(?:(?:\s|\-)br(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s\s|\/)|br(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s\s|\/))
+        |(?:(?:\s|\-)room(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|room(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
+        |(?:(?:\s|\-)r(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|\/)|r(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|\/))
+        |(?:(?:\s|\-)pi.ce(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|pi.ce(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
+        |(?:(?:\s|\-)p(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|\/)|p(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|\/))
+        |(?:(?:\s|\-)chambre(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|chambre(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
+        |(?:(?:\s|\-)chbr(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|chbr(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
         )
         """
     
@@ -655,24 +657,26 @@ class AirbnbAccessor:
             if not pd.isna(row):
                 row = row.lower()
                 temp_pieces = re.findall(pattern_pieces, row) 
+                temp_pieces += re.findall('studio', row) 
     
-                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
-                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
-                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
-                temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+                temp_pieces=[1 if (x=='studio' or x=='a' or x==' a' or x=='one' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x=='une' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+                temp_pieces=[2 if (x=='two' or x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+                temp_pieces=[3 if (x=='three' or x==' three' or x=='\tthree' or x=='\xa0three' or x==' trois' or x=='trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+                temp_pieces=[4 if (x=='four' or x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre'  or x=='quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
   
                 if temp_pieces:
                     tokens_pieces[idx] = list(temp_pieces)
                 
         for idx, row in zip(indexes, summary_airbnb.values):
             if not pd.isna(row):
-                row = row.lower() 
+                row = row.lower()
                 temp_pieces = re.findall(pattern_pieces, row) 
-                
-                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
-                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
-                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
-                temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+                temp_pieces += re.findall('studio', row) 
+    
+                temp_pieces=[1 if (x=='studio' or x=='a' or x==' a' or x=='one' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x=='une' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+                temp_pieces=[2 if (x=='two' or x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+                temp_pieces=[3 if (x=='three' or x==' three' or x=='\tthree' or x=='\xa0three' or x==' trois' or x=='trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+                temp_pieces=[4 if (x=='four' or x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre'  or x=='quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
                       
                 if temp_pieces:
                     if idx not in tokens_pieces:
@@ -684,11 +688,12 @@ class AirbnbAccessor:
             if not pd.isna(row):
                 row = row.lower()
                 temp_pieces = re.findall(pattern_pieces, row) 
-                
-                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
-                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
-                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
-                temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+                temp_pieces += re.findall('studio', row) 
+    
+                temp_pieces=[1 if (x=='studio' or x=='a' or x==' a' or x=='one' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x=='une' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+                temp_pieces=[2 if (x=='two' or x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+                temp_pieces=[3 if (x=='three' or x==' three' or x=='\tthree' or x=='\xa0three' or x==' trois' or x=='trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+                temp_pieces=[4 if (x=='four' or x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre'  or x=='quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
                       
                 if temp_pieces:
                     if idx not in tokens_pieces:
@@ -700,11 +705,12 @@ class AirbnbAccessor:
             if not pd.isna(row):
                 row = row.lower()
                 temp_pieces = re.findall(pattern_pieces, row) 
-                
-                temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
-                temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
-                temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
-                temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+                temp_pieces += re.findall('studio', row) 
+    
+                temp_pieces=[1 if (x=='studio' or x=='a' or x==' a' or x=='one' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x=='une' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+                temp_pieces=[2 if (x=='two' or x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+                temp_pieces=[3 if (x=='three' or x==' three' or x=='\tthree' or x=='\xa0three' or x==' trois' or x=='trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+                temp_pieces=[4 if (x=='four' or x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre'  or x=='quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
                       
                 if temp_pieces:
                     if idx not in tokens_pieces:

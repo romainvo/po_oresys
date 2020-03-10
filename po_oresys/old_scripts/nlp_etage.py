@@ -224,7 +224,7 @@ def score_etage(data_airbnb, croisement_v3, etage_tokens):
         
     nb_col_croisement_v3 = croisement_v3.shape[1]
     
-    data_rpls = pd.read_csv("csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
+    data_rpls = pd.read_csv("../csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                             header='infer', index_col=0,
                             converters={'codepostal':converter_cp
                                         , 'etage':converter_etage},
@@ -255,12 +255,12 @@ if __name__ == '__main__':
         keep_columns.append('id_rpls{}'.format(i))
 #    dtype = {key:'int64' for key in keep_columns}
     
-    croisement_v3 = pd.read_csv('csv/results_rd155_nb250.csv', header='infer'
+    croisement_v3 = pd.read_csv('../csv/results_rd155_nb250.csv', header='infer'
                           , usecols=keep_columns
                           , index_col='id_bnb'
                           , dtype=pd.Int64Dtype())    
     
-    data_airbnb = pd.read_csv("csv/airbnb.csv", sep=',', header='infer',
+    data_airbnb = pd.read_csv("../csv/airbnb.csv", sep=',', header='infer',
                               dtype={'longitude':'float', 'latitude':'float'})
     
     etage_tokens = extraction_etage(data_airbnb)
@@ -299,23 +299,6 @@ if __name__ == '__main__':
 
     etage_scoring = score_etage(data_airbnb, croisement_v3, etage_tokens)
     
-#    nombre de airbnb avec au moins 1 match exact dans rpls: 19625
-#    ((etage_scoring == 1).sum(axis=1) != 0).sum()
-    
-#    nombre de airbnb avec seulement des match 1 étage de différence 
-#    dans rpls: 1020
-#    (((etage_scoring == 0.2).sum(axis=1) != 0)
-#        & ((etage_scoring == 1).sum(axis=1) == 0)).sum()
-    
-#    nombre de airbnb avec 0 match : 1084
-#    (((etage_scoring == 0).sum(axis=1) != 0) 
-#        & ((etage_scoring == 0.2).sum(axis=1) == 0)
-#        & ((etage_scoring == 1).sum(axis=1) == 0)).sum()
-        
-#    nombre de airbnb avec que des nan = 0 prédictions ou 0 rpls dans le
-#    rayon d'anonymisation : 43241
-#    ((~etage_scoring.isna()).sum(axis=1) == 0).sum()
-    
     #INUTILE DE RÉALISER UNE ANALYSE DES PERF PAR TRANCHE CAR LA REPARTITION DU
     #SCORE EST DISCRETE
     
@@ -352,8 +335,9 @@ if __name__ == '__main__':
     tranche_nombre[0] = best_match.shape[0] - np.sum(tranche_nombre[1:])
 
     plt.style.use('seaborn-darkgrid')
-    
+    plt.rcParams.update({'font.size':15})
+#    plt.rcParams["figure.figsize"] = (50,40)
     fig, ax = plt.subplots()
-    ax.set_title("Nombre de suspicions par tranche de score - étage")
+    ax.set_title("Distribution des scores - étage")
     sns.barplot(y=tranche_nombre, x=tranche_index
                 , orient='v', ax=ax, edgecolor='white')
