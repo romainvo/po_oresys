@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd 
 import re
 import po_oresys.api.decorators 
+import po_oresys.api.data_loader as data_loader
 
 class Comparateur:
     
@@ -306,9 +307,9 @@ class Comparateur:
             
             best_match = -1 * np.ones((self.croisement.shape[0],2)) 
             for idx in range(self.croisement.shape[0]):
-                if not pd.isna(self.croisement.iloc[idx, column_score_max[idx]]):
+                if not pd.isna(self.croisement.iloc[idx, int(column_score_max[idx])]):
                     best_match[idx,0] \
-                    = self.croisement.iloc[idx, column_score_max[idx]]
+                    = self.croisement.iloc[idx, int(column_score_max[idx])]
                     best_match[idx,1] = score_max[idx]
                     
             best_match = pd.DataFrame(best_match)
@@ -334,106 +335,69 @@ class Comparateur:
 
 if __name__ == '__main__':
 
-    data_airbnb = pd.read_csv("po_oresys/csv/airbnb.csv", sep=',', header='infer',
-                          dtype={'longitude':'float', 'latitude':'float'})
+    data_airbnb = data_loader.import_data_airbnb()
+    data_rpls = data_loader.import_data_rpls()
+    croisement_v3 = data_loader.import_croisement()
+    all_scores = data_loader.import_scores()
     
-    def converter_codepostal(string):
-        try:
-            return int(string)
-        except:
-            return 0   
+    comparateur = Comparateur(data_airbnb, data_rpls, croisement_v3, all_scores=all_scores)
         
-    def converter_etage(string):
-        try: 
-            return float(string)
-        except:
-            if string == 'RC':
-                return 0.0
-            
-            match_temp = re.search(r"[1-9][0-9]*", string)
-            if match_temp != None:
-                return float(match_temp.group())
-            else:
-                return np.nan
-            
-    data_rpls = pd.read_csv("po_oresys/csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
-                    header='infer', index_col=0,
-                    converters={'codepostal':converter_codepostal
-                                , 'etage':converter_etage},
-                    dtype={'longitude':'float', 'latitude':'float'})
-    
-    data_rpls.index.rename('id_rpls', inplace=True)
-    
-    keep_columns = ['id_bnb']
-    for i in range(250):
-        keep_columns.append('id_rpls{}'.format(i))
-#    dtype = {key:'int64' for key in keep_columns}
-    
-    croisement_v3 = pd.read_csv('po_oresys/csv/results_rd155_nb250.csv', header='infer'
-                          , usecols=keep_columns
-                          , index_col='id_bnb'
-                          , dtype=pd.Int64Dtype()) 
-    
-    comparateur = Comparateur(data_airbnb, data_rpls, croisement_v3)
-    
-    all_scores = comparateur.calculer_all_scores()
-    
     best_match = comparateur.extract_best_match()
 
-    # ----------------------- EVALUER LE SCORING ---------------------------- #
-
-    #Nombre de airbnb avec 0 rpls dans le rayon d'anonymisation de 150m
-    #((~croisement_v3.isna()).sum(axis=1) == 0).sum()
-    #Statistique nombre de croisements : 
-    #(~croisement_v3.isna()).sum(axis=1).describe()
-
-    tranche_score = [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]
-    tranche_index = []
-    tranche_nombre = []
-    quantiles = []
-    
-    somme_cumulee = 0
-    for i, tranche in enumerate(tranche_score):
-        if tranche == 100:
-            break
-        elif i == (len(tranche_score) - 2):
-            nb_temp = best_match.loc[(best_match.score >= tranche/100)
-                    & (best_match.score <= tranche_score[i+1]/100)].shape[0]
-            
-            somme_cumulee += nb_temp           
-        else:            
-            nb_temp = best_match.loc[(best_match.score >= tranche/100)
-                        & (best_match.score < tranche_score[i+1]/100)].shape[0]
-            
-            somme_cumulee += nb_temp
-        
-        tranche_nombre.append(nb_temp)
-        tranche_index.append("{}% - {}%".format(tranche, tranche_score[i+1]))
-        print("Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}"
-              .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee))
-    
-    tranche_index[0] = "no detection"
-    print("\n","Moyenne des score : {}".format(best_match.score.mean()))
-    print("Ecart-type : {}".format(best_match.score.std()))
-    print("On affiche les différents déciles", "\n")      
-    
-    for i, score in enumerate(tranche_score):
-        quantiles.append(best_match.score.quantile(score/100))
-        print("Quantile {}% : {}".format(i, quantiles[i]))           
-    
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-    
-    plt.style.use('seaborn-darkgrid')
-#    plt.rcParams.update({'font.size':15})
-#    plt.rcParams["figure.figsize"] = (50,40)
-    
-    fig, ax = plt.subplots()
-    ax.set_title("Distribution des scores")
-    sns.barplot(y=tranche_nombre, x=tranche_index
-                , orient='v', ax=ax, edgecolor='white')  
-    
-    fig_q, ax_q = plt.subplots()
-    ax_q.set_title("Quantiles des scores")
-    sns.barplot(y=quantiles, x=tranche_score
-                , orient='v', ax=ax_q, edgecolor='white')  
+#    # ----------------------- EVALUER LE SCORING ---------------------------- #
+#
+#    #Nombre de airbnb avec 0 rpls dans le rayon d'anonymisation de 150m
+#    #((~croisement_v3.isna()).sum(axis=1) == 0).sum()
+#    #Statistique nombre de croisements : 
+#    #(~croisement_v3.isna()).sum(axis=1).describe()
+#
+#    tranche_score = [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]
+#    tranche_index = []
+#    tranche_nombre = []
+#    quantiles = []
+#    
+#    somme_cumulee = 0
+#    for i, tranche in enumerate(tranche_score):
+#        if tranche == 100:
+#            break
+#        elif i == (len(tranche_score) - 2):
+#            nb_temp = best_match.loc[(best_match.score >= tranche/100)
+#                    & (best_match.score <= tranche_score[i+1]/100)].shape[0]
+#            
+#            somme_cumulee += nb_temp           
+#        else:            
+#            nb_temp = best_match.loc[(best_match.score >= tranche/100)
+#                        & (best_match.score < tranche_score[i+1]/100)].shape[0]
+#            
+#            somme_cumulee += nb_temp
+#        
+#        tranche_nombre.append(nb_temp)
+#        tranche_index.append("{}% - {}%".format(tranche, tranche_score[i+1]))
+#        print("Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}"
+#              .format(tranche, tranche_score[i+1], nb_temp, somme_cumulee))
+#    
+#    tranche_index[0] = "no detection"
+#    print("\n","Moyenne des score : {}".format(best_match.score.mean()))
+#    print("Ecart-type : {}".format(best_match.score.std()))
+#    print("On affiche les différents déciles", "\n")      
+#    
+#    for i, score in enumerate(tranche_score):
+#        quantiles.append(best_match.score.quantile(score/100))
+#        print("Quantile {}% : {}".format(i, quantiles[i]))           
+#    
+#    import matplotlib.pyplot as plt
+#    import seaborn as sns
+#    
+#    plt.style.use('seaborn-darkgrid')
+##    plt.rcParams.update({'font.size':15})
+##    plt.rcParams["figure.figsize"] = (50,40)
+#    
+#    fig, ax = plt.subplots()
+#    ax.set_title("Distribution des scores")
+#    sns.barplot(y=tranche_nombre, x=tranche_index
+#                , orient='v', ax=ax, edgecolor='white')  
+#    
+#    fig_q, ax_q = plt.subplots()
+#    ax_q.set_title("Quantiles des scores")
+#    sns.barplot(y=quantiles, x=tranche_score
+#                , orient='v', ax=ax_q, edgecolor='white')  

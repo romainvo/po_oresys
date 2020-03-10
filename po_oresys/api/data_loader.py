@@ -9,7 +9,6 @@ import re
 import pandas as pd
 import numpy as np
 
-@staticmethod
 def import_data_rpls(rpls_path=None):
     
     def converter_codepostal(string):
@@ -47,7 +46,6 @@ def import_data_rpls(rpls_path=None):
 
     return data_rpls
 
-@staticmethod
 def import_data_airbnb(airbnb_path=None):
     
     if airbnb_path is None:
@@ -61,7 +59,6 @@ def import_data_airbnb(airbnb_path=None):
 
     return data_airbnb
 
-@staticmethod 
 def import_croisement(croisement_path=None):
     
     
@@ -81,8 +78,7 @@ def import_croisement(croisement_path=None):
                           , dtype=pd.Int64Dtype()) 
     
     return croisement_v3
-
-@staticmethod 
+ 
 def import_scores(scores_path=None):
     
     if scores_path is None:
@@ -90,7 +86,6 @@ def import_scores(scores_path=None):
     else:
         path = scores_path
     
-    all_scores = pd.read_csv(path, header='infer', index_col='id_bnb'
-                             , dtype=pd.Int64Dtype()) 
+    all_scores = pd.read_csv(path, header='infer', index_col='id_bnb') 
     
     return all_scores

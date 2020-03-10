@@ -24,7 +24,7 @@ class Detecteur:
                  , poids_sous_scores={'croisement':0.2, 'surfhab':0.3
                                       , 'etage':0.3, 'nbpiece':0.2}
                  , surfhab_tokens=None, etage_tokens=None, nbpiece_tokens=None
-                 , all_scores=None)
+                 , all_scores=self.all_scores)
 
     @staticmethod
     def _validate_airbnb(obj : pd.DataFrame):
