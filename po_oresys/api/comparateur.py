@@ -208,7 +208,7 @@ class Comparateur:
             #surfhab contient les surface extraites pour les airbnb, avec 
             #en index l'id du airbnb (le numéro de la ligne dans data_airbnb)
             surfhab \
-            = pd.Series(surfhab_tokens).reindex(index=range(data_airbnb.shape[0]))
+            = pd.Series(surfhab_tokens).reindex(index=range(self.data_airbnb.shape[0]))
 
             surfhab_scoring = surfhab_rpls.div(surfhab, axis=0)
             surfhab_scoring = surfhab_scoring.applymap(lambda x: 1/x if x > 1 else x)
@@ -254,7 +254,7 @@ class Comparateur:
             #etage contient les surface extraites pour les airbnb, avec en 
             #index l'id du airbnb (le numéro de la ligne dans data_airbnb)
             etage \
-            = pd.Series(etage_tokens).reindex(index=range(data_airbnb.shape[0]))
+            = pd.Series(etage_tokens).reindex(index=range(self.data_airbnb.shape[0]))
             
             etage_scoring = etage_rpls.subtract(etage, axis=0)
             etage_scoring = etage_scoring.applymap(Comparateur._etage_score_filtering)
@@ -300,7 +300,7 @@ class Comparateur:
             #etage contient les surface extraites pour les airbnb, avec en index l'id 
             #du airbnb (le numéro de la ligne dans data_airbnb)
             pieces \
-            = pd.Series(nbpiece_tokens).reindex(index=range(data_airbnb.shape[0]))
+            = pd.Series(nbpiece_tokens).reindex(index=range(self.data_airbnb.shape[0]))
             
             nbpiece_scoring = nbpiece_rpls.subtract(pieces, axis=0)
             nbpiece_scoring = nbpiece_scoring.applymap(Comparateur._nbpiece_score_filtering)
