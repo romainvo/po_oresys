@@ -341,3 +341,6 @@ if __name__ == '__main__':
     ax.set_title("Distribution des scores - étage")
     sns.barplot(y=tranche_nombre, x=tranche_index
                 , orient='v', ax=ax, edgecolor='white')
+    
+#    sns.distplot((etage_scoring == 1).sum(axis=1).divide((~croisement_v3.isna()).sum(axis=1)),
+#    kde=False, hist_kws={'cumulative':-1})

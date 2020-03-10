@@ -311,3 +311,6 @@ if __name__ == '__main__':
     ax.set_title("Nombre de suspicions par tranche de score - surface habitable")
     sns.barplot(x=tranche_nombre, y=tranche_index
                 , orient='h', ax=ax, edgecolor='white')
+    
+#    sns.distplot((surfhab_scoring >=0.95).sum(axis=1).divide((~croisement_v3.isna()).sum(axis=1)),
+#    kde=False, hist_kws={'cumulative':-1})
