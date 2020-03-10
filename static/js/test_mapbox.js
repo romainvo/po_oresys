@@ -42,7 +42,7 @@ map.on('load', function () {
     map.addSource('croisements', {
         type: 'geojson',
         generateId: true,
-        data: '/donneesgeos/croisementBis3.geojson',  
+        data: '/donneesgeos/croisement_seuil_0_8.geojson',  
     });
 
     map.addLayer({
@@ -258,7 +258,7 @@ map.on('load', function () {
     // On remet à jour les data des sources pour afficher à nouveau tous les points
     map.on('click',function(e){
         map.getSource('rpls').setData('/donneesgeos/rpls.geojson');
-        map.getSource('croisements').setData('/donneesgeos/croisementBis3.geojson')
+        map.getSource('croisements').setData('/donneesgeos/croisement_seuil_0_8.geojson')
         map.setPaintProperty('rpls-unclustered-points', 'circle-radius', 4);
     });
 
