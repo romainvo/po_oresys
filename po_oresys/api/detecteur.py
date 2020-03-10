@@ -1,30 +1,24 @@
 import pandas as pd
-import numpy as np
-import re
 from po_oresys.api.comparateur import Comparateur
 import po_oresys.api.decorators
+import po_oresys.api.data_loader as data_loader
 
 class Detecteur:
     
-    def __init__(self , airbnb=None, rpls=None, croisement=None,score=None):
+    def __init__(self , airbnb_path=None, rpls_path=None, croisement_path=None
+                 , scores_path=None):
         
-        if airbnb is None:
-            self.airbnb = self.import_data_airbnb()
-        else:
-            self._validate_airbnb(airbnb)
-            self.airbnb = airbnb
+        self.airbnb = data_loader.import_data_airbnb(airbnb_path)
+        self._validate_airbnb(self.airbnb)
     
-        if rpls is None:
-            self.rpls = self.import_data_rpls()
-        else:
-            self._validate_rpls(rpls)
-            self.rpls = self.import_data_rpls()
+        self.rpls = data_loader.import_data_rpls(rpls_path)
+        self._validate_rpls(self.rpls)
             
-        if croisement is None:
-            self.croisement = self.import_croisement()
-        else:
-            self._validate_croisement(croisement)
-            self.croisement = croisement
+        self.croisement = data_loader.import_croisement(croisement_path)
+        self._validate_croisement(self.croisement)
+        
+        self.all_scores = data_loader.import_scores(scores_path)
+        self._validate_all_scores(self.all_scores)
             
         self.comparateur = Comparateur(self.airbnb, self.rpls, self.croisement
                  , poids_sous_scores={'croisement':0.2, 'surfhab':0.3
@@ -71,60 +65,10 @@ class Detecteur:
         if not self.airbnb.index.equals(obj.index):
             raise ValueError("'croisement' ne correspond ne croise pas les annonces",
                              "airbnb contenu dans 'self.airbnb'")
-
-    @staticmethod
-    def import_data_rpls():
-        
-        def converter_codepostal(string):
-            try:
-                return int(string)
-            except:
-                return 0   
             
-        def converter_etage(string):
-            try: 
-                return float(string)
-            except:
-                if string == 'RC':
-                    return 0.0
-                
-                match_temp = re.search(r"[1-9][0-9]*", string)
-                if match_temp != None:
-                    return float(match_temp.group())
-                else:
-                    return np.nan
-                
-        data_rpls = pd.read_csv("po_oresys/csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
-                        header='infer', index_col=0,
-                        converters={'codepostal':converter_codepostal
-                                    , 'etage':converter_etage},
-                        dtype={'longitude':'float', 'latitude':'float'})
-        
-        data_rpls.index.rename('id_rpls', inplace=True)
+    def _validate_all_scores(self, obj : pd.DataFrame):
+        if not self.airbnb.index.equals(obj.index):
+            raise ValueError("'all_scores' ne correspond ne calcule pas les scores",
+                             "des pairs 'AirBnB/logement social' résultat du produit",
+                             "cartésien de self.airbnb.index par self.rpls.index")
 
-        return data_rpls
-    
-    @staticmethod
-    def import_data_airbnb():
-        
-        data_airbnb = pd.read_csv("po_oresys/csv/airbnb.csv", sep=',', header='infer',
-                              dtype={'longitude':'float', 'latitude':'float'})
-        
-        data_airbnb.index.rename('id_bnb', inplace=True)
-    
-        return data_airbnb
-
-    @staticmethod 
-    def import_croisement():
-        
-        keep_columns = ['id_bnb']
-        for i in range(250):
-            keep_columns.append('id_rpls{}'.format(i))
-    #    dtype = {key:'int64' for key in keep_columns}
-        
-        croisement_v3 = pd.read_csv('po_oresys/csv/results_rd155_nb250.csv', header='infer'
-                              , usecols=keep_columns
-                              , index_col='id_bnb'
-                              , dtype=pd.Int64Dtype()) 
-        
-        return croisement_v3
