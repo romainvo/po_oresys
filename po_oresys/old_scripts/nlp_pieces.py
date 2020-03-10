@@ -11,16 +11,19 @@ def extraction_nbpiece(data_airbnb):
     description_airbnb = data_airbnb.loc[:, 'description'] 
     
     pattern_pieces = r"""(?x)
-    (\d | (?:\s)a | (?:\s)one | (?:\s)two | (?:\s)three | (?:\s)four | (?:\s)une | (?:\s)deux | (?:\s)trois | (?:\s)quatre )
+    (\d | (?:\s|\A)a | (?:\s|\A)one | (?:\s|\A)two | (?:\s|\A)three | (?:\s|\A)four | (?:\s|\A)une | (?:\s|\A)deux | (?:\s|\A)trois | (?:\s|\A)quatre )
     (?:
-     (?:\s+bedroom\s|\-bedroom\s|bedroom\s|bedrm\s)
-    |(?:\s?bdr\s|-?bdr\s|bdr\s)
-    |(?:\s?studio\s)
-    |\s?bed\s
-    |(?:\s?br\s|-?br\s|br\s)
-    |(?:\sroom\s|\srooms\s|room\s|rooms\s|r\s|\sr\s)
-    |(?:\spi.ce\s|\spi.ces\s|pi.ce\s|pi.ces\s|p\s|\sp\s)
-    |(?:\s?chambre|chbr?|\s?chambres?\s|chambre|chbr?|chambres?\s|-?chambre|-+chbr?|-?chambres?\s)
+     (?:(?:\s|\-)bedroom(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|bedroom(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
+    |(?:(?:\s|\-)bedrm(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|bedrm(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
+    |(?:(?:\s|\-)bdr(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|bdr(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
+    |(?:(?:\s|\-)bed(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|\/)|bed(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|\/))
+    |(?:(?:\s|\-)br(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s\s|\/)|br(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s\s|\/))
+    |(?:(?:\s|\-)room(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|room(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
+    |(?:(?:\s|\-)r(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|\/)|r(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|\/))
+    |(?:(?:\s|\-)pi.ce(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|pi.ce(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
+    |(?:(?:\s|\-)p(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|\/)|p(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|\/))
+    |(?:(?:\s|\-)chambre(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|chambre(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
+    |(?:(?:\s|\-)chbr(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/)|chbr(?:\,\s|\.\s|\)\s|\:\s|\;\s|\s|s|s\s|\/))
     )
     """
 
@@ -32,12 +35,14 @@ def extraction_nbpiece(data_airbnb):
             #print("____________________________")
             #print(row)
             temp_pieces = re.findall(pattern_pieces, row) 
+            temp_pieces += re.findall('studio', row) 
 
-            temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
-            temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
-            temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
-            temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
-        
+            temp_pieces=[1 if (x=='studio' or x=='a' or x==' a' or x=='one' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x=='une' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+            temp_pieces=[2 if (x=='two' or x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+            temp_pieces=[3 if (x=='three' or x==' three' or x=='\tthree' or x=='\xa0three' or x==' trois' or x=='trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+            temp_pieces=[4 if (x=='four' or x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre'  or x=='quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+
+
             #print('\n show temp' )
             #print(temp_pieces)
                 
@@ -51,10 +56,12 @@ def extraction_nbpiece(data_airbnb):
             row = row.lower() #Ponerlos en minuscula
 
             temp_pieces = re.findall(pattern_pieces, row) 
-            temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
-            temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
-            temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
-            temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+            temp_pieces += re.findall('studio', row) 
+
+            temp_pieces=[1 if (x=='studio' or x=='a' or x==' a' or x=='one' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x=='une' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+            temp_pieces=[2 if (x=='two' or x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+            temp_pieces=[3 if (x=='three' or x==' three' or x=='\tthree' or x=='\xa0three' or x==' trois' or x=='trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+            temp_pieces=[4 if (x=='four' or x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre'  or x=='quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
             
             if temp_pieces:
                 if idx not in tokens_pieces:
@@ -67,10 +74,12 @@ def extraction_nbpiece(data_airbnb):
             row = row.lower()
 
             temp_pieces = re.findall(pattern_pieces, row) 
-            temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
-            temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
-            temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
-            temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+            temp_pieces += re.findall('studio', row) 
+
+            temp_pieces=[1 if (x=='studio' or x=='a' or x==' a' or x=='one' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x=='une' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+            temp_pieces=[2 if (x=='two' or x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+            temp_pieces=[3 if (x=='three' or x==' three' or x=='\tthree' or x=='\xa0three' or x==' trois' or x=='trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+            temp_pieces=[4 if (x=='four' or x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre'  or x=='quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
             
             if temp_pieces:
                 if idx not in tokens_pieces:
@@ -83,10 +92,12 @@ def extraction_nbpiece(data_airbnb):
             row = row.lower()
 
             temp_pieces = re.findall(pattern_pieces, row) 
-            temp_pieces=[1 if (x==' a' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
-            temp_pieces=[2 if (x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
-            temp_pieces=[3 if (x==' three' or x=='\tthree' or x=='\xa0three'  or x==' trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
-            temp_pieces=[4 if (x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
+            temp_pieces += re.findall('studio', row) 
+
+            temp_pieces=[1 if (x=='studio' or x=='a' or x==' a' or x=='one' or x==' one' or x=='\ta' or x=='\tone' or x=='\xa0one' or x=='\xa0a' or x=='une' or x==' une' or x=='\tune' or x=='\xa0une') else x for x in temp_pieces]
+            temp_pieces=[2 if (x=='two' or x==' two' or x=='\ttwo' or x=='\xa0two' or x==' deux' or x=='deux' or x=='\tdeux' or x=='\xa0deux') else x for x in temp_pieces]
+            temp_pieces=[3 if (x=='three' or x==' three' or x=='\tthree' or x=='\xa0three' or x==' trois' or x=='trois' or x=='\ttrois' or x=='\xa0trois') else x for x in temp_pieces]
+            temp_pieces=[4 if (x=='four' or x==' four' or x=='\tfour' or x=='\xa0four'  or x==' quatre'  or x=='quatre' or x=='\tquatre' or x=='\xa0quatre') else x for x in temp_pieces]
            
             if temp_pieces:
                 if idx not in tokens_pieces:
@@ -139,7 +150,7 @@ def score_pieces(data_airbnb, croisement_v3, pieces_tokens):
         
     nb_col_croisement_v3 = croisement_v3.shape[1]
     
-    data_rpls = pd.read_csv("../csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
+    data_rpls = pd.read_csv("C:/Users/alejo/Documents/Alejo!/SemestreA3S1/Projet d'option/PO ORESYS/po_oresys/csv/paris_rpls_2017.csv", sep=',',error_bad_lines=False, 
                             header='infer', index_col=0,
                             converters={'codepostal':converter_cp
                                         , 'etage':converter_etage},
@@ -170,42 +181,42 @@ if __name__ == '__main__':
         keep_columns.append('id_rpls{}'.format(i))
 #    dtype = {key:'int64' for key in keep_columns}
     
-    croisement_v3 = pd.read_csv('../csv/results_rd155_nb250.csv', header='infer'
+    croisement_v3 = pd.read_csv("C:/Users/alejo/Documents/Alejo!/SemestreA3S1/Projet d'option/PO ORESYS/po_oresys/csv/results_rd155_nb250.csv", header='infer'
                           , usecols=keep_columns
                           , index_col='id_bnb'
                           , dtype=pd.Int64Dtype())    
     
-    data_airbnb = pd.read_csv("../csv/airbnb.csv", sep=',', header='infer',
+    data_airbnb = pd.read_csv("C:/Users/alejo/Documents/Alejo!/SemestreA3S1/Projet d'option/PO ORESYS/po_oresys/csv/airbnb.csv", sep=',', header='infer',
                               dtype={'longitude':'float', 'latitude':'float'})
     
     nbpiece_tokens = extraction_nbpiece(data_airbnb)
 
 # -------- Évaluation des performances de l'algorithme de détection --------- # 
 
-#    nombre de détections :  21766
-#    len(pieces_tokens)
+#    nombre de détections :  40534
+    len(nbpiece_tokens)
 
-    name_airbnb = data_airbnb.loc[:, 'name']
+    name_airbnb = data_airbnb.loc[:, 'namex`']
     summary_airbnb = data_airbnb.loc[:, 'summary']
     space_airbnb = data_airbnb.loc[:, 'space']
     description_airbnb = data_airbnb.loc[:, 'description'] 
 
-#    for i in range(110):
-#        j = np.random.randint(250,60000)
-#        print("_______name________", "\n", name_airbnb[j]
-#            ,"\n"
-#            ,"_______Space________", "\n",space_airbnb[j]
-#            ,"\n"   
-#            ,"_______Description________", "\n",description_airbnb[j]
-#            ,"\n"
-#            ,"_______Summary________", "\n",summary_airbnb[j]
-#            ,"\n")
-#        if j not in nbpiece_tokens:
-#            print("pas de resultats \n")
-#            print('******************************************************')
-#        else:    
-#            print(nbpiece_tokens[j])
-#            print('******************************************************')
+    for i in range(110):
+        j = np.random.randint(250,60000)
+        print("_______name________", "\n", name_airbnb[j]
+            ,"\n"
+            ,"_______Space________", "\n",space_airbnb[j]
+            ,"\n"   
+            ,"_______Description________", "\n",description_airbnb[j]
+            ,"\n"
+            ,"_______Summary________", "\n",summary_airbnb[j]
+            ,"\n")
+        if j not in nbpiece_tokens:
+            print("pas de resultats \n")
+            print('******************************************************')
+        else:    
+            print(nbpiece_tokens[j])
+            print('******************************************************')
 
 
 #    Résultats avec un echantillon random de 110 annonces :
