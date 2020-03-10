@@ -1,21 +1,29 @@
 import numpy as np 
 import pandas as pd 
-import re
 import po_oresys.api.decorators 
 import po_oresys.api.data_loader as data_loader
 
 class Comparateur:
     
-    def __init__(self, data_airbnb, data_rpls, croisement
+    def __init__(self, airbnb_path=None, rpls_path=None, croisement_path=None
+                 , scores_path=None
                  , poids_sous_scores={'croisement':0.2, 'surfhab':0.3
                                       , 'etage':0.3, 'nbpiece':0.2}
-                 , surfhab_tokens=None, etage_tokens=None, nbpiece_tokens=None
-                 , all_scores=None):
+                 , surfhab_tokens=None, etage_tokens=None, nbpiece_tokens=None):
 
-        self.data_airbnb = data_airbnb
-        self.data_rpls = data_rpls
-        self.croisement = croisement
-        self.weights = poids_sous_scores
+        self.data_airbnb = data_loader.import_data_airbnb(airbnb_path)
+        self._validate_airbnb(self.data_airbnb)
+    
+        self.data_rpls = data_loader.import_data_rpls(rpls_path)
+        self._validate_rpls(self.data_rpls)
+            
+        self.croisement = data_loader.import_croisement(croisement_path)
+        self._validate_croisement(self, self.croisement)
+        
+        self.all_scores = data_loader.import_scores(scores_path)
+        self._validate_all_scores(self, self.all_scores)
+        
+        self.weights = poids_sous_scores    
         
         if surfhab_tokens is not None:
             self.surfhab_tokens = surfhab_tokens
@@ -23,9 +31,54 @@ class Comparateur:
             self.etage_tokens = etage_tokens
         if nbpiece_tokens is not None:
             self.nbpiece_tokens = nbpiece_tokens
-        if all_scores is not None:
-            self.all_scores = all_scores
- 
+
+    @staticmethod
+    def _validate_airbnb(obj : pd.DataFrame):
+        """ Vérifie si la DataFrame regroupe bien un ensemble d'annonces airbnb,
+        utilisé au moment de "l'instanciation" du décorateur.
+        
+        Parameters:
+            _obj (pd.DataFrame): DataFrame regroupant l'ensemble des annonces
+            airbnb.
+        
+        Raise:
+            AttributeError: si le format n'est pas respecté
+        """     
+
+        columns = {'name','summary','space','description','longitude','latitude'}
+        if not columns.issubset(set(obj.columns)):
+            raise AttributeError("Must have {}".format(list(columns)))
+
+    @staticmethod
+    def _validate_rpls(obj : pd.DataFrame):
+        """ Vérifie si la DataFrame regroupe bien un ensemble de logements 
+        sociaux. Utilisé au moment de "l'instanciation" du décorateur.
+        
+        Parameters:
+            obj (pd.DataFrame): DataFrame regroupant l'ensemble des logements
+            sociaux.
+        
+        Raise:
+            AttributeError: si le format n'est pas respecté
+        """     
+
+        columns = {'libcom','numvoie','typvoie','nomvoie','surfhab', 'etage'
+                   ,'nbpiece' ,'longitude','latitude'}
+        if not columns.issubset(set(obj.columns)):
+            raise AttributeError("Must have {}".format(list(columns)))
+
+    @staticmethod
+    def _validate_croisement(self, obj : pd.DataFrame):
+        if not self.data_airbnb.index.equals(obj.index):
+            raise ValueError("'croisement' ne correspond ne croise pas les annonces",
+                             "airbnb contenu dans 'self.airbnb'")
+    @staticmethod            
+    def _validate_all_scores(self, obj : pd.DataFrame):
+        if not self.data_airbnb.index.equals(obj.index):
+            raise ValueError("'all_scores' ne correspond ne calcule pas les scores",
+                             "des pairs 'AirBnB/logement social' résultat du produit",
+                             "cartésien de self.airbnb.index par self.rpls.index")
+
     def voisinage_rpls(self, id_airbnb : int):
         #renvoie la liste des rpls présens dans le rayon d'anonymisation
         return self.croisement.loc[id_airbnb]
@@ -335,14 +388,11 @@ class Comparateur:
 
 if __name__ == '__main__':
 
-    data_airbnb = data_loader.import_data_airbnb()
-    data_rpls = data_loader.import_data_rpls()
-    croisement_v3 = data_loader.import_croisement()
-    all_scores = data_loader.import_scores()
-    
-    comparateur = Comparateur(data_airbnb, data_rpls, croisement_v3, all_scores=all_scores)
+    comparateur = Comparateur()
         
     best_match = comparateur.extract_best_match()
+    
+    #comparateur.comparer(id_airbnb, id_rpls)
 
 #    # ----------------------- EVALUER LE SCORING ---------------------------- #
 #
