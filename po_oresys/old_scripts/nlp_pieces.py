@@ -273,4 +273,8 @@ if __name__ == '__main__':
     
     #Distribution du nombre de logements sociaux autour de chaque airbnb ayant
     #le même nombre de pièces
-    #sns.distplot((pieces_scoring == 1).sum(axis=1)
+    #sns.distplot((pieces_scoring == 1).sum(axis=1))
+    
+    #en pourcentage cumulé
+    #sns.distplot((etage_scoring == 1).sum(axis=1).divide((~croisement_v3.isna()).sum(axis=1)),
+    #kde=False, hist_kws={'cumulative':-1})
