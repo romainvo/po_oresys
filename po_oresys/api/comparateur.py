@@ -190,11 +190,9 @@ class Comparateur:
         else:  
             print("Calcul des sous_scores de surface habitable")
             
-            if hasattr(self, 'surfhab_tokens'):
-                surfhab_tokens = self.surfhab_tokens
-            else:
+            if not hasattr(self, 'surfhab_tokens'):
                 print("...Text mining en cours - surfhab non extrait")
-                surfhab_tokens \
+                self.surfhab_tokens \
                 = self.data_airbnb.bnb.extraire_surfhab(self.data_airbnb.index.values)
             
             nb_col_croisement = self.croisement.shape[1]
@@ -208,7 +206,7 @@ class Comparateur:
             #surfhab contient les surface extraites pour les airbnb, avec 
             #en index l'id du airbnb (le numéro de la ligne dans data_airbnb)
             surfhab \
-            = pd.Series(surfhab_tokens).reindex(index=range(self.data_airbnb.shape[0]))
+            = pd.Series(self.surfhab_tokens).reindex(index=range(self.data_airbnb.shape[0]))
 
             surfhab_scoring = surfhab_rpls.div(surfhab, axis=0)
             surfhab_scoring = surfhab_scoring.applymap(lambda x: 1/x if x > 1 else x)
@@ -236,13 +234,11 @@ class Comparateur:
         else:
             print("Calcul des sous_scores d'étage")
             
-            if hasattr(self, 'etage_tokens'):
-                etage_tokens = self.etage_tokens
-            else:
+            if not hasattr(self, 'etage_tokens'):
                 print("...Text mining en cours - etage non extrait")
-                etage_tokens \
+                self.etage_tokens \
                 = self.data_airbnb.bnb.extraire_etage(self.data_airbnb.index.values)
-          
+
             nb_col_croisement = self.croisement.shape[1]
             etage_rpls = pd.DataFrame()
             
@@ -254,7 +250,7 @@ class Comparateur:
             #etage contient les surface extraites pour les airbnb, avec en 
             #index l'id du airbnb (le numéro de la ligne dans data_airbnb)
             etage \
-            = pd.Series(etage_tokens).reindex(index=range(self.data_airbnb.shape[0]))
+            = pd.Series(self.etage_tokens).reindex(index=range(self.data_airbnb.shape[0]))
             
             etage_scoring = etage_rpls.subtract(etage, axis=0)
             etage_scoring = etage_scoring.applymap(Comparateur._etage_score_filtering)
@@ -263,6 +259,7 @@ class Comparateur:
             
         return self.etage_scoring
 
+    @staticmethod
     def _nbpiece_score_filtering(x):
         if x == 0:
             return 1
@@ -283,11 +280,9 @@ class Comparateur:
         else:
             print("Calcul des sous_scores du nombre de pièce")
             
-            if hasattr(self, 'nbpiece_tokens'):
-                nbpiece_tokens = self.nbpiece_tokens
-            else:
+            if not hasattr(self, 'nbpiece_tokens'):
                 print("...Text mining en cours - nombre de pièce non extrait")
-                nbpiece_tokens \
+                self.nbpiece_tokens \
                 = self.data_airbnb.bnb.extraire_nbpiece(self.data_airbnb.index.values)
         
             nb_col_croisement = self.croisement.shape[1]
@@ -300,7 +295,7 @@ class Comparateur:
             #etage contient les surface extraites pour les airbnb, avec en index l'id 
             #du airbnb (le numéro de la ligne dans data_airbnb)
             pieces \
-            = pd.Series(nbpiece_tokens).reindex(index=range(self.data_airbnb.shape[0]))
+            = pd.Series(self.nbpiece_tokens).reindex(index=range(self.data_airbnb.shape[0]))
             
             nbpiece_scoring = nbpiece_rpls.subtract(pieces, axis=0)
             nbpiece_scoring = nbpiece_scoring.applymap(Comparateur._nbpiece_score_filtering)
@@ -381,7 +376,7 @@ class Comparateur:
         
     def sort_best_match(self):
         if hasattr(self, 'best_match'):
-            self.best_match.sort_values(by='score', ascending=False)
+            self.best_match.sort_values(by='score', ascending=False, inplace=True)
         else:
             raise AttributeError("L'ensemble des scores n'a pas été calculé :",
                                  "exécutez la méthode 'calculer_all_scores")
@@ -389,8 +384,9 @@ class Comparateur:
 if __name__ == '__main__':
 
     comparateur = Comparateur()
-        
-    best_match = comparateur.extract_best_match()
+    comparateur.extract_best_match()
+    comparateur.sort_best_match()
+    best_match = comparateur.best_match
     
     #comparateur.comparer(id_airbnb, id_rpls)
 

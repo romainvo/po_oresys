@@ -9,6 +9,37 @@ import re
 import numpy as np
 import pandas as pd
 
+#. 	Wildcard, matches any character
+#^abc 	Matches some pattern abc at the start of a string
+#abc$ 	Matches some pattern abc at the end of a string
+#[abc] 	Matches one of a set of characters
+#[A-Z0-9] 	Matches one of a range of characters
+#ed|ing|s 	Matches one of the specified strings (disjunction)
+#* 	Zero or more of previous item, e.g. a*, [a-z]* (also known as Kleene Closure)
+#+ 	One or more of previous item, e.g. a+, [a-z]+
+#? 	Zero or one of the previous item (i.e. optional), e.g. a?, [a-z]?
+#{n} 	Exactly n repeats where n is a non-negative integer
+#{n,} 	At least n repeats
+#{,n} 	No more than n repeats
+#{m,n} 	At least m and no more than n repeats
+#a(b|c)+ 	Parentheses that indicate the scope of the operators
+
+#\b 	Word boundary (zero width)
+#\d 	Any decimal digit (equivalent to [0-9])
+#\D 	Any non-digit character (equivalent to [^0-9])
+#\s 	Any whitespace character (equivalent to [ \t\n\r\f\v])
+#\S 	Any non-whitespace character (equivalent to [^ \t\n\r\f\v])
+#\w 	Any alphanumeric character (equivalent to [a-zA-Z0-9_])
+#\W 	Any non-alphanumeric character (equivalent to [^a-zA-Z0-9_])
+#\t 	The tab character
+#\n 	The newline character
+
+#Colonnes à analyser dans les données airbnb
+# summary / space / description / neighorhood_overview / street / neighbourhood
+# neighbourhoud_cleansed / neighbourhood_group_cleansed / city / 
+# room_type / bathrooms / bedrooms / beds / square_feet / property_type
+# longitude / latitude
+
 def extraire_surfhab(data_airbnb, id):    
     """Retourne la surface habitable (en mètres carrés) indiquée dans 
     l'annonce airbnb si présente.
