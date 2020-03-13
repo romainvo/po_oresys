@@ -16,7 +16,7 @@ if __name__ == '__main__':
     
     analyse_discriminante = True
     
-    analyse_meilleurs_scores = True
+    analyse_meilleurs_scores = False
     
 #------------------------------------------------------------------------------# 
 #------------------------ INITIALISATION DU COMPARATEUR -----------------------# 

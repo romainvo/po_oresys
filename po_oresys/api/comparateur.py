@@ -253,7 +253,7 @@ class Comparateur:
             = pd.Series(self.etage_tokens).reindex(index=range(self.data_airbnb.shape[0]))
             
             etage_scoring = etage_rpls.subtract(etage, axis=0)
-            etage_scoring = etage_scoring.applymap(Comparateur._etage_score_filtering)
+            etage_scoring = etage_scoring.applymap(self._etage_score_filtering)
             etage_scoring.index.rename('id_bnb', inplace=True)
             self.etage_scoring = etage_scoring
             
@@ -298,7 +298,7 @@ class Comparateur:
             = pd.Series(self.nbpiece_tokens).reindex(index=range(self.data_airbnb.shape[0]))
             
             nbpiece_scoring = nbpiece_rpls.subtract(pieces, axis=0)
-            nbpiece_scoring = nbpiece_scoring.applymap(Comparateur._nbpiece_score_filtering)
+            nbpiece_scoring = nbpiece_scoring.applymap(self._nbpiece_score_filtering)
             nbpiece_scoring.index.rename('id_bnb', inplace=True)
             self.nbpiece_scoring = nbpiece_scoring
         
