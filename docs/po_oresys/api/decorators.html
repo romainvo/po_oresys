@@ -1,0 +1,1581 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.2" />
+<title>po_oresys.api.decorators API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>po_oresys.api.decorators</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import pandas as pd
+import re
+import numpy as np
+import po_oresys.api.text_miner as text_miner
+
+@pd.api.extensions.register_dataframe_accessor(&#34;rpls&#34;)
+class RPLSAccessor:
+    &#34;&#34;&#34; Instancie un décorateur python permettant de manipuler les dataframe
+    instanciant des rpls (répertoire des logements sociaux) plus facilement.
+    
+    Parameters:
+        pandas_obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des logements
+        sociaux.
+    &#34;&#34;&#34;
+    
+    def __init__(self, pandas_obj : pd.DataFrame):
+        self._validate(pandas_obj)
+        self._obj = pandas_obj
+
+    @staticmethod
+    def _validate(obj : pd.DataFrame):
+        &#34;&#34;&#34; Vérifie si la DataFrame regroupe bien un ensemble de logements 
+        sociaux. Utilisé au moment de &#34;l&#39;instanciation&#34; du décorateur.
+        
+        Parameters:
+            obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des logements
+            sociaux.
+        
+        Raise:
+            AttributeError: si le format n&#39;est pas respecté
+        &#34;&#34;&#34;     
+
+        columns = {&#39;libcom&#39;,&#39;numvoie&#39;,&#39;typvoie&#39;,&#39;nomvoie&#39;,&#39;surfhab&#39;, &#39;etage&#39;
+                   ,&#39;nbpiece&#39; ,&#39;longitude&#39;,&#39;latitude&#39;}
+        if not columns.issubset(set(obj.columns)):
+            raise AttributeError(&#34;Must have {}&#34;.format(list(columns)))
+
+    def coordonnees(self, id : int):
+        return (self._obj.loc[id,&#39;latitude&#39;], self._obj.loc[id,&#39;longitude&#39;])
+
+    def complete_description(self, id : int, pprint=True, rreturn=False):
+        &#34;&#34;&#34; Print l&#39;ensemble des champs textuels pertinents pour le logement
+        social d&#39;iditifiant &#39;id&#39;.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+            
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+        
+        Returns:
+            (pd.Series): en index les noms des champs textuels retournés, en 
+            élements les string des champs textuels pertinents.
+        &#34;&#34;&#34;
+        
+        columns = [&#39;libcom&#39;,&#39;numvoie&#39;,&#39;typvoie&#39;,&#39;nomvoie&#39;,&#39;surfhab&#39;, &#39;etage&#39;
+                   ,&#39;nbpiece&#39;]
+        print(&#34;Champs affichés : {}&#34;.format(columns[0]), end=&#34; &#34;)
+        for elt in columns[1:]:
+            print(&#34;,&#34;,elt, end=&#34;&#34;)
+        print(&#34; - coordonnées gps = {}&#34;.format(self.coordonnees(id), &#34;\n&#34;))
+        print()
+        
+        if pprint:
+            for elt in columns :
+                print(&#34;{} :&#34;.format(elt), end=&#34; &#34;)
+                print(self._obj.loc[id, elt])
+            print()
+        
+        if rreturn:
+            return self._obj.loc[id, columns]  
+        
+    def surface_habitable(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie la surface habitable du rpls caractérisé par l&#39;identifiant id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+                la DataFrame.
+                
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+    
+            rreturn (boolean): True si on retourne la description complète de 
+                l&#39;annonce spécifié sous forme de Series.
+                
+        Returns:
+            valeur de la surface habitable du rpls id dans le dataframe.(float)
+        &#34;&#34;&#34;
+        
+        if(pprint):
+            print(self._obj.loc[id,&#39;surfhab&#39;])
+        
+        if(rreturn):
+            return self._obj.loc[id,&#39;surfhab&#39;]
+ 
+    
+    def nombre_piece(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie le nombre de piece du rpls caractérisé par l&#39;identifiant id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+            
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+        
+        Returns:
+            valeur du nombre de piece du rpls id dans le dataframe.(float)
+        &#34;&#34;&#34;
+        
+        if(pprint):
+            print(self._obj.loc[id,&#39;nbpiece&#39;])
+        
+        if(rreturn):
+            return self._obj.loc[id,&#39;nbpiece&#39;]
+ 
+
+    def arrondissement(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie l&#39;arrondissement&#39; du rpls caractérisé par l&#39;identifiant id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+        
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+        
+        Returns:
+            arrondissement du rpls id dans le dataframe (string).
+        &#34;&#34;&#34;
+        
+        if(pprint):
+            print(self._obj.loc[id,&#39;libcom&#39;])
+        
+        if(rreturn):
+            return self._obj.loc[id,&#39;libcom&#39;]
+
+    def etage(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie l&#39;etage&#39; du rpls caractérisé par l&#39;identifiant id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+        
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+        
+        Returns:
+            etage du rpls id dans le dataframe (float).
+        &#34;&#34;&#34;
+        
+        if(pprint):
+            print(self._obj.loc[id,&#39;etage&#39;])
+        
+        if(rreturn):
+            return self._obj.loc[id,&#39;etage&#39;]
+
+    def adresse(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie l&#39;adresse du rpls caractérisé par l&#39;identifiant id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+        
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+        
+        Returns:
+            adresse du rpls id dans le dataframe (string).
+        &#34;&#34;&#34;
+        S = self._obj.loc[id,&#39;numvoie&#39;]+&#34; &#34;
+        if(self._obj.loc[id,&#39;indrep&#39;]!=np.nan):
+            S=S+self._obj.loc[id,&#39;indrep&#39;]
+        S=S+self._obj.loc[id,&#39;typvoie&#39;]+&#34; &#34;+self._obj.loc[id,&#39;nomvoie&#39;]
+        if(self._obj.loc[id,&#39;bat&#39;]!=np.nan):
+            S=S+&#34;, batiment &#34;+self.batiment(id,pprint=False,rreturn=True)
+        if(self._obj.loc[id,&#39;numappt&#39;]!=np.nan):
+            S=S+&#34;, appartement &#34;+self.numero_appartement(id,pprint=False,rreturn=True)
+        if(pprint):
+            print(S)
+        if(rreturn):
+            return S
+    
+    def batiment(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie le batiment du rpls caractérisé par l&#39;identifiant id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+            
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+            
+        Returns
+            batiment du rpls id dans le dataframe (float).
+        &#34;&#34;&#34;
+
+        if(pprint):
+            print(self._obj.loc[id,&#39;bat&#39;])
+        
+        if(rreturn):
+            return self._obj.loc[id,&#39;bat&#39;]
+    
+    def numero_appartement(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie le numero d&#39;appartement du rpls caractérisé par l&#39;identifiant
+        id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+            
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète.
+        
+        rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+            
+        Returns:
+            numero d&#39;appartement du rpls id dans le dataframe (float).
+        &#34;&#34;&#34;
+        
+        if(pprint):
+            print(self._obj.loc[id,&#39;numappt&#39;])
+        if(rreturn):
+            return self._obj.loc[id,&#39;numappt&#39;]
+
+@pd.api.extensions.register_dataframe_accessor(&#34;bnb&#34;)
+class AirbnbAccessor:
+    &#34;&#34;&#34; Instancie un décorateur python permettant de manipuler les dataframe
+    regroupant des annonces airbnb plus facilement.
+    
+    Parameters:
+        pandas_obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des annonces
+        airbnb.
+    &#34;&#34;&#34;
+    
+    def __init__(self, pandas_obj : pd.DataFrame):
+        self._validate(pandas_obj)
+        self._obj = pandas_obj
+
+    @staticmethod
+    def _validate(obj : pd.DataFrame):
+        &#34;&#34;&#34; Vérifie si la DataFrame regroupe bien un ensemble d&#39;annonces airbnb,
+        utilisé au moment de &#34;l&#39;instanciation&#34; du décorateur.
+        
+        Parameters:
+            _obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des annonces
+            airbnb.
+        
+        Raise:
+            AttributeError: si le format n&#39;est pas respecté
+        &#34;&#34;&#34;     
+
+        columns = {&#39;name&#39;,&#39;summary&#39;,&#39;space&#39;,&#39;description&#39;,&#39;longitude&#39;,&#39;latitude&#39;}
+        if not columns.issubset(set(obj.columns)):
+            raise AttributeError(&#34;Must have {}&#34;.format(list(columns)))
+   
+    def complete_description(self, id : int, pprint=True, rreturn=False):
+        &#34;&#34;&#34;Print l&#39;ensemble des champs textuels pertinents pour l&#39;annonce 
+        airbnb d&#39;iditifiant &#39;id&#39;
+        
+        Parameters:
+            id (int): identifiant de l&#39;annonce airbnb. Index de la ligne dans 
+            la DataFrame.
+            
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+        
+        Returns:
+            (pd.Series): en index les noms des champs textuels retournés, en 
+            élements les string des champs textuels pertinents.
+        &#34;&#34;&#34;
+        
+        columns = [&#39;name&#39;, &#39;summary&#39;, &#39;space&#39;, &#39;description&#39;]
+        print(&#34;Champs affichés : {}&#34;.format(columns[0]), end=&#34; &#34;)
+        for elt in columns[1:]:
+            print(&#34;,&#34;,elt, end=&#34;&#34;)
+        print(&#34; - coordonnées gps = {}&#34;.format(self.coordonnees(id), &#34;\n&#34;))
+        print()
+        
+        if pprint:
+            for elt in columns :
+                print(&#34;{} :&#34;.format(elt))
+                print(self._obj.loc[id, elt], &#34;\n&#34;)
+        
+        if rreturn:
+            return self._obj.loc[id, columns]  
+  
+    def coordonnees(self, id : int):
+        return (self._obj.loc[id,&#39;latitude&#39;], self._obj.loc[id,&#39;longitude&#39;])
+    
+    def name(self, id : int):
+        return self._obj.loc[id, &#39;name&#39;]
+    
+    def summary(self, id : int):
+        return self._obj.loc[id, &#39;summary&#39;]
+    
+    def description(self, id : int):
+        return self._obj.loc[id, &#39;description&#39;]
+    
+    def all_extractions(self, id : int, pprint=False, rreturn=True):
+        extractions = dict()
+        extractions[&#39;surfhab&#39;] = self.extraire_surfhab(id)
+        extractions[&#39;etage&#39;] = self.extraire_etage(id)
+        extractions[&#39;nbpiece&#39;] = self.extraire_nbpiece(id)
+        
+        if pprint:
+            print(&#34;Ensemble des champs textuels extraits :&#34;)
+            print(extractions)
+            
+        if rreturn:
+            return extractions
+
+    def extraire_surfhab(self, id):    
+        &#34;&#34;&#34;Retourne la surface habitable (en mètres carrés) indiquée dans 
+        l&#39;annonce airbnb si présente.
+        
+        Parameters:
+            id (int or [int]): identifiant de l&#39;annonce airbnb ou liste
+            d&#39;identifiants des annonces airbnb à traiter. Index de la ligne dans 
+            la DataFrame.
+            
+        Returns:
+            surfhab (float or {id:surfhab}): surface habitable indiquée dans 
+            l&#39;annonce, np.nan si non détectée.
+        &#34;&#34;&#34;
+        
+        return text_miner.extraire_surfhab(self._obj, id)
+        
+    def extraire_etage(self, id : int):
+        &#34;&#34;&#34;Retourne le numéro de l&#39;étage indiqué dans l&#39;annonce airbnb si présente.
+        
+        Parameters:
+            id (int or [int]): identifiant de l&#39;annonce airbnb ou liste
+            d&#39;identifiants des annonces airbnb à traiter. Index de la ligne dans 
+            la DataFrame.
+            
+        Returns:
+            etage (int): numéro de l&#39;étage indiqué dans l&#39;annonce, np.nan si
+            non-détecté.
+        &#34;&#34;&#34;
+        
+        return text_miner.extraire_etage(self._obj, id)
+          
+    def extraire_nbpiece(self, id : int):
+        &#34;&#34;&#34;Retourne le nombre de pièces indiqué dans l&#39;annonce airbnb si présente.
+        
+        Parameters:
+            id (int or [int]): identifiant de l&#39;annonce airbnb ou liste
+            d&#39;identifiants des annonces airbnb à traiter. Index de la ligne dans 
+            la DataFrame.
+            
+        Returns:
+            etage (int): nombre de pièce indiqué dans l&#39;annonce, np.nan si
+            non-détecté.
+        &#34;&#34;&#34;
+        
+        return text_miner.extraire_nbpiece(self._obj, id)
+        
+if __name__ == &#39;__main__&#39;:
+
+    data_airbnb = pd.read_csv(&#34;po_oresys/csv/airbnb.csv&#34;, sep=&#39;,&#39;, header=&#39;infer&#39;,
+                          dtype={&#39;longitude&#39;:&#39;float&#39;, &#39;latitude&#39;:&#39;float&#39;})
+    
+    def converter_codepostal(string):
+        try:
+            return int(string)
+        except:
+            return 0   
+        
+    def converter_etage(string):
+        try: 
+            return float(string)
+        except:
+            if string == &#39;RC&#39;:
+                return 0.0
+            
+            match_temp = re.search(r&#34;[1-9][0-9]*&#34;, string)
+            if match_temp != None:
+                return float(match_temp.group())
+            else:
+                return np.nan
+            
+    data_rpls = pd.read_csv(&#34;po_oresys/csv/paris_rpls_2017.csv&#34;, sep=&#39;,&#39;,error_bad_lines=False, 
+                    header=&#39;infer&#39;, index_col=0,
+                    converters={&#39;codepostal&#39;:converter_codepostal
+                                , &#39;etage&#39;:converter_etage},
+                    dtype={&#39;longitude&#39;:&#39;float&#39;, &#39;latitude&#39;:&#39;float&#39;})
+    
+    data_rpls.index.rename(&#39;id_rpls&#39;, inplace=True)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="po_oresys.api.decorators.AirbnbAccessor"><code class="flex name class">
+<span>class <span class="ident">AirbnbAccessor</span></span>
+<span>(</span><span>pandas_obj)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Instancie un décorateur python permettant de manipuler les dataframe
+regroupant des annonces airbnb plus facilement.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>pandas_obj</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
+<dd>DataFrame regroupant l'ensemble des annonces</dd>
+</dl>
+<p>airbnb.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AirbnbAccessor:
+    &#34;&#34;&#34; Instancie un décorateur python permettant de manipuler les dataframe
+    regroupant des annonces airbnb plus facilement.
+    
+    Parameters:
+        pandas_obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des annonces
+        airbnb.
+    &#34;&#34;&#34;
+    
+    def __init__(self, pandas_obj : pd.DataFrame):
+        self._validate(pandas_obj)
+        self._obj = pandas_obj
+
+    @staticmethod
+    def _validate(obj : pd.DataFrame):
+        &#34;&#34;&#34; Vérifie si la DataFrame regroupe bien un ensemble d&#39;annonces airbnb,
+        utilisé au moment de &#34;l&#39;instanciation&#34; du décorateur.
+        
+        Parameters:
+            _obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des annonces
+            airbnb.
+        
+        Raise:
+            AttributeError: si le format n&#39;est pas respecté
+        &#34;&#34;&#34;     
+
+        columns = {&#39;name&#39;,&#39;summary&#39;,&#39;space&#39;,&#39;description&#39;,&#39;longitude&#39;,&#39;latitude&#39;}
+        if not columns.issubset(set(obj.columns)):
+            raise AttributeError(&#34;Must have {}&#34;.format(list(columns)))
+   
+    def complete_description(self, id : int, pprint=True, rreturn=False):
+        &#34;&#34;&#34;Print l&#39;ensemble des champs textuels pertinents pour l&#39;annonce 
+        airbnb d&#39;iditifiant &#39;id&#39;
+        
+        Parameters:
+            id (int): identifiant de l&#39;annonce airbnb. Index de la ligne dans 
+            la DataFrame.
+            
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+        
+        Returns:
+            (pd.Series): en index les noms des champs textuels retournés, en 
+            élements les string des champs textuels pertinents.
+        &#34;&#34;&#34;
+        
+        columns = [&#39;name&#39;, &#39;summary&#39;, &#39;space&#39;, &#39;description&#39;]
+        print(&#34;Champs affichés : {}&#34;.format(columns[0]), end=&#34; &#34;)
+        for elt in columns[1:]:
+            print(&#34;,&#34;,elt, end=&#34;&#34;)
+        print(&#34; - coordonnées gps = {}&#34;.format(self.coordonnees(id), &#34;\n&#34;))
+        print()
+        
+        if pprint:
+            for elt in columns :
+                print(&#34;{} :&#34;.format(elt))
+                print(self._obj.loc[id, elt], &#34;\n&#34;)
+        
+        if rreturn:
+            return self._obj.loc[id, columns]  
+  
+    def coordonnees(self, id : int):
+        return (self._obj.loc[id,&#39;latitude&#39;], self._obj.loc[id,&#39;longitude&#39;])
+    
+    def name(self, id : int):
+        return self._obj.loc[id, &#39;name&#39;]
+    
+    def summary(self, id : int):
+        return self._obj.loc[id, &#39;summary&#39;]
+    
+    def description(self, id : int):
+        return self._obj.loc[id, &#39;description&#39;]
+    
+    def all_extractions(self, id : int, pprint=False, rreturn=True):
+        extractions = dict()
+        extractions[&#39;surfhab&#39;] = self.extraire_surfhab(id)
+        extractions[&#39;etage&#39;] = self.extraire_etage(id)
+        extractions[&#39;nbpiece&#39;] = self.extraire_nbpiece(id)
+        
+        if pprint:
+            print(&#34;Ensemble des champs textuels extraits :&#34;)
+            print(extractions)
+            
+        if rreturn:
+            return extractions
+
+    def extraire_surfhab(self, id):    
+        &#34;&#34;&#34;Retourne la surface habitable (en mètres carrés) indiquée dans 
+        l&#39;annonce airbnb si présente.
+        
+        Parameters:
+            id (int or [int]): identifiant de l&#39;annonce airbnb ou liste
+            d&#39;identifiants des annonces airbnb à traiter. Index de la ligne dans 
+            la DataFrame.
+            
+        Returns:
+            surfhab (float or {id:surfhab}): surface habitable indiquée dans 
+            l&#39;annonce, np.nan si non détectée.
+        &#34;&#34;&#34;
+        
+        return text_miner.extraire_surfhab(self._obj, id)
+        
+    def extraire_etage(self, id : int):
+        &#34;&#34;&#34;Retourne le numéro de l&#39;étage indiqué dans l&#39;annonce airbnb si présente.
+        
+        Parameters:
+            id (int or [int]): identifiant de l&#39;annonce airbnb ou liste
+            d&#39;identifiants des annonces airbnb à traiter. Index de la ligne dans 
+            la DataFrame.
+            
+        Returns:
+            etage (int): numéro de l&#39;étage indiqué dans l&#39;annonce, np.nan si
+            non-détecté.
+        &#34;&#34;&#34;
+        
+        return text_miner.extraire_etage(self._obj, id)
+          
+    def extraire_nbpiece(self, id : int):
+        &#34;&#34;&#34;Retourne le nombre de pièces indiqué dans l&#39;annonce airbnb si présente.
+        
+        Parameters:
+            id (int or [int]): identifiant de l&#39;annonce airbnb ou liste
+            d&#39;identifiants des annonces airbnb à traiter. Index de la ligne dans 
+            la DataFrame.
+            
+        Returns:
+            etage (int): nombre de pièce indiqué dans l&#39;annonce, np.nan si
+            non-détecté.
+        &#34;&#34;&#34;
+        
+        return text_miner.extraire_nbpiece(self._obj, id)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="po_oresys.api.decorators.AirbnbAccessor.all_extractions"><code class="name flex">
+<span>def <span class="ident">all_extractions</span></span>(<span>self, id, pprint=False, rreturn=True)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def all_extractions(self, id : int, pprint=False, rreturn=True):
+    extractions = dict()
+    extractions[&#39;surfhab&#39;] = self.extraire_surfhab(id)
+    extractions[&#39;etage&#39;] = self.extraire_etage(id)
+    extractions[&#39;nbpiece&#39;] = self.extraire_nbpiece(id)
+    
+    if pprint:
+        print(&#34;Ensemble des champs textuels extraits :&#34;)
+        print(extractions)
+        
+    if rreturn:
+        return extractions</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.AirbnbAccessor.complete_description"><code class="name flex">
+<span>def <span class="ident">complete_description</span></span>(<span>self, id, pprint=True, rreturn=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Print l'ensemble des champs textuels pertinents pour l'annonce
+airbnb d'iditifiant 'id'</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant de l'annonce airbnb. Index de la ligne dans </dd>
+</dl>
+<p>la DataFrame.
+Keyword arguments:
+pprint (boolean): True si on affiche la description complète</p>
+<pre><code>rreturn (boolean): True si on retourne la description complète de 
+l'annonce spécifié sous forme de Series.
+</code></pre>
+<h2 id="returns">Returns</h2>
+<p>(pd.Series): en index les noms des champs textuels retournés, en
+élements les string des champs textuels pertinents.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def complete_description(self, id : int, pprint=True, rreturn=False):
+    &#34;&#34;&#34;Print l&#39;ensemble des champs textuels pertinents pour l&#39;annonce 
+    airbnb d&#39;iditifiant &#39;id&#39;
+    
+    Parameters:
+        id (int): identifiant de l&#39;annonce airbnb. Index de la ligne dans 
+        la DataFrame.
+        
+    Keyword arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+        l&#39;annonce spécifié sous forme de Series.
+    
+    Returns:
+        (pd.Series): en index les noms des champs textuels retournés, en 
+        élements les string des champs textuels pertinents.
+    &#34;&#34;&#34;
+    
+    columns = [&#39;name&#39;, &#39;summary&#39;, &#39;space&#39;, &#39;description&#39;]
+    print(&#34;Champs affichés : {}&#34;.format(columns[0]), end=&#34; &#34;)
+    for elt in columns[1:]:
+        print(&#34;,&#34;,elt, end=&#34;&#34;)
+    print(&#34; - coordonnées gps = {}&#34;.format(self.coordonnees(id), &#34;\n&#34;))
+    print()
+    
+    if pprint:
+        for elt in columns :
+            print(&#34;{} :&#34;.format(elt))
+            print(self._obj.loc[id, elt], &#34;\n&#34;)
+    
+    if rreturn:
+        return self._obj.loc[id, columns]  </code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.AirbnbAccessor.coordonnees"><code class="name flex">
+<span>def <span class="ident">coordonnees</span></span>(<span>self, id)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def coordonnees(self, id : int):
+    return (self._obj.loc[id,&#39;latitude&#39;], self._obj.loc[id,&#39;longitude&#39;])</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.AirbnbAccessor.description"><code class="name flex">
+<span>def <span class="ident">description</span></span>(<span>self, id)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def description(self, id : int):
+    return self._obj.loc[id, &#39;description&#39;]</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.AirbnbAccessor.extraire_etage"><code class="name flex">
+<span>def <span class="ident">extraire_etage</span></span>(<span>self, id)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Retourne le numéro de l'étage indiqué dans l'annonce airbnb si présente.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code> or [<code>int</code>]</dt>
+<dd>identifiant de l'annonce airbnb ou liste</dd>
+</dl>
+<p>d'identifiants des annonces airbnb à traiter. Index de la ligne dans
+la DataFrame.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>etage</code></strong> :&ensp;<code>int</code></dt>
+<dd>numéro de l'étage indiqué dans l'annonce, np.nan si</dd>
+</dl>
+<p>non-détecté.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def extraire_etage(self, id : int):
+    &#34;&#34;&#34;Retourne le numéro de l&#39;étage indiqué dans l&#39;annonce airbnb si présente.
+    
+    Parameters:
+        id (int or [int]): identifiant de l&#39;annonce airbnb ou liste
+        d&#39;identifiants des annonces airbnb à traiter. Index de la ligne dans 
+        la DataFrame.
+        
+    Returns:
+        etage (int): numéro de l&#39;étage indiqué dans l&#39;annonce, np.nan si
+        non-détecté.
+    &#34;&#34;&#34;
+    
+    return text_miner.extraire_etage(self._obj, id)</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.AirbnbAccessor.extraire_nbpiece"><code class="name flex">
+<span>def <span class="ident">extraire_nbpiece</span></span>(<span>self, id)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Retourne le nombre de pièces indiqué dans l'annonce airbnb si présente.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code> or [<code>int</code>]</dt>
+<dd>identifiant de l'annonce airbnb ou liste</dd>
+</dl>
+<p>d'identifiants des annonces airbnb à traiter. Index de la ligne dans
+la DataFrame.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>etage</code></strong> :&ensp;<code>int</code></dt>
+<dd>nombre de pièce indiqué dans l'annonce, np.nan si</dd>
+</dl>
+<p>non-détecté.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def extraire_nbpiece(self, id : int):
+    &#34;&#34;&#34;Retourne le nombre de pièces indiqué dans l&#39;annonce airbnb si présente.
+    
+    Parameters:
+        id (int or [int]): identifiant de l&#39;annonce airbnb ou liste
+        d&#39;identifiants des annonces airbnb à traiter. Index de la ligne dans 
+        la DataFrame.
+        
+    Returns:
+        etage (int): nombre de pièce indiqué dans l&#39;annonce, np.nan si
+        non-détecté.
+    &#34;&#34;&#34;
+    
+    return text_miner.extraire_nbpiece(self._obj, id)</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.AirbnbAccessor.extraire_surfhab"><code class="name flex">
+<span>def <span class="ident">extraire_surfhab</span></span>(<span>self, id)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Retourne la surface habitable (en mètres carrés) indiquée dans
+l'annonce airbnb si présente.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code> or [<code>int</code>]</dt>
+<dd>identifiant de l'annonce airbnb ou liste</dd>
+</dl>
+<p>d'identifiants des annonces airbnb à traiter. Index de la ligne dans
+la DataFrame.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>surfhab</code> (<code>float</code> or {<code>id</code>:<code>surfhab</code>}): <code>surface</code> <code>habitable</code> <code>indiquée</code> <code>dans</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>l'annonce, np.nan si non détectée.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def extraire_surfhab(self, id):    
+    &#34;&#34;&#34;Retourne la surface habitable (en mètres carrés) indiquée dans 
+    l&#39;annonce airbnb si présente.
+    
+    Parameters:
+        id (int or [int]): identifiant de l&#39;annonce airbnb ou liste
+        d&#39;identifiants des annonces airbnb à traiter. Index de la ligne dans 
+        la DataFrame.
+        
+    Returns:
+        surfhab (float or {id:surfhab}): surface habitable indiquée dans 
+        l&#39;annonce, np.nan si non détectée.
+    &#34;&#34;&#34;
+    
+    return text_miner.extraire_surfhab(self._obj, id)</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.AirbnbAccessor.name"><code class="name flex">
+<span>def <span class="ident">name</span></span>(<span>self, id)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def name(self, id : int):
+    return self._obj.loc[id, &#39;name&#39;]</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.AirbnbAccessor.summary"><code class="name flex">
+<span>def <span class="ident">summary</span></span>(<span>self, id)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def summary(self, id : int):
+    return self._obj.loc[id, &#39;summary&#39;]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="po_oresys.api.decorators.RPLSAccessor"><code class="flex name class">
+<span>class <span class="ident">RPLSAccessor</span></span>
+<span>(</span><span>pandas_obj)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Instancie un décorateur python permettant de manipuler les dataframe
+instanciant des rpls (répertoire des logements sociaux) plus facilement.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>pandas_obj</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
+<dd>DataFrame regroupant l'ensemble des logements</dd>
+</dl>
+<p>sociaux.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RPLSAccessor:
+    &#34;&#34;&#34; Instancie un décorateur python permettant de manipuler les dataframe
+    instanciant des rpls (répertoire des logements sociaux) plus facilement.
+    
+    Parameters:
+        pandas_obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des logements
+        sociaux.
+    &#34;&#34;&#34;
+    
+    def __init__(self, pandas_obj : pd.DataFrame):
+        self._validate(pandas_obj)
+        self._obj = pandas_obj
+
+    @staticmethod
+    def _validate(obj : pd.DataFrame):
+        &#34;&#34;&#34; Vérifie si la DataFrame regroupe bien un ensemble de logements 
+        sociaux. Utilisé au moment de &#34;l&#39;instanciation&#34; du décorateur.
+        
+        Parameters:
+            obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des logements
+            sociaux.
+        
+        Raise:
+            AttributeError: si le format n&#39;est pas respecté
+        &#34;&#34;&#34;     
+
+        columns = {&#39;libcom&#39;,&#39;numvoie&#39;,&#39;typvoie&#39;,&#39;nomvoie&#39;,&#39;surfhab&#39;, &#39;etage&#39;
+                   ,&#39;nbpiece&#39; ,&#39;longitude&#39;,&#39;latitude&#39;}
+        if not columns.issubset(set(obj.columns)):
+            raise AttributeError(&#34;Must have {}&#34;.format(list(columns)))
+
+    def coordonnees(self, id : int):
+        return (self._obj.loc[id,&#39;latitude&#39;], self._obj.loc[id,&#39;longitude&#39;])
+
+    def complete_description(self, id : int, pprint=True, rreturn=False):
+        &#34;&#34;&#34; Print l&#39;ensemble des champs textuels pertinents pour le logement
+        social d&#39;iditifiant &#39;id&#39;.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+            
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+        
+        Returns:
+            (pd.Series): en index les noms des champs textuels retournés, en 
+            élements les string des champs textuels pertinents.
+        &#34;&#34;&#34;
+        
+        columns = [&#39;libcom&#39;,&#39;numvoie&#39;,&#39;typvoie&#39;,&#39;nomvoie&#39;,&#39;surfhab&#39;, &#39;etage&#39;
+                   ,&#39;nbpiece&#39;]
+        print(&#34;Champs affichés : {}&#34;.format(columns[0]), end=&#34; &#34;)
+        for elt in columns[1:]:
+            print(&#34;,&#34;,elt, end=&#34;&#34;)
+        print(&#34; - coordonnées gps = {}&#34;.format(self.coordonnees(id), &#34;\n&#34;))
+        print()
+        
+        if pprint:
+            for elt in columns :
+                print(&#34;{} :&#34;.format(elt), end=&#34; &#34;)
+                print(self._obj.loc[id, elt])
+            print()
+        
+        if rreturn:
+            return self._obj.loc[id, columns]  
+        
+    def surface_habitable(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie la surface habitable du rpls caractérisé par l&#39;identifiant id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+                la DataFrame.
+                
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+    
+            rreturn (boolean): True si on retourne la description complète de 
+                l&#39;annonce spécifié sous forme de Series.
+                
+        Returns:
+            valeur de la surface habitable du rpls id dans le dataframe.(float)
+        &#34;&#34;&#34;
+        
+        if(pprint):
+            print(self._obj.loc[id,&#39;surfhab&#39;])
+        
+        if(rreturn):
+            return self._obj.loc[id,&#39;surfhab&#39;]
+ 
+    
+    def nombre_piece(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie le nombre de piece du rpls caractérisé par l&#39;identifiant id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+            
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+        
+        Returns:
+            valeur du nombre de piece du rpls id dans le dataframe.(float)
+        &#34;&#34;&#34;
+        
+        if(pprint):
+            print(self._obj.loc[id,&#39;nbpiece&#39;])
+        
+        if(rreturn):
+            return self._obj.loc[id,&#39;nbpiece&#39;]
+ 
+
+    def arrondissement(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie l&#39;arrondissement&#39; du rpls caractérisé par l&#39;identifiant id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+        
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+        
+        Returns:
+            arrondissement du rpls id dans le dataframe (string).
+        &#34;&#34;&#34;
+        
+        if(pprint):
+            print(self._obj.loc[id,&#39;libcom&#39;])
+        
+        if(rreturn):
+            return self._obj.loc[id,&#39;libcom&#39;]
+
+    def etage(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie l&#39;etage&#39; du rpls caractérisé par l&#39;identifiant id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+        
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+        
+        Returns:
+            etage du rpls id dans le dataframe (float).
+        &#34;&#34;&#34;
+        
+        if(pprint):
+            print(self._obj.loc[id,&#39;etage&#39;])
+        
+        if(rreturn):
+            return self._obj.loc[id,&#39;etage&#39;]
+
+    def adresse(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie l&#39;adresse du rpls caractérisé par l&#39;identifiant id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+        
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+        
+        Returns:
+            adresse du rpls id dans le dataframe (string).
+        &#34;&#34;&#34;
+        S = self._obj.loc[id,&#39;numvoie&#39;]+&#34; &#34;
+        if(self._obj.loc[id,&#39;indrep&#39;]!=np.nan):
+            S=S+self._obj.loc[id,&#39;indrep&#39;]
+        S=S+self._obj.loc[id,&#39;typvoie&#39;]+&#34; &#34;+self._obj.loc[id,&#39;nomvoie&#39;]
+        if(self._obj.loc[id,&#39;bat&#39;]!=np.nan):
+            S=S+&#34;, batiment &#34;+self.batiment(id,pprint=False,rreturn=True)
+        if(self._obj.loc[id,&#39;numappt&#39;]!=np.nan):
+            S=S+&#34;, appartement &#34;+self.numero_appartement(id,pprint=False,rreturn=True)
+        if(pprint):
+            print(S)
+        if(rreturn):
+            return S
+    
+    def batiment(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie le batiment du rpls caractérisé par l&#39;identifiant id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+            
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète
+
+            rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+            
+        Returns
+            batiment du rpls id dans le dataframe (float).
+        &#34;&#34;&#34;
+
+        if(pprint):
+            print(self._obj.loc[id,&#39;bat&#39;])
+        
+        if(rreturn):
+            return self._obj.loc[id,&#39;bat&#39;]
+    
+    def numero_appartement(self,id,pprint = True,rreturn = False):
+        &#34;&#34;&#34; Renvoie le numero d&#39;appartement du rpls caractérisé par l&#39;identifiant
+        id.
+        
+        Parameters:
+            id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+            
+        Keyword arguments:
+            pprint (boolean): True si on affiche la description complète.
+        
+        rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+            
+        Returns:
+            numero d&#39;appartement du rpls id dans le dataframe (float).
+        &#34;&#34;&#34;
+        
+        if(pprint):
+            print(self._obj.loc[id,&#39;numappt&#39;])
+        if(rreturn):
+            return self._obj.loc[id,&#39;numappt&#39;]</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="po_oresys.api.decorators.RPLSAccessor.adresse"><code class="name flex">
+<span>def <span class="ident">adresse</span></span>(<span>self, id, pprint=True, rreturn=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Renvoie l'adresse du rpls caractérisé par l'identifiant id.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social. Index de la ligne dans </dd>
+</dl>
+<p>la DataFrame.
+Keyword arguments:
+pprint (boolean): True si on affiche la description complète</p>
+<pre><code>rreturn (boolean): True si on retourne la description complète de 
+l'annonce spécifié sous forme de Series.
+</code></pre>
+<h2 id="returns">Returns</h2>
+<p>adresse du rpls id dans le dataframe (string).</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def adresse(self,id,pprint = True,rreturn = False):
+    &#34;&#34;&#34; Renvoie l&#39;adresse du rpls caractérisé par l&#39;identifiant id.
+    
+    Parameters:
+        id (int): identifiant du logement social. Index de la ligne dans 
+        la DataFrame.
+    
+    Keyword arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+        l&#39;annonce spécifié sous forme de Series.
+    
+    Returns:
+        adresse du rpls id dans le dataframe (string).
+    &#34;&#34;&#34;
+    S = self._obj.loc[id,&#39;numvoie&#39;]+&#34; &#34;
+    if(self._obj.loc[id,&#39;indrep&#39;]!=np.nan):
+        S=S+self._obj.loc[id,&#39;indrep&#39;]
+    S=S+self._obj.loc[id,&#39;typvoie&#39;]+&#34; &#34;+self._obj.loc[id,&#39;nomvoie&#39;]
+    if(self._obj.loc[id,&#39;bat&#39;]!=np.nan):
+        S=S+&#34;, batiment &#34;+self.batiment(id,pprint=False,rreturn=True)
+    if(self._obj.loc[id,&#39;numappt&#39;]!=np.nan):
+        S=S+&#34;, appartement &#34;+self.numero_appartement(id,pprint=False,rreturn=True)
+    if(pprint):
+        print(S)
+    if(rreturn):
+        return S</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.RPLSAccessor.arrondissement"><code class="name flex">
+<span>def <span class="ident">arrondissement</span></span>(<span>self, id, pprint=True, rreturn=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Renvoie l'arrondissement' du rpls caractérisé par l'identifiant id.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social. Index de la ligne dans </dd>
+</dl>
+<p>la DataFrame.
+Keyword arguments:
+pprint (boolean): True si on affiche la description complète</p>
+<pre><code>rreturn (boolean): True si on retourne la description complète de 
+l'annonce spécifié sous forme de Series.
+</code></pre>
+<h2 id="returns">Returns</h2>
+<p>arrondissement du rpls id dans le dataframe (string).</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def arrondissement(self,id,pprint = True,rreturn = False):
+    &#34;&#34;&#34; Renvoie l&#39;arrondissement&#39; du rpls caractérisé par l&#39;identifiant id.
+    
+    Parameters:
+        id (int): identifiant du logement social. Index de la ligne dans 
+        la DataFrame.
+    
+    Keyword arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+        l&#39;annonce spécifié sous forme de Series.
+    
+    Returns:
+        arrondissement du rpls id dans le dataframe (string).
+    &#34;&#34;&#34;
+    
+    if(pprint):
+        print(self._obj.loc[id,&#39;libcom&#39;])
+    
+    if(rreturn):
+        return self._obj.loc[id,&#39;libcom&#39;]</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.RPLSAccessor.batiment"><code class="name flex">
+<span>def <span class="ident">batiment</span></span>(<span>self, id, pprint=True, rreturn=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Renvoie le batiment du rpls caractérisé par l'identifiant id.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social. Index de la ligne dans </dd>
+</dl>
+<p>la DataFrame.
+Keyword arguments:
+pprint (boolean): True si on affiche la description complète</p>
+<pre><code>rreturn (boolean): True si on retourne la description complète de 
+l'annonce spécifié sous forme de Series.
+</code></pre>
+<dl>
+<dt><strong><code>Returns</code></strong></dt>
+<dd>batiment du rpls id dans le dataframe (float).</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def batiment(self,id,pprint = True,rreturn = False):
+    &#34;&#34;&#34; Renvoie le batiment du rpls caractérisé par l&#39;identifiant id.
+    
+    Parameters:
+        id (int): identifiant du logement social. Index de la ligne dans 
+        la DataFrame.
+        
+    Keyword arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+        l&#39;annonce spécifié sous forme de Series.
+        
+    Returns
+        batiment du rpls id dans le dataframe (float).
+    &#34;&#34;&#34;
+
+    if(pprint):
+        print(self._obj.loc[id,&#39;bat&#39;])
+    
+    if(rreturn):
+        return self._obj.loc[id,&#39;bat&#39;]</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.RPLSAccessor.complete_description"><code class="name flex">
+<span>def <span class="ident">complete_description</span></span>(<span>self, id, pprint=True, rreturn=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Print l'ensemble des champs textuels pertinents pour le logement
+social d'iditifiant 'id'.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social. Index de la ligne dans </dd>
+</dl>
+<p>la DataFrame.
+Keyword arguments:
+pprint (boolean): True si on affiche la description complète</p>
+<pre><code>rreturn (boolean): True si on retourne la description complète de 
+l'annonce spécifié sous forme de Series.
+</code></pre>
+<h2 id="returns">Returns</h2>
+<p>(pd.Series): en index les noms des champs textuels retournés, en
+élements les string des champs textuels pertinents.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def complete_description(self, id : int, pprint=True, rreturn=False):
+    &#34;&#34;&#34; Print l&#39;ensemble des champs textuels pertinents pour le logement
+    social d&#39;iditifiant &#39;id&#39;.
+    
+    Parameters:
+        id (int): identifiant du logement social. Index de la ligne dans 
+        la DataFrame.
+        
+    Keyword arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+        l&#39;annonce spécifié sous forme de Series.
+    
+    Returns:
+        (pd.Series): en index les noms des champs textuels retournés, en 
+        élements les string des champs textuels pertinents.
+    &#34;&#34;&#34;
+    
+    columns = [&#39;libcom&#39;,&#39;numvoie&#39;,&#39;typvoie&#39;,&#39;nomvoie&#39;,&#39;surfhab&#39;, &#39;etage&#39;
+               ,&#39;nbpiece&#39;]
+    print(&#34;Champs affichés : {}&#34;.format(columns[0]), end=&#34; &#34;)
+    for elt in columns[1:]:
+        print(&#34;,&#34;,elt, end=&#34;&#34;)
+    print(&#34; - coordonnées gps = {}&#34;.format(self.coordonnees(id), &#34;\n&#34;))
+    print()
+    
+    if pprint:
+        for elt in columns :
+            print(&#34;{} :&#34;.format(elt), end=&#34; &#34;)
+            print(self._obj.loc[id, elt])
+        print()
+    
+    if rreturn:
+        return self._obj.loc[id, columns]  </code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.RPLSAccessor.coordonnees"><code class="name flex">
+<span>def <span class="ident">coordonnees</span></span>(<span>self, id)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def coordonnees(self, id : int):
+    return (self._obj.loc[id,&#39;latitude&#39;], self._obj.loc[id,&#39;longitude&#39;])</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.RPLSAccessor.etage"><code class="name flex">
+<span>def <span class="ident">etage</span></span>(<span>self, id, pprint=True, rreturn=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Renvoie l'etage' du rpls caractérisé par l'identifiant id.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social. Index de la ligne dans </dd>
+</dl>
+<p>la DataFrame.
+Keyword arguments:
+pprint (boolean): True si on affiche la description complète</p>
+<pre><code>rreturn (boolean): True si on retourne la description complète de 
+l'annonce spécifié sous forme de Series.
+</code></pre>
+<h2 id="returns">Returns</h2>
+<p>etage du rpls id dans le dataframe (float).</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def etage(self,id,pprint = True,rreturn = False):
+    &#34;&#34;&#34; Renvoie l&#39;etage&#39; du rpls caractérisé par l&#39;identifiant id.
+    
+    Parameters:
+        id (int): identifiant du logement social. Index de la ligne dans 
+        la DataFrame.
+    
+    Keyword arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+        l&#39;annonce spécifié sous forme de Series.
+    
+    Returns:
+        etage du rpls id dans le dataframe (float).
+    &#34;&#34;&#34;
+    
+    if(pprint):
+        print(self._obj.loc[id,&#39;etage&#39;])
+    
+    if(rreturn):
+        return self._obj.loc[id,&#39;etage&#39;]</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.RPLSAccessor.nombre_piece"><code class="name flex">
+<span>def <span class="ident">nombre_piece</span></span>(<span>self, id, pprint=True, rreturn=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Renvoie le nombre de piece du rpls caractérisé par l'identifiant id.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social. Index de la ligne dans </dd>
+</dl>
+<p>la DataFrame.
+Keyword arguments:
+pprint (boolean): True si on affiche la description complète</p>
+<pre><code>rreturn (boolean): True si on retourne la description complète de 
+l'annonce spécifié sous forme de Series.
+</code></pre>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>valeur</code> <code>du</code> <code>nombre</code> <code>de</code> <code>piece</code> <code>du</code> <code>rpls</code> <code>id</code> <code>dans</code> <code>le</code> <code>dataframe.</code>(<code>float</code>)</dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def nombre_piece(self,id,pprint = True,rreturn = False):
+    &#34;&#34;&#34; Renvoie le nombre de piece du rpls caractérisé par l&#39;identifiant id.
+    
+    Parameters:
+        id (int): identifiant du logement social. Index de la ligne dans 
+        la DataFrame.
+        
+    Keyword arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+        l&#39;annonce spécifié sous forme de Series.
+    
+    Returns:
+        valeur du nombre de piece du rpls id dans le dataframe.(float)
+    &#34;&#34;&#34;
+    
+    if(pprint):
+        print(self._obj.loc[id,&#39;nbpiece&#39;])
+    
+    if(rreturn):
+        return self._obj.loc[id,&#39;nbpiece&#39;]</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.RPLSAccessor.numero_appartement"><code class="name flex">
+<span>def <span class="ident">numero_appartement</span></span>(<span>self, id, pprint=True, rreturn=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Renvoie le numero d'appartement du rpls caractérisé par l'identifiant
+id.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social. Index de la ligne dans </dd>
+</dl>
+<p>la DataFrame.
+Keyword arguments:
+pprint (boolean): True si on affiche la description complète.</p>
+<p>rreturn (boolean): True si on retourne la description complète de
+l'annonce spécifié sous forme de Series.</p>
+<h2 id="returns">Returns</h2>
+<p>numero d'appartement du rpls id dans le dataframe (float).</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def numero_appartement(self,id,pprint = True,rreturn = False):
+    &#34;&#34;&#34; Renvoie le numero d&#39;appartement du rpls caractérisé par l&#39;identifiant
+    id.
+    
+    Parameters:
+        id (int): identifiant du logement social. Index de la ligne dans 
+        la DataFrame.
+        
+    Keyword arguments:
+        pprint (boolean): True si on affiche la description complète.
+    
+    rreturn (boolean): True si on retourne la description complète de 
+        l&#39;annonce spécifié sous forme de Series.
+        
+    Returns:
+        numero d&#39;appartement du rpls id dans le dataframe (float).
+    &#34;&#34;&#34;
+    
+    if(pprint):
+        print(self._obj.loc[id,&#39;numappt&#39;])
+    if(rreturn):
+        return self._obj.loc[id,&#39;numappt&#39;]</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.decorators.RPLSAccessor.surface_habitable"><code class="name flex">
+<span>def <span class="ident">surface_habitable</span></span>(<span>self, id, pprint=True, rreturn=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Renvoie la surface habitable du rpls caractérisé par l'identifiant id.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social. Index de la ligne dans
+la DataFrame.</dd>
+</dl>
+<p>Keyword arguments:
+pprint (boolean): True si on affiche la description complète</p>
+<pre><code>rreturn (boolean): True si on retourne la description complète de 
+    l'annonce spécifié sous forme de Series.
+</code></pre>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>valeur</code> <code>de</code> <code>la</code> <code>surface</code> <code>habitable</code> <code>du</code> <code>rpls</code> <code>id</code> <code>dans</code> <code>le</code> <code>dataframe.</code>(<code>float</code>)</dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def surface_habitable(self,id,pprint = True,rreturn = False):
+    &#34;&#34;&#34; Renvoie la surface habitable du rpls caractérisé par l&#39;identifiant id.
+    
+    Parameters:
+        id (int): identifiant du logement social. Index de la ligne dans 
+            la DataFrame.
+            
+    Keyword arguments:
+        pprint (boolean): True si on affiche la description complète
+
+        rreturn (boolean): True si on retourne la description complète de 
+            l&#39;annonce spécifié sous forme de Series.
+            
+    Returns:
+        valeur de la surface habitable du rpls id dans le dataframe.(float)
+    &#34;&#34;&#34;
+    
+    if(pprint):
+        print(self._obj.loc[id,&#39;surfhab&#39;])
+    
+    if(rreturn):
+        return self._obj.loc[id,&#39;surfhab&#39;]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="po_oresys.api" href="index.html">po_oresys.api</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="po_oresys.api.decorators.AirbnbAccessor" href="#po_oresys.api.decorators.AirbnbAccessor">AirbnbAccessor</a></code></h4>
+<ul class="">
+<li><code><a title="po_oresys.api.decorators.AirbnbAccessor.all_extractions" href="#po_oresys.api.decorators.AirbnbAccessor.all_extractions">all_extractions</a></code></li>
+<li><code><a title="po_oresys.api.decorators.AirbnbAccessor.complete_description" href="#po_oresys.api.decorators.AirbnbAccessor.complete_description">complete_description</a></code></li>
+<li><code><a title="po_oresys.api.decorators.AirbnbAccessor.coordonnees" href="#po_oresys.api.decorators.AirbnbAccessor.coordonnees">coordonnees</a></code></li>
+<li><code><a title="po_oresys.api.decorators.AirbnbAccessor.description" href="#po_oresys.api.decorators.AirbnbAccessor.description">description</a></code></li>
+<li><code><a title="po_oresys.api.decorators.AirbnbAccessor.extraire_etage" href="#po_oresys.api.decorators.AirbnbAccessor.extraire_etage">extraire_etage</a></code></li>
+<li><code><a title="po_oresys.api.decorators.AirbnbAccessor.extraire_nbpiece" href="#po_oresys.api.decorators.AirbnbAccessor.extraire_nbpiece">extraire_nbpiece</a></code></li>
+<li><code><a title="po_oresys.api.decorators.AirbnbAccessor.extraire_surfhab" href="#po_oresys.api.decorators.AirbnbAccessor.extraire_surfhab">extraire_surfhab</a></code></li>
+<li><code><a title="po_oresys.api.decorators.AirbnbAccessor.name" href="#po_oresys.api.decorators.AirbnbAccessor.name">name</a></code></li>
+<li><code><a title="po_oresys.api.decorators.AirbnbAccessor.summary" href="#po_oresys.api.decorators.AirbnbAccessor.summary">summary</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="po_oresys.api.decorators.RPLSAccessor" href="#po_oresys.api.decorators.RPLSAccessor">RPLSAccessor</a></code></h4>
+<ul class="">
+<li><code><a title="po_oresys.api.decorators.RPLSAccessor.adresse" href="#po_oresys.api.decorators.RPLSAccessor.adresse">adresse</a></code></li>
+<li><code><a title="po_oresys.api.decorators.RPLSAccessor.arrondissement" href="#po_oresys.api.decorators.RPLSAccessor.arrondissement">arrondissement</a></code></li>
+<li><code><a title="po_oresys.api.decorators.RPLSAccessor.batiment" href="#po_oresys.api.decorators.RPLSAccessor.batiment">batiment</a></code></li>
+<li><code><a title="po_oresys.api.decorators.RPLSAccessor.complete_description" href="#po_oresys.api.decorators.RPLSAccessor.complete_description">complete_description</a></code></li>
+<li><code><a title="po_oresys.api.decorators.RPLSAccessor.coordonnees" href="#po_oresys.api.decorators.RPLSAccessor.coordonnees">coordonnees</a></code></li>
+<li><code><a title="po_oresys.api.decorators.RPLSAccessor.etage" href="#po_oresys.api.decorators.RPLSAccessor.etage">etage</a></code></li>
+<li><code><a title="po_oresys.api.decorators.RPLSAccessor.nombre_piece" href="#po_oresys.api.decorators.RPLSAccessor.nombre_piece">nombre_piece</a></code></li>
+<li><code><a title="po_oresys.api.decorators.RPLSAccessor.numero_appartement" href="#po_oresys.api.decorators.RPLSAccessor.numero_appartement">numero_appartement</a></code></li>
+<li><code><a title="po_oresys.api.decorators.RPLSAccessor.surface_habitable" href="#po_oresys.api.decorators.RPLSAccessor.surface_habitable">surface_habitable</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

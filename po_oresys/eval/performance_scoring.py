@@ -51,12 +51,15 @@ if __name__ == '__main__':
         
         plt.style.use('seaborn-darkgrid')
         plt.rcParams.update({'font.size':12})
-    #    plt.rcParams["figure.figsize"] = (50,40)
+#        plt.rcParams["figure.figsize"] = (50,40)
         fig, ax = plt.subplots(nrows=3, sharex=True, sharey=True)
-        fig.tight_layout()
+#        fig.tight_layout()
         title = """Distributions cumulées inversées du pourcentage de logements sociaux autour 
         de chaque annonce airbnb ayant un match exact selon chaque levier de suspicion"""
         fig.suptitle(title)
+        plt.xlabel("Pourcentage de logements sociaux avec un match exact selon le levier de détection")
+        fig.text(0.05,0.5, "Somme cumulée du nombre d'annonces airbnb concernées",
+                 ha="center", va="center", rotation=90)
         color_palette = sns.color_palette("muted")
      
         for idx,levier in enumerate({'surfhab','etage','nbpiece'}):

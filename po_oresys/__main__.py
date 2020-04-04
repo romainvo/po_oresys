@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-  return render_template("test_mapbox.html")
+  return render_template("carte.html")
 
 @app.route('/donneesgeos/<path:path>')
 def send_donneesgeo(path):

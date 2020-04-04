@@ -1,0 +1,1901 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.2" />
+<title>po_oresys.api.comparateur API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>po_oresys.api.comparateur</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import numpy as np 
+import pandas as pd 
+import po_oresys.api.decorators
+import po_oresys.api.data_loader as data_loader
+
+class Comparateur:
+    &#34;&#34;&#34; Instancie un objet Comparateur permettant de manipuler et comparer
+    les dataframe instanciant des rpls et des répertoires d&#39;annonces airbnb. 
+    
+    Parameters:
+        airbnb_path (str): Chemin vers le fichier .csv répertoriant les annonces
+        airbnb.
+        
+        rpls_path (str): Chemin vers le fichier .csv répertoriant les logements
+        sociaux.
+        
+        croisement_path (str): Chemin vers le fichier .csv résultant du 
+        croisement, réalalisé au préalable, des coordonnées gps des 2 répertoires.
+        
+        scores_path (str): Si un fichier de score a déjà été calculé préalablement,
+        chemin vers ce fichier .csv .
+        
+        poids_sous_scores (dict): Poids attribué à chaque levier de suspicion,
+        la somme doit être égale à 1.
+        
+        surfhab_tokens (dict): Dictionnaire content pour chaque annonce airbnb 
+        la surface habitable extraite à l&#39;aider du text_miner.
+        
+        etage_tokens (dict): Dictionnaire content pour chaque annonce airbnb 
+        l&#39;étage extrait à l&#39;aider du text_miner.
+
+        nbpiece_tokens (dict): Dictionnaire content pour chaque annonce airbnb 
+        le nombre de pièce extrait à l&#39;aider du text_miner.
+    &#34;&#34;&#34;
+    
+    def __init__(self, airbnb_path=None, rpls_path=None, croisement_path=None
+                 , scores_path=None
+                 , poids_sous_scores={&#39;croisement&#39;:0.2, &#39;surfhab&#39;:0.3
+                                      , &#39;etage&#39;:0.3, &#39;nbpiece&#39;:0.2}
+                 , surfhab_tokens=None, etage_tokens=None, nbpiece_tokens=None):
+
+        self.data_airbnb = data_loader.import_data_airbnb(airbnb_path)
+        self._validate_airbnb(self.data_airbnb)
+    
+        self.data_rpls = data_loader.import_data_rpls(rpls_path)
+        self._validate_rpls(self.data_rpls)
+            
+        self.croisement = data_loader.import_croisement(croisement_path)
+        self._validate_croisement(self, self.croisement)
+        
+        self.all_scores = data_loader.import_scores(scores_path)
+        self._validate_all_scores(self, self.all_scores)
+        
+        self.weights = poids_sous_scores    
+        
+        if surfhab_tokens is not None:
+            self.surfhab_tokens = surfhab_tokens
+        if etage_tokens is not None:
+            self.etage_tokens = etage_tokens
+        if nbpiece_tokens is not None:
+            self.nbpiece_tokens = nbpiece_tokens
+
+    @staticmethod
+    def _validate_airbnb(obj : pd.DataFrame):
+        &#34;&#34;&#34; Vérifie si la DataFrame regroupe bien un ensemble d&#39;annonces airbnb.
+        
+        Parameters:
+            _obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des annonces
+            airbnb.
+        
+        Raise:
+            AttributeError: si le format n&#39;est pas respecté
+        &#34;&#34;&#34;     
+
+        columns = {&#39;name&#39;,&#39;summary&#39;,&#39;space&#39;,&#39;description&#39;,&#39;longitude&#39;,&#39;latitude&#39;}
+        if not columns.issubset(set(obj.columns)):
+            raise AttributeError(&#34;Must have {}&#34;.format(list(columns)))
+
+    @staticmethod
+    def _validate_rpls(obj : pd.DataFrame):
+        &#34;&#34;&#34; Vérifie si la DataFrame regroupe bien un ensemble de logements 
+        sociaux. 
+        
+        Parameters:
+            obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des logements
+            sociaux.
+        
+        Raise:
+            AttributeError: si le format n&#39;est pas respecté
+        &#34;&#34;&#34;     
+
+        columns = {&#39;libcom&#39;,&#39;numvoie&#39;,&#39;typvoie&#39;,&#39;nomvoie&#39;,&#39;surfhab&#39;, &#39;etage&#39;
+                   ,&#39;nbpiece&#39; ,&#39;longitude&#39;,&#39;latitude&#39;}
+        if not columns.issubset(set(obj.columns)):
+            raise AttributeError(&#34;Must have {}&#34;.format(list(columns)))
+
+    @staticmethod
+    def _validate_croisement(self, obj : pd.DataFrame):
+        &#34;&#34;&#34; Vérifie si la DataFrame est bien le résultat du croisement des 
+        coordonnées gps des répertoires de logements sociaux et d&#39;annonces 
+        airbnb. 
+        
+        Parameters:
+            _obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des croisements
+        
+        Raise:
+            AttributeError: si le format n&#39;est pas respecté
+        &#34;&#34;&#34;  
+        
+        if not self.data_airbnb.index.equals(obj.index):
+            raise ValueError(&#34;&#39;croisement&#39; ne correspond ne croise pas les annonces&#34;,
+                             &#34;airbnb contenu dans &#39;self.airbnb&#39;&#34;)
+    @staticmethod            
+    def _validate_all_scores(self, obj : pd.DataFrame):
+        &#34;&#34;&#34; Vérifie si la DataFrame est bien le résultat du calcul des scores de
+        suspicion entre les répertoires de logements sociaux et d&#39;annonces 
+        airbnb.
+        
+        Parameters:
+            _obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des scores
+            airbnb.
+        
+        Raise:
+            AttributeError: si le format n&#39;est pas respecté
+        &#34;&#34;&#34;  
+        if not self.data_airbnb.index.equals(obj.index):
+            raise ValueError(&#34;&#39;all_scores&#39; ne correspond ne calcule pas les scores&#34;,
+                             &#34;des pairs &#39;AirBnB/logement social&#39; résultat du produit&#34;,
+                             &#34;cartésien de self.airbnb.index par self.rpls.index&#34;)
+
+    def voisinage_rpls(self, id_airbnb : int):
+        &#34;&#34;&#34; Renvoie la liste des rpls présents dans le rayon d&#39;anonymisation.
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+        Returns:
+            (pd.Series) contenent les id des rpls dans le voisinage.
+        &#34;&#34;&#34;  
+
+        return self.croisement.loc[id_airbnb]
+        
+    def correspondance_distance(self, id_airbnb : int, id_rpls : int):
+        &#34;&#34;&#34; Renvoie True si l&#39;annonce airbnb et le rpls sont à moins de 150 m
+        l&#39;un de l&#39;autre
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+            id_rpls (int): identifiant du logement social.
+            
+        Returns:
+            (bool) 
+        &#34;&#34;&#34;  
+        
+        return id_rpls in self.croisement.loc[id_airbnb].values
+
+    def comparer(self, id_airbnb : int, id_rpls : int):
+        &#34;&#34;&#34; Affiche les descriptions complètes de l&#39;annonce airbnb et du logement
+        social concernés ainsi que les extractions de champs textuels effectuées
+        sur l&#39;annonce airbnb.
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+            id_rpls (int): identifiant du logement social.
+        &#34;&#34;&#34; 
+        
+        self.data_airbnb.bnb.complete_description(id_airbnb)
+        print(&#34;---------------------------------------------------------------&#34;
+              , &#34;\n&#34;)
+        self.data_rpls.rpls.complete_description(id_rpls)
+        print(&#34;---------------------------------------------------------------&#34;
+              , &#34;\n&#34;)        
+        self.data_airbnb.bnb.all_extractions(id_airbnb, pprint=True, rreturn=False)
+        print()
+        
+    def sous_score_surfhab(self, id_airbnb : int, id_rpls : int):
+        &#34;&#34;&#34; Calcul le score de match selon la surface habitable entre l&#39;annonce 
+        airbnb et le rpls.
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+            id_rpls (int): identifiant du logement social.
+            
+        Returns:
+            (float) : score    
+        &#34;&#34;&#34; 
+        
+        surfhab_airbnb = self.data_airbnb.bnb.extraire_surfhab(id_airbnb)
+        surfhab_rpls = self.data_rpls.loc[id_rpls, &#39;surfhab&#39;]
+        
+        if pd.isna(surfhab_airbnb) or pd.isna(surfhab_rpls):
+            print(&#34;surfhab : score nul car aucune détection&#34;)
+            return 0
+        elif surfhab_airbnb &lt; surfhab_rpls:
+            return surfhab_airbnb / surfhab_rpls
+        else:
+            return surfhab_rpls / surfhab_airbnb
+        
+    def sous_score_etage(self, id_airbnb : int, id_rpls : int):
+        &#34;&#34;&#34; Calcul le score de match selon l&#39;étage entre l&#39;annonce airbnb et le 
+        rpls.
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+            id_rpls (int): identifiant du logement social.
+            
+        Returns:
+            (float) : score    
+        &#34;&#34;&#34; 
+        
+        etage_airbnb = self.data_airbnb.bnb.extraire_etage(id_airbnb)
+        etage_rpls = self.data_rpls.loc[id_rpls, &#39;etage&#39;]
+        
+        if pd.isna(etage_airbnb) or pd.isna(etage_rpls):
+            print(&#34;etage : score nul car aucune détection&#34;)
+            return 0
+        elif abs(etage_airbnb - etage_rpls) == 0:
+            return 1
+        elif abs(etage_airbnb - etage_rpls) == 1:
+            return 0.2
+        else:
+            return 0
+        
+    def sous_score_nbpiece(self, id_airbnb : int, id_rpls : int):
+        &#34;&#34;&#34; Calcul le score de match selon le nombre de pièces entre l&#39;annonce 
+        airbnb et le rpls.
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+            id_rpls (int): identifiant du logement social.
+            
+        Returns:
+            (float) : score    
+        &#34;&#34;&#34; 
+        
+        nbpiece_airbnb = self.data_airbnb.bnb.extraire_nbpiece(id_airbnb)
+        nbpiece_rpls = self.data_rpls.loc[id_rpls, &#39;nbpiece&#39;]
+        
+        if pd.isna(nbpiece_airbnb) or pd.isna(nbpiece_rpls):
+            print(&#34;nbpiece : score nul car aucune détection&#34;)
+            return 0
+        elif abs(nbpiece_airbnb - nbpiece_rpls) == 0:
+            return 1
+        elif abs(nbpiece_airbnb - nbpiece_rpls) == 1:
+            return 0.5
+        elif abs(nbpiece_airbnb - nbpiece_rpls) == 2:
+            return 0.2
+        else:
+            return 0
+        
+    def calculer_score(self, id_airbnb : int, id_rpls : int, descriptif=False): 
+        &#34;&#34;&#34; Calcul le score de suspicion entre l&#39;annonce airbnb et le logement
+        social concerné.
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+            id_rpls (int): identifiant du logement social.
+            
+        Keyword arguments: 
+            descriptif (bool): True si le détail des clés de suspicion ainsi que
+            la description complète de l&#39;annonce et du rpls doivent être affichés.
+            
+        Returns:
+            (float) : score    
+        &#34;&#34;&#34; 
+        
+        sous_scores = {key:np.nan for key in self.weights}
+
+        if self.correspondance_distance(id_airbnb, id_rpls):
+            sous_scores[&#39;croisement&#39;] = 1
+            
+            score = self.weights[&#39;croisement&#39;] * sous_scores[&#39;croisement&#39;]
+            
+            if &#39;surfhab&#39; in self.weights:
+                sous_scores[&#39;surfhab&#39;] = self.sous_score_surfhab(id_airbnb, id_rpls)
+                score += self.weights[&#39;surfhab&#39;] * sous_scores[&#39;surfhab&#39;]
+                
+            if &#39;etage&#39; in self.weights:
+                sous_scores[&#39;etage&#39;] = self.sous_score_etage(id_airbnb, id_rpls)
+                score += self.weights[&#39;etage&#39;] * sous_scores[&#39;etage&#39;] 
+                        
+            if &#39;nbpiece&#39; in self.weights:
+                sous_scores[&#39;nbpiece&#39;] = self.sous_score_nbpiece(id_airbnb, id_rpls)
+                score += self.weights[&#39;nbpiece&#39;] * sous_scores[&#39;nbpiece&#39;] 
+            
+            if descriptif:
+                print()
+                print(&#34;Descriptif des sous-scores :&#34;)
+                print(&#34;Poids des sous scores - {}&#34;.format(self.weights))
+                for key in sous_scores:
+                    print(&#34;Score {} : {}&#34;.format(key, sous_scores[key]))
+                print()
+                self.comparer(id_airbnb, id_rpls)
+            return score
+            
+        else:
+            if descriptif:
+                print()
+                print(&#34;Descriptif des sous-scores :&#34;)
+                print(&#34;Poids des sous scores - {}&#34;.format(self.weights))
+                for key in sous_scores:
+                    print(&#34;Score {} : {}&#34;.format(key, sous_scores[key]))
+                print()   
+                self.comparer(id_airbnb, id_rpls)
+            return 0
+        
+    def calculer_surfhab_scoring(self):
+        &#34;&#34;&#34; Calcul l&#39;ensemble des score de match selon la surface habitable 
+        entre le répertoire d&#39;annonce airbnb et le répertoire de logement sociaux.
+            
+        Returns:
+            self.surfhab_scoring (pd.DataFrame) : score de suspicion selon la 
+            surface habitable entre chaque annonce airbnb et les potentiels 250
+            logements sociaux présents dans son voisinage.
+        &#34;&#34;&#34; 
+        
+        if hasattr(self, &#39;surfhab_scoring&#39;):
+            print(&#34;Les sous_scores de surface habitable de chaque airbnb et&#34;
+                  ,&#34;leur logement sociaux respectifs sont déjà calculés&#34;)
+        
+        else:  
+            print(&#34;Calcul des sous_scores de surface habitable&#34;)
+            
+            if not hasattr(self, &#39;surfhab_tokens&#39;):
+                print(&#34;...Text mining en cours - surfhab non extrait&#34;)
+                self.surfhab_tokens \
+                = self.data_airbnb.bnb.extraire_surfhab(self.data_airbnb.index.values)
+            
+            nb_col_croisement = self.croisement.shape[1]
+            surfhab_rpls = pd.DataFrame()
+            
+            for i in range(nb_col_croisement):
+                surfhab_rpls.loc[:, &#39;surfhab_{}&#39;.format(i)] = \
+                self.data_rpls.surfhab.reindex(
+                         self.croisement[&#39;id_rpls{}&#39;.format(i)]).values
+            
+            #surfhab contient les surface extraites pour les airbnb, avec 
+            #en index l&#39;id du airbnb (le numéro de la ligne dans data_airbnb)
+            surfhab \
+            = pd.Series(self.surfhab_tokens).reindex(index=range(self.data_airbnb.shape[0]))
+
+            surfhab_scoring = surfhab_rpls.div(surfhab, axis=0)
+            surfhab_scoring = surfhab_scoring.applymap(lambda x: 1/x if x &gt; 1 else x)
+            surfhab_scoring.index.rename(&#39;id_bnb&#39;, inplace=True)
+            self.surfhab_scoring = surfhab_scoring
+            
+        return self.surfhab_scoring
+
+    @staticmethod
+    def _etage_score_filtering(x):
+        if x == 0:
+            return 1
+        elif abs(x) == 1:
+            return 0.20
+        elif not pd.isna(x):
+            return 0
+        else:
+            return np.NaN
+    
+    def calculer_etage_scoring(self):
+        &#34;&#34;&#34; Calcul l&#39;ensemble des score de match selon l&#39;étage entre le 
+        répertoire d&#39;annonce airbnb et le répertoire de logement sociaux.
+            
+        Returns:
+            self.etage_scoring (pd.DataFrame) : score de suspicion selon 
+            l&#39;étage entre chaque annonce airbnb et les potentiels 250 logements 
+            sociaux présents dans son voisinage.
+        &#34;&#34;&#34; 
+        
+        if hasattr(self, &#39;etage_scoring&#39;):
+            print(&#34;Les sous_scores d&#39;étage de chaque airbnb et&#34;
+                  ,&#34;leur logement sociaux respectifs sont déjà calculés&#34;)
+        
+        else:
+            print(&#34;Calcul des sous_scores d&#39;étage&#34;)
+            
+            if not hasattr(self, &#39;etage_tokens&#39;):
+                print(&#34;...Text mining en cours - etage non extrait&#34;)
+                self.etage_tokens \
+                = self.data_airbnb.bnb.extraire_etage(self.data_airbnb.index.values)
+
+            nb_col_croisement = self.croisement.shape[1]
+            etage_rpls = pd.DataFrame()
+            
+            for i in range(nb_col_croisement):
+                etage_rpls.loc[:, &#39;etage_{}&#39;.format(i)] = \
+                    self.data_rpls.etage.reindex(
+                            self.croisement[&#39;id_rpls{}&#39;.format(i)]).values
+            
+            #etage contient les surface extraites pour les airbnb, avec en 
+            #index l&#39;id du airbnb (le numéro de la ligne dans data_airbnb)
+            etage \
+            = pd.Series(self.etage_tokens).reindex(index=range(self.data_airbnb.shape[0]))
+            
+            etage_scoring = etage_rpls.subtract(etage, axis=0)
+            etage_scoring = etage_scoring.applymap(self._etage_score_filtering)
+            etage_scoring.index.rename(&#39;id_bnb&#39;, inplace=True)
+            self.etage_scoring = etage_scoring
+            
+        return self.etage_scoring
+
+    @staticmethod
+    def _nbpiece_score_filtering(x):
+        if x == 0:
+            return 1
+        elif abs(x) == 1:
+            return 0.50
+        elif abs(x) == 2:
+            return 0.20
+        elif not pd.isna(x):
+            return 0
+        else:
+            return np.NaN
+
+    def calculer_nbpiece_scoring(self):
+        &#34;&#34;&#34; Calcul l&#39;ensemble des score de match selon le nombre de pièces
+        entre le répertoire d&#39;annonce airbnb et le répertoire de logement sociaux.
+            
+        Returns:
+            self.nbpiece_scoring (pd.DataFrame) : score de suspicion selon le 
+            nombre de pièces entre chaque annonce airbnb et les potentiels 250
+            logements sociaux présents dans son voisinage.
+        &#34;&#34;&#34; 
+        
+        if hasattr(self, &#39;nbpiece_scoring&#39;):
+            print(&#34;Les sous_scores de nombre de pièces de chaque airbnb et&#34;
+                  ,&#34;leur logement sociaux respectifs sont déjà calculés&#34;)
+        
+        else:
+            print(&#34;Calcul des sous_scores du nombre de pièce&#34;)
+            
+            if not hasattr(self, &#39;nbpiece_tokens&#39;):
+                print(&#34;...Text mining en cours - nombre de pièce non extrait&#34;)
+                self.nbpiece_tokens \
+                = self.data_airbnb.bnb.extraire_nbpiece(self.data_airbnb.index.values)
+        
+            nb_col_croisement = self.croisement.shape[1]
+            nbpiece_rpls = pd.DataFrame()    
+            for i in range(nb_col_croisement): #pour chaque col
+                nbpiece_rpls.loc[:, &#39;nbpiece_{}&#39;.format(i)] = \
+                    self.data_rpls.nbpiece.reindex(
+                            self.croisement[&#39;id_rpls{}&#39;.format(i)]).values
+            
+            #etage contient les surface extraites pour les airbnb, avec en index l&#39;id 
+            #du airbnb (le numéro de la ligne dans data_airbnb)
+            pieces \
+            = pd.Series(self.nbpiece_tokens).reindex(index=range(self.data_airbnb.shape[0]))
+            
+            nbpiece_scoring = nbpiece_rpls.subtract(pieces, axis=0)
+            nbpiece_scoring = nbpiece_scoring.applymap(self._nbpiece_score_filtering)
+            nbpiece_scoring.index.rename(&#39;id_bnb&#39;, inplace=True)
+            self.nbpiece_scoring = nbpiece_scoring
+        
+        return self.nbpiece_scoring
+    
+    def calculer_all_scores(self):
+        &#34;&#34;&#34; Calcul l&#39;ensemble score de suspicion entre les annonces du répertoire
+        airbnb et les logements sociaux présent dans le rpls.
+        social concerné.
+            
+        Returns:
+            self.all_scores (pd.DataFrame) : score de suspicion globale
+            entre chaque annonce airbnb et les potentiels 250 logements sociaux 
+            présents dans son voisinage.        
+        &#34;&#34;&#34; 
+        
+        if hasattr(self, &#39;all_scores&#39;):
+            print(&#34;Les scores de chaque airbnb et leur logement sociaux&#34;
+                  ,&#34;respectifs sont déjà calculés&#34;)
+        
+        else:  
+            #Un par un on calcule ou récupère les sous_scores correspondant aux 
+            #champs textuels analysés par l&#39;algorithme.
+            
+            scores = (~self.croisement.isna()).values * self.weights[&#39;croisement&#39;]
+                
+            if &#39;surfhab&#39; in self.weights and hasattr(self, &#39;surfhab_scoring&#39;):
+                scores += \
+                self.surfhab_scoring.fillna(0).values * self.weights[&#39;surfhab&#39;]
+            elif &#39;surfhab&#39; in self.weights:
+                self.calculer_surfhab_scoring()
+                scores += \
+                self.surfhab_scoring.fillna(0).values * self.weights[&#39;surfhab&#39;]
+                
+            if &#39;etage&#39; in self.weights and hasattr(self, &#39;etage_scoring&#39;):
+                scores += \
+                self.etage_scoring.fillna(0).values * self.weights[&#39;etage&#39;]
+            elif &#39;etage&#39; in self.weights:
+                self.calculer_etage_scoring()
+                scores += \
+                self.etage_scoring.fillna(0).values * self.weights[&#39;etage&#39;]                
+
+            if &#39;nbpiece&#39; in self.weights and hasattr(self, &#39;nbpiece_scoring&#39;):
+                scores += \
+                self.nbpiece_scoring.fillna(0).values * self.weights[&#39;nbpiece&#39;]
+            elif &#39;nbpiece&#39; in self.weights:
+                self.calculer_nbpiece_scoring()
+                scores += \
+                self.nbpiece_scoring.fillna(0).values * self.weights[&#39;nbpiece&#39;]  
+        
+            scores = pd.DataFrame(scores)
+            scores.index.rename(&#39;id_bnb&#39;, inplace=True)
+            self.all_scores = scores
+            
+        return self.all_scores
+
+    def extract_best_match(self):
+        &#34;&#34;&#34; A partir de la matrice de score calculée sur l&#39;ensemble des répertoires
+        d&#39;annonces airbnb et de logements sociaux, extrait pour chaque airbnb
+        l&#39;identifiant du logement social ayant le plus haut score de suspicion
+        dans son voisinage
+            
+        Returns:
+            self.best_match (pd.Series) : en index - identifiant du airbnb ; 
+            en colonne - identifiant du logement social.
+        &#34;&#34;&#34; 
+        
+        if hasattr(self, &#39;all_scores&#39;):
+            #On récupère le numéro des colonnes avec le score maximal
+            column_score_max = self.all_scores.idxmax(axis=1).values
+            score_max = self.all_scores.max(axis=1).values
+            
+            best_match = -1 * np.ones((self.croisement.shape[0],2)) 
+            for idx in range(self.croisement.shape[0]):
+                if not pd.isna(self.croisement.iloc[idx, int(column_score_max[idx])]):
+                    best_match[idx,0] \
+                    = self.croisement.iloc[idx, int(column_score_max[idx])]
+                    best_match[idx,1] = score_max[idx]
+                    
+            best_match = pd.DataFrame(best_match)
+            best_match.index.rename(&#39;id_bnb&#39;, inplace=True)
+            best_match.rename(columns={0:&#39;id_rpls&#39;, 1:&#39;score&#39;}, inplace=True)
+            best_match = best_match.astype({&#39;id_rpls&#39;:&#39;int64&#39;})
+            best_match.replace(to_replace={&#39;score&#39;:-1.0}, value={&#39;score&#39;:0.0}
+            , inplace=True)
+        
+            self.best_match = best_match
+            return best_match   
+        
+        else:
+            self.calculer_all_scores()
+            return self.extract_best_match()
+        
+    def sort_best_match(self):
+        if hasattr(self, &#39;best_match&#39;):
+            self.best_match.sort_values(by=&#39;score&#39;, ascending=False, inplace=True)
+        else:
+            raise AttributeError(&#34;L&#39;ensemble des scores n&#39;a pas été calculé :&#34;,
+                                 &#34;exécutez la méthode &#39;calculer_all_scores&#34;)
+
+if __name__ == &#39;__main__&#39;:
+
+    comparateur = Comparateur()
+    comparateur.extract_best_match()
+    comparateur.sort_best_match()
+    best_match = comparateur.best_match
+    
+    #comparateur.comparer(id_airbnb, id_rpls)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="po_oresys.api.comparateur.Comparateur"><code class="flex name class">
+<span>class <span class="ident">Comparateur</span></span>
+<span>(</span><span>airbnb_path=None, rpls_path=None, croisement_path=None, scores_path=None, poids_sous_scores={'croisement': 0.2, 'surfhab': 0.3, 'etage': 0.3, 'nbpiece': 0.2}, surfhab_tokens=None, etage_tokens=None, nbpiece_tokens=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Instancie un objet Comparateur permettant de manipuler et comparer
+les dataframe instanciant des rpls et des répertoires d'annonces airbnb. </p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>airbnb_path</code></strong> :&ensp;<code>str</code></dt>
+<dd>Chemin vers le fichier .csv répertoriant les annonces</dd>
+</dl>
+<p>airbnb.</p>
+<dl>
+<dt><strong><code>rpls_path</code></strong> :&ensp;<code>str</code></dt>
+<dd>Chemin vers le fichier .csv répertoriant les logements</dd>
+</dl>
+<p>sociaux.</p>
+<dl>
+<dt><strong><code>croisement_path</code></strong> :&ensp;<code>str</code></dt>
+<dd>Chemin vers le fichier .csv résultant du </dd>
+</dl>
+<p>croisement, réalalisé au préalable, des coordonnées gps des 2 répertoires.</p>
+<dl>
+<dt><strong><code>scores_path</code></strong> :&ensp;<code>str</code></dt>
+<dd>Si un fichier de score a déjà été calculé préalablement,</dd>
+</dl>
+<p>chemin vers ce fichier .csv .</p>
+<dl>
+<dt><strong><code>poids_sous_scores</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Poids attribué à chaque levier de suspicion,</dd>
+</dl>
+<p>la somme doit être égale à 1.</p>
+<dl>
+<dt><strong><code>surfhab_tokens</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Dictionnaire content pour chaque annonce airbnb </dd>
+</dl>
+<p>la surface habitable extraite à l'aider du text_miner.</p>
+<dl>
+<dt><strong><code>etage_tokens</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Dictionnaire content pour chaque annonce airbnb </dd>
+</dl>
+<p>l'étage extrait à l'aider du text_miner.</p>
+<dl>
+<dt><strong><code>nbpiece_tokens</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Dictionnaire content pour chaque annonce airbnb </dd>
+</dl>
+<p>le nombre de pièce extrait à l'aider du text_miner.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Comparateur:
+    &#34;&#34;&#34; Instancie un objet Comparateur permettant de manipuler et comparer
+    les dataframe instanciant des rpls et des répertoires d&#39;annonces airbnb. 
+    
+    Parameters:
+        airbnb_path (str): Chemin vers le fichier .csv répertoriant les annonces
+        airbnb.
+        
+        rpls_path (str): Chemin vers le fichier .csv répertoriant les logements
+        sociaux.
+        
+        croisement_path (str): Chemin vers le fichier .csv résultant du 
+        croisement, réalalisé au préalable, des coordonnées gps des 2 répertoires.
+        
+        scores_path (str): Si un fichier de score a déjà été calculé préalablement,
+        chemin vers ce fichier .csv .
+        
+        poids_sous_scores (dict): Poids attribué à chaque levier de suspicion,
+        la somme doit être égale à 1.
+        
+        surfhab_tokens (dict): Dictionnaire content pour chaque annonce airbnb 
+        la surface habitable extraite à l&#39;aider du text_miner.
+        
+        etage_tokens (dict): Dictionnaire content pour chaque annonce airbnb 
+        l&#39;étage extrait à l&#39;aider du text_miner.
+
+        nbpiece_tokens (dict): Dictionnaire content pour chaque annonce airbnb 
+        le nombre de pièce extrait à l&#39;aider du text_miner.
+    &#34;&#34;&#34;
+    
+    def __init__(self, airbnb_path=None, rpls_path=None, croisement_path=None
+                 , scores_path=None
+                 , poids_sous_scores={&#39;croisement&#39;:0.2, &#39;surfhab&#39;:0.3
+                                      , &#39;etage&#39;:0.3, &#39;nbpiece&#39;:0.2}
+                 , surfhab_tokens=None, etage_tokens=None, nbpiece_tokens=None):
+
+        self.data_airbnb = data_loader.import_data_airbnb(airbnb_path)
+        self._validate_airbnb(self.data_airbnb)
+    
+        self.data_rpls = data_loader.import_data_rpls(rpls_path)
+        self._validate_rpls(self.data_rpls)
+            
+        self.croisement = data_loader.import_croisement(croisement_path)
+        self._validate_croisement(self, self.croisement)
+        
+        self.all_scores = data_loader.import_scores(scores_path)
+        self._validate_all_scores(self, self.all_scores)
+        
+        self.weights = poids_sous_scores    
+        
+        if surfhab_tokens is not None:
+            self.surfhab_tokens = surfhab_tokens
+        if etage_tokens is not None:
+            self.etage_tokens = etage_tokens
+        if nbpiece_tokens is not None:
+            self.nbpiece_tokens = nbpiece_tokens
+
+    @staticmethod
+    def _validate_airbnb(obj : pd.DataFrame):
+        &#34;&#34;&#34; Vérifie si la DataFrame regroupe bien un ensemble d&#39;annonces airbnb.
+        
+        Parameters:
+            _obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des annonces
+            airbnb.
+        
+        Raise:
+            AttributeError: si le format n&#39;est pas respecté
+        &#34;&#34;&#34;     
+
+        columns = {&#39;name&#39;,&#39;summary&#39;,&#39;space&#39;,&#39;description&#39;,&#39;longitude&#39;,&#39;latitude&#39;}
+        if not columns.issubset(set(obj.columns)):
+            raise AttributeError(&#34;Must have {}&#34;.format(list(columns)))
+
+    @staticmethod
+    def _validate_rpls(obj : pd.DataFrame):
+        &#34;&#34;&#34; Vérifie si la DataFrame regroupe bien un ensemble de logements 
+        sociaux. 
+        
+        Parameters:
+            obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des logements
+            sociaux.
+        
+        Raise:
+            AttributeError: si le format n&#39;est pas respecté
+        &#34;&#34;&#34;     
+
+        columns = {&#39;libcom&#39;,&#39;numvoie&#39;,&#39;typvoie&#39;,&#39;nomvoie&#39;,&#39;surfhab&#39;, &#39;etage&#39;
+                   ,&#39;nbpiece&#39; ,&#39;longitude&#39;,&#39;latitude&#39;}
+        if not columns.issubset(set(obj.columns)):
+            raise AttributeError(&#34;Must have {}&#34;.format(list(columns)))
+
+    @staticmethod
+    def _validate_croisement(self, obj : pd.DataFrame):
+        &#34;&#34;&#34; Vérifie si la DataFrame est bien le résultat du croisement des 
+        coordonnées gps des répertoires de logements sociaux et d&#39;annonces 
+        airbnb. 
+        
+        Parameters:
+            _obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des croisements
+        
+        Raise:
+            AttributeError: si le format n&#39;est pas respecté
+        &#34;&#34;&#34;  
+        
+        if not self.data_airbnb.index.equals(obj.index):
+            raise ValueError(&#34;&#39;croisement&#39; ne correspond ne croise pas les annonces&#34;,
+                             &#34;airbnb contenu dans &#39;self.airbnb&#39;&#34;)
+    @staticmethod            
+    def _validate_all_scores(self, obj : pd.DataFrame):
+        &#34;&#34;&#34; Vérifie si la DataFrame est bien le résultat du calcul des scores de
+        suspicion entre les répertoires de logements sociaux et d&#39;annonces 
+        airbnb.
+        
+        Parameters:
+            _obj (pd.DataFrame): DataFrame regroupant l&#39;ensemble des scores
+            airbnb.
+        
+        Raise:
+            AttributeError: si le format n&#39;est pas respecté
+        &#34;&#34;&#34;  
+        if not self.data_airbnb.index.equals(obj.index):
+            raise ValueError(&#34;&#39;all_scores&#39; ne correspond ne calcule pas les scores&#34;,
+                             &#34;des pairs &#39;AirBnB/logement social&#39; résultat du produit&#34;,
+                             &#34;cartésien de self.airbnb.index par self.rpls.index&#34;)
+
+    def voisinage_rpls(self, id_airbnb : int):
+        &#34;&#34;&#34; Renvoie la liste des rpls présents dans le rayon d&#39;anonymisation.
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+        Returns:
+            (pd.Series) contenent les id des rpls dans le voisinage.
+        &#34;&#34;&#34;  
+
+        return self.croisement.loc[id_airbnb]
+        
+    def correspondance_distance(self, id_airbnb : int, id_rpls : int):
+        &#34;&#34;&#34; Renvoie True si l&#39;annonce airbnb et le rpls sont à moins de 150 m
+        l&#39;un de l&#39;autre
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+            id_rpls (int): identifiant du logement social.
+            
+        Returns:
+            (bool) 
+        &#34;&#34;&#34;  
+        
+        return id_rpls in self.croisement.loc[id_airbnb].values
+
+    def comparer(self, id_airbnb : int, id_rpls : int):
+        &#34;&#34;&#34; Affiche les descriptions complètes de l&#39;annonce airbnb et du logement
+        social concernés ainsi que les extractions de champs textuels effectuées
+        sur l&#39;annonce airbnb.
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+            id_rpls (int): identifiant du logement social.
+        &#34;&#34;&#34; 
+        
+        self.data_airbnb.bnb.complete_description(id_airbnb)
+        print(&#34;---------------------------------------------------------------&#34;
+              , &#34;\n&#34;)
+        self.data_rpls.rpls.complete_description(id_rpls)
+        print(&#34;---------------------------------------------------------------&#34;
+              , &#34;\n&#34;)        
+        self.data_airbnb.bnb.all_extractions(id_airbnb, pprint=True, rreturn=False)
+        print()
+        
+    def sous_score_surfhab(self, id_airbnb : int, id_rpls : int):
+        &#34;&#34;&#34; Calcul le score de match selon la surface habitable entre l&#39;annonce 
+        airbnb et le rpls.
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+            id_rpls (int): identifiant du logement social.
+            
+        Returns:
+            (float) : score    
+        &#34;&#34;&#34; 
+        
+        surfhab_airbnb = self.data_airbnb.bnb.extraire_surfhab(id_airbnb)
+        surfhab_rpls = self.data_rpls.loc[id_rpls, &#39;surfhab&#39;]
+        
+        if pd.isna(surfhab_airbnb) or pd.isna(surfhab_rpls):
+            print(&#34;surfhab : score nul car aucune détection&#34;)
+            return 0
+        elif surfhab_airbnb &lt; surfhab_rpls:
+            return surfhab_airbnb / surfhab_rpls
+        else:
+            return surfhab_rpls / surfhab_airbnb
+        
+    def sous_score_etage(self, id_airbnb : int, id_rpls : int):
+        &#34;&#34;&#34; Calcul le score de match selon l&#39;étage entre l&#39;annonce airbnb et le 
+        rpls.
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+            id_rpls (int): identifiant du logement social.
+            
+        Returns:
+            (float) : score    
+        &#34;&#34;&#34; 
+        
+        etage_airbnb = self.data_airbnb.bnb.extraire_etage(id_airbnb)
+        etage_rpls = self.data_rpls.loc[id_rpls, &#39;etage&#39;]
+        
+        if pd.isna(etage_airbnb) or pd.isna(etage_rpls):
+            print(&#34;etage : score nul car aucune détection&#34;)
+            return 0
+        elif abs(etage_airbnb - etage_rpls) == 0:
+            return 1
+        elif abs(etage_airbnb - etage_rpls) == 1:
+            return 0.2
+        else:
+            return 0
+        
+    def sous_score_nbpiece(self, id_airbnb : int, id_rpls : int):
+        &#34;&#34;&#34; Calcul le score de match selon le nombre de pièces entre l&#39;annonce 
+        airbnb et le rpls.
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+            id_rpls (int): identifiant du logement social.
+            
+        Returns:
+            (float) : score    
+        &#34;&#34;&#34; 
+        
+        nbpiece_airbnb = self.data_airbnb.bnb.extraire_nbpiece(id_airbnb)
+        nbpiece_rpls = self.data_rpls.loc[id_rpls, &#39;nbpiece&#39;]
+        
+        if pd.isna(nbpiece_airbnb) or pd.isna(nbpiece_rpls):
+            print(&#34;nbpiece : score nul car aucune détection&#34;)
+            return 0
+        elif abs(nbpiece_airbnb - nbpiece_rpls) == 0:
+            return 1
+        elif abs(nbpiece_airbnb - nbpiece_rpls) == 1:
+            return 0.5
+        elif abs(nbpiece_airbnb - nbpiece_rpls) == 2:
+            return 0.2
+        else:
+            return 0
+        
+    def calculer_score(self, id_airbnb : int, id_rpls : int, descriptif=False): 
+        &#34;&#34;&#34; Calcul le score de suspicion entre l&#39;annonce airbnb et le logement
+        social concerné.
+        
+        Parameters:
+            id_airbnb (int): identifiant de l&#39;annonce airbnb.
+            
+            id_rpls (int): identifiant du logement social.
+            
+        Keyword arguments: 
+            descriptif (bool): True si le détail des clés de suspicion ainsi que
+            la description complète de l&#39;annonce et du rpls doivent être affichés.
+            
+        Returns:
+            (float) : score    
+        &#34;&#34;&#34; 
+        
+        sous_scores = {key:np.nan for key in self.weights}
+
+        if self.correspondance_distance(id_airbnb, id_rpls):
+            sous_scores[&#39;croisement&#39;] = 1
+            
+            score = self.weights[&#39;croisement&#39;] * sous_scores[&#39;croisement&#39;]
+            
+            if &#39;surfhab&#39; in self.weights:
+                sous_scores[&#39;surfhab&#39;] = self.sous_score_surfhab(id_airbnb, id_rpls)
+                score += self.weights[&#39;surfhab&#39;] * sous_scores[&#39;surfhab&#39;]
+                
+            if &#39;etage&#39; in self.weights:
+                sous_scores[&#39;etage&#39;] = self.sous_score_etage(id_airbnb, id_rpls)
+                score += self.weights[&#39;etage&#39;] * sous_scores[&#39;etage&#39;] 
+                        
+            if &#39;nbpiece&#39; in self.weights:
+                sous_scores[&#39;nbpiece&#39;] = self.sous_score_nbpiece(id_airbnb, id_rpls)
+                score += self.weights[&#39;nbpiece&#39;] * sous_scores[&#39;nbpiece&#39;] 
+            
+            if descriptif:
+                print()
+                print(&#34;Descriptif des sous-scores :&#34;)
+                print(&#34;Poids des sous scores - {}&#34;.format(self.weights))
+                for key in sous_scores:
+                    print(&#34;Score {} : {}&#34;.format(key, sous_scores[key]))
+                print()
+                self.comparer(id_airbnb, id_rpls)
+            return score
+            
+        else:
+            if descriptif:
+                print()
+                print(&#34;Descriptif des sous-scores :&#34;)
+                print(&#34;Poids des sous scores - {}&#34;.format(self.weights))
+                for key in sous_scores:
+                    print(&#34;Score {} : {}&#34;.format(key, sous_scores[key]))
+                print()   
+                self.comparer(id_airbnb, id_rpls)
+            return 0
+        
+    def calculer_surfhab_scoring(self):
+        &#34;&#34;&#34; Calcul l&#39;ensemble des score de match selon la surface habitable 
+        entre le répertoire d&#39;annonce airbnb et le répertoire de logement sociaux.
+            
+        Returns:
+            self.surfhab_scoring (pd.DataFrame) : score de suspicion selon la 
+            surface habitable entre chaque annonce airbnb et les potentiels 250
+            logements sociaux présents dans son voisinage.
+        &#34;&#34;&#34; 
+        
+        if hasattr(self, &#39;surfhab_scoring&#39;):
+            print(&#34;Les sous_scores de surface habitable de chaque airbnb et&#34;
+                  ,&#34;leur logement sociaux respectifs sont déjà calculés&#34;)
+        
+        else:  
+            print(&#34;Calcul des sous_scores de surface habitable&#34;)
+            
+            if not hasattr(self, &#39;surfhab_tokens&#39;):
+                print(&#34;...Text mining en cours - surfhab non extrait&#34;)
+                self.surfhab_tokens \
+                = self.data_airbnb.bnb.extraire_surfhab(self.data_airbnb.index.values)
+            
+            nb_col_croisement = self.croisement.shape[1]
+            surfhab_rpls = pd.DataFrame()
+            
+            for i in range(nb_col_croisement):
+                surfhab_rpls.loc[:, &#39;surfhab_{}&#39;.format(i)] = \
+                self.data_rpls.surfhab.reindex(
+                         self.croisement[&#39;id_rpls{}&#39;.format(i)]).values
+            
+            #surfhab contient les surface extraites pour les airbnb, avec 
+            #en index l&#39;id du airbnb (le numéro de la ligne dans data_airbnb)
+            surfhab \
+            = pd.Series(self.surfhab_tokens).reindex(index=range(self.data_airbnb.shape[0]))
+
+            surfhab_scoring = surfhab_rpls.div(surfhab, axis=0)
+            surfhab_scoring = surfhab_scoring.applymap(lambda x: 1/x if x &gt; 1 else x)
+            surfhab_scoring.index.rename(&#39;id_bnb&#39;, inplace=True)
+            self.surfhab_scoring = surfhab_scoring
+            
+        return self.surfhab_scoring
+
+    @staticmethod
+    def _etage_score_filtering(x):
+        if x == 0:
+            return 1
+        elif abs(x) == 1:
+            return 0.20
+        elif not pd.isna(x):
+            return 0
+        else:
+            return np.NaN
+    
+    def calculer_etage_scoring(self):
+        &#34;&#34;&#34; Calcul l&#39;ensemble des score de match selon l&#39;étage entre le 
+        répertoire d&#39;annonce airbnb et le répertoire de logement sociaux.
+            
+        Returns:
+            self.etage_scoring (pd.DataFrame) : score de suspicion selon 
+            l&#39;étage entre chaque annonce airbnb et les potentiels 250 logements 
+            sociaux présents dans son voisinage.
+        &#34;&#34;&#34; 
+        
+        if hasattr(self, &#39;etage_scoring&#39;):
+            print(&#34;Les sous_scores d&#39;étage de chaque airbnb et&#34;
+                  ,&#34;leur logement sociaux respectifs sont déjà calculés&#34;)
+        
+        else:
+            print(&#34;Calcul des sous_scores d&#39;étage&#34;)
+            
+            if not hasattr(self, &#39;etage_tokens&#39;):
+                print(&#34;...Text mining en cours - etage non extrait&#34;)
+                self.etage_tokens \
+                = self.data_airbnb.bnb.extraire_etage(self.data_airbnb.index.values)
+
+            nb_col_croisement = self.croisement.shape[1]
+            etage_rpls = pd.DataFrame()
+            
+            for i in range(nb_col_croisement):
+                etage_rpls.loc[:, &#39;etage_{}&#39;.format(i)] = \
+                    self.data_rpls.etage.reindex(
+                            self.croisement[&#39;id_rpls{}&#39;.format(i)]).values
+            
+            #etage contient les surface extraites pour les airbnb, avec en 
+            #index l&#39;id du airbnb (le numéro de la ligne dans data_airbnb)
+            etage \
+            = pd.Series(self.etage_tokens).reindex(index=range(self.data_airbnb.shape[0]))
+            
+            etage_scoring = etage_rpls.subtract(etage, axis=0)
+            etage_scoring = etage_scoring.applymap(self._etage_score_filtering)
+            etage_scoring.index.rename(&#39;id_bnb&#39;, inplace=True)
+            self.etage_scoring = etage_scoring
+            
+        return self.etage_scoring
+
+    @staticmethod
+    def _nbpiece_score_filtering(x):
+        if x == 0:
+            return 1
+        elif abs(x) == 1:
+            return 0.50
+        elif abs(x) == 2:
+            return 0.20
+        elif not pd.isna(x):
+            return 0
+        else:
+            return np.NaN
+
+    def calculer_nbpiece_scoring(self):
+        &#34;&#34;&#34; Calcul l&#39;ensemble des score de match selon le nombre de pièces
+        entre le répertoire d&#39;annonce airbnb et le répertoire de logement sociaux.
+            
+        Returns:
+            self.nbpiece_scoring (pd.DataFrame) : score de suspicion selon le 
+            nombre de pièces entre chaque annonce airbnb et les potentiels 250
+            logements sociaux présents dans son voisinage.
+        &#34;&#34;&#34; 
+        
+        if hasattr(self, &#39;nbpiece_scoring&#39;):
+            print(&#34;Les sous_scores de nombre de pièces de chaque airbnb et&#34;
+                  ,&#34;leur logement sociaux respectifs sont déjà calculés&#34;)
+        
+        else:
+            print(&#34;Calcul des sous_scores du nombre de pièce&#34;)
+            
+            if not hasattr(self, &#39;nbpiece_tokens&#39;):
+                print(&#34;...Text mining en cours - nombre de pièce non extrait&#34;)
+                self.nbpiece_tokens \
+                = self.data_airbnb.bnb.extraire_nbpiece(self.data_airbnb.index.values)
+        
+            nb_col_croisement = self.croisement.shape[1]
+            nbpiece_rpls = pd.DataFrame()    
+            for i in range(nb_col_croisement): #pour chaque col
+                nbpiece_rpls.loc[:, &#39;nbpiece_{}&#39;.format(i)] = \
+                    self.data_rpls.nbpiece.reindex(
+                            self.croisement[&#39;id_rpls{}&#39;.format(i)]).values
+            
+            #etage contient les surface extraites pour les airbnb, avec en index l&#39;id 
+            #du airbnb (le numéro de la ligne dans data_airbnb)
+            pieces \
+            = pd.Series(self.nbpiece_tokens).reindex(index=range(self.data_airbnb.shape[0]))
+            
+            nbpiece_scoring = nbpiece_rpls.subtract(pieces, axis=0)
+            nbpiece_scoring = nbpiece_scoring.applymap(self._nbpiece_score_filtering)
+            nbpiece_scoring.index.rename(&#39;id_bnb&#39;, inplace=True)
+            self.nbpiece_scoring = nbpiece_scoring
+        
+        return self.nbpiece_scoring
+    
+    def calculer_all_scores(self):
+        &#34;&#34;&#34; Calcul l&#39;ensemble score de suspicion entre les annonces du répertoire
+        airbnb et les logements sociaux présent dans le rpls.
+        social concerné.
+            
+        Returns:
+            self.all_scores (pd.DataFrame) : score de suspicion globale
+            entre chaque annonce airbnb et les potentiels 250 logements sociaux 
+            présents dans son voisinage.        
+        &#34;&#34;&#34; 
+        
+        if hasattr(self, &#39;all_scores&#39;):
+            print(&#34;Les scores de chaque airbnb et leur logement sociaux&#34;
+                  ,&#34;respectifs sont déjà calculés&#34;)
+        
+        else:  
+            #Un par un on calcule ou récupère les sous_scores correspondant aux 
+            #champs textuels analysés par l&#39;algorithme.
+            
+            scores = (~self.croisement.isna()).values * self.weights[&#39;croisement&#39;]
+                
+            if &#39;surfhab&#39; in self.weights and hasattr(self, &#39;surfhab_scoring&#39;):
+                scores += \
+                self.surfhab_scoring.fillna(0).values * self.weights[&#39;surfhab&#39;]
+            elif &#39;surfhab&#39; in self.weights:
+                self.calculer_surfhab_scoring()
+                scores += \
+                self.surfhab_scoring.fillna(0).values * self.weights[&#39;surfhab&#39;]
+                
+            if &#39;etage&#39; in self.weights and hasattr(self, &#39;etage_scoring&#39;):
+                scores += \
+                self.etage_scoring.fillna(0).values * self.weights[&#39;etage&#39;]
+            elif &#39;etage&#39; in self.weights:
+                self.calculer_etage_scoring()
+                scores += \
+                self.etage_scoring.fillna(0).values * self.weights[&#39;etage&#39;]                
+
+            if &#39;nbpiece&#39; in self.weights and hasattr(self, &#39;nbpiece_scoring&#39;):
+                scores += \
+                self.nbpiece_scoring.fillna(0).values * self.weights[&#39;nbpiece&#39;]
+            elif &#39;nbpiece&#39; in self.weights:
+                self.calculer_nbpiece_scoring()
+                scores += \
+                self.nbpiece_scoring.fillna(0).values * self.weights[&#39;nbpiece&#39;]  
+        
+            scores = pd.DataFrame(scores)
+            scores.index.rename(&#39;id_bnb&#39;, inplace=True)
+            self.all_scores = scores
+            
+        return self.all_scores
+
+    def extract_best_match(self):
+        &#34;&#34;&#34; A partir de la matrice de score calculée sur l&#39;ensemble des répertoires
+        d&#39;annonces airbnb et de logements sociaux, extrait pour chaque airbnb
+        l&#39;identifiant du logement social ayant le plus haut score de suspicion
+        dans son voisinage
+            
+        Returns:
+            self.best_match (pd.Series) : en index - identifiant du airbnb ; 
+            en colonne - identifiant du logement social.
+        &#34;&#34;&#34; 
+        
+        if hasattr(self, &#39;all_scores&#39;):
+            #On récupère le numéro des colonnes avec le score maximal
+            column_score_max = self.all_scores.idxmax(axis=1).values
+            score_max = self.all_scores.max(axis=1).values
+            
+            best_match = -1 * np.ones((self.croisement.shape[0],2)) 
+            for idx in range(self.croisement.shape[0]):
+                if not pd.isna(self.croisement.iloc[idx, int(column_score_max[idx])]):
+                    best_match[idx,0] \
+                    = self.croisement.iloc[idx, int(column_score_max[idx])]
+                    best_match[idx,1] = score_max[idx]
+                    
+            best_match = pd.DataFrame(best_match)
+            best_match.index.rename(&#39;id_bnb&#39;, inplace=True)
+            best_match.rename(columns={0:&#39;id_rpls&#39;, 1:&#39;score&#39;}, inplace=True)
+            best_match = best_match.astype({&#39;id_rpls&#39;:&#39;int64&#39;})
+            best_match.replace(to_replace={&#39;score&#39;:-1.0}, value={&#39;score&#39;:0.0}
+            , inplace=True)
+        
+            self.best_match = best_match
+            return best_match   
+        
+        else:
+            self.calculer_all_scores()
+            return self.extract_best_match()
+        
+    def sort_best_match(self):
+        if hasattr(self, &#39;best_match&#39;):
+            self.best_match.sort_values(by=&#39;score&#39;, ascending=False, inplace=True)
+        else:
+            raise AttributeError(&#34;L&#39;ensemble des scores n&#39;a pas été calculé :&#34;,
+                                 &#34;exécutez la méthode &#39;calculer_all_scores&#34;)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="po_oresys.api.comparateur.Comparateur.calculer_all_scores"><code class="name flex">
+<span>def <span class="ident">calculer_all_scores</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calcul l'ensemble score de suspicion entre les annonces du répertoire
+airbnb et les logements sociaux présent dans le rpls.
+social concerné.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>self.all_scores</code> (<code>pd.DataFrame</code>) : <code>score</code> <code>de</code> <code>suspicion</code> <code>globale</code></dt>
+<dd>&nbsp;</dd>
+<dt><code>entre</code> <code>chaque</code> <code>annonce</code> <code>airbnb</code> <code>et</code> <code>les</code> <code>potentiels</code> <code>250</code> <code>logements</code> <code>sociaux</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>présents dans son voisinage.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calculer_all_scores(self):
+    &#34;&#34;&#34; Calcul l&#39;ensemble score de suspicion entre les annonces du répertoire
+    airbnb et les logements sociaux présent dans le rpls.
+    social concerné.
+        
+    Returns:
+        self.all_scores (pd.DataFrame) : score de suspicion globale
+        entre chaque annonce airbnb et les potentiels 250 logements sociaux 
+        présents dans son voisinage.        
+    &#34;&#34;&#34; 
+    
+    if hasattr(self, &#39;all_scores&#39;):
+        print(&#34;Les scores de chaque airbnb et leur logement sociaux&#34;
+              ,&#34;respectifs sont déjà calculés&#34;)
+    
+    else:  
+        #Un par un on calcule ou récupère les sous_scores correspondant aux 
+        #champs textuels analysés par l&#39;algorithme.
+        
+        scores = (~self.croisement.isna()).values * self.weights[&#39;croisement&#39;]
+            
+        if &#39;surfhab&#39; in self.weights and hasattr(self, &#39;surfhab_scoring&#39;):
+            scores += \
+            self.surfhab_scoring.fillna(0).values * self.weights[&#39;surfhab&#39;]
+        elif &#39;surfhab&#39; in self.weights:
+            self.calculer_surfhab_scoring()
+            scores += \
+            self.surfhab_scoring.fillna(0).values * self.weights[&#39;surfhab&#39;]
+            
+        if &#39;etage&#39; in self.weights and hasattr(self, &#39;etage_scoring&#39;):
+            scores += \
+            self.etage_scoring.fillna(0).values * self.weights[&#39;etage&#39;]
+        elif &#39;etage&#39; in self.weights:
+            self.calculer_etage_scoring()
+            scores += \
+            self.etage_scoring.fillna(0).values * self.weights[&#39;etage&#39;]                
+
+        if &#39;nbpiece&#39; in self.weights and hasattr(self, &#39;nbpiece_scoring&#39;):
+            scores += \
+            self.nbpiece_scoring.fillna(0).values * self.weights[&#39;nbpiece&#39;]
+        elif &#39;nbpiece&#39; in self.weights:
+            self.calculer_nbpiece_scoring()
+            scores += \
+            self.nbpiece_scoring.fillna(0).values * self.weights[&#39;nbpiece&#39;]  
+    
+        scores = pd.DataFrame(scores)
+        scores.index.rename(&#39;id_bnb&#39;, inplace=True)
+        self.all_scores = scores
+        
+    return self.all_scores</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.comparateur.Comparateur.calculer_etage_scoring"><code class="name flex">
+<span>def <span class="ident">calculer_etage_scoring</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calcul l'ensemble des score de match selon l'étage entre le
+répertoire d'annonce airbnb et le répertoire de logement sociaux.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>self.etage_scoring</code> (<code>pd.DataFrame</code>) : <code>score</code> <code>de</code> <code>suspicion</code> <code>selon</code></dt>
+<dd>&nbsp;</dd>
+<dt><code>l'étage</code> <code>entre</code> <code>chaque</code> <code>annonce</code> <code>airbnb</code> <code>et</code> <code>les</code> <code>potentiels</code> <code>250</code> <code>logements</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>sociaux présents dans son voisinage.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calculer_etage_scoring(self):
+    &#34;&#34;&#34; Calcul l&#39;ensemble des score de match selon l&#39;étage entre le 
+    répertoire d&#39;annonce airbnb et le répertoire de logement sociaux.
+        
+    Returns:
+        self.etage_scoring (pd.DataFrame) : score de suspicion selon 
+        l&#39;étage entre chaque annonce airbnb et les potentiels 250 logements 
+        sociaux présents dans son voisinage.
+    &#34;&#34;&#34; 
+    
+    if hasattr(self, &#39;etage_scoring&#39;):
+        print(&#34;Les sous_scores d&#39;étage de chaque airbnb et&#34;
+              ,&#34;leur logement sociaux respectifs sont déjà calculés&#34;)
+    
+    else:
+        print(&#34;Calcul des sous_scores d&#39;étage&#34;)
+        
+        if not hasattr(self, &#39;etage_tokens&#39;):
+            print(&#34;...Text mining en cours - etage non extrait&#34;)
+            self.etage_tokens \
+            = self.data_airbnb.bnb.extraire_etage(self.data_airbnb.index.values)
+
+        nb_col_croisement = self.croisement.shape[1]
+        etage_rpls = pd.DataFrame()
+        
+        for i in range(nb_col_croisement):
+            etage_rpls.loc[:, &#39;etage_{}&#39;.format(i)] = \
+                self.data_rpls.etage.reindex(
+                        self.croisement[&#39;id_rpls{}&#39;.format(i)]).values
+        
+        #etage contient les surface extraites pour les airbnb, avec en 
+        #index l&#39;id du airbnb (le numéro de la ligne dans data_airbnb)
+        etage \
+        = pd.Series(self.etage_tokens).reindex(index=range(self.data_airbnb.shape[0]))
+        
+        etage_scoring = etage_rpls.subtract(etage, axis=0)
+        etage_scoring = etage_scoring.applymap(self._etage_score_filtering)
+        etage_scoring.index.rename(&#39;id_bnb&#39;, inplace=True)
+        self.etage_scoring = etage_scoring
+        
+    return self.etage_scoring</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.comparateur.Comparateur.calculer_nbpiece_scoring"><code class="name flex">
+<span>def <span class="ident">calculer_nbpiece_scoring</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calcul l'ensemble des score de match selon le nombre de pièces
+entre le répertoire d'annonce airbnb et le répertoire de logement sociaux.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>self.nbpiece_scoring</code> (<code>pd.DataFrame</code>) : <code>score</code> <code>de</code> <code>suspicion</code> <code>selon</code> <code>le</code></dt>
+<dd>&nbsp;</dd>
+<dt><code>nombre</code> <code>de</code> <code>pièces</code> <code>entre</code> <code>chaque</code> <code>annonce</code> <code>airbnb</code> <code>et</code> <code>les</code> <code>potentiels</code> <code>250</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>logements sociaux présents dans son voisinage.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calculer_nbpiece_scoring(self):
+    &#34;&#34;&#34; Calcul l&#39;ensemble des score de match selon le nombre de pièces
+    entre le répertoire d&#39;annonce airbnb et le répertoire de logement sociaux.
+        
+    Returns:
+        self.nbpiece_scoring (pd.DataFrame) : score de suspicion selon le 
+        nombre de pièces entre chaque annonce airbnb et les potentiels 250
+        logements sociaux présents dans son voisinage.
+    &#34;&#34;&#34; 
+    
+    if hasattr(self, &#39;nbpiece_scoring&#39;):
+        print(&#34;Les sous_scores de nombre de pièces de chaque airbnb et&#34;
+              ,&#34;leur logement sociaux respectifs sont déjà calculés&#34;)
+    
+    else:
+        print(&#34;Calcul des sous_scores du nombre de pièce&#34;)
+        
+        if not hasattr(self, &#39;nbpiece_tokens&#39;):
+            print(&#34;...Text mining en cours - nombre de pièce non extrait&#34;)
+            self.nbpiece_tokens \
+            = self.data_airbnb.bnb.extraire_nbpiece(self.data_airbnb.index.values)
+    
+        nb_col_croisement = self.croisement.shape[1]
+        nbpiece_rpls = pd.DataFrame()    
+        for i in range(nb_col_croisement): #pour chaque col
+            nbpiece_rpls.loc[:, &#39;nbpiece_{}&#39;.format(i)] = \
+                self.data_rpls.nbpiece.reindex(
+                        self.croisement[&#39;id_rpls{}&#39;.format(i)]).values
+        
+        #etage contient les surface extraites pour les airbnb, avec en index l&#39;id 
+        #du airbnb (le numéro de la ligne dans data_airbnb)
+        pieces \
+        = pd.Series(self.nbpiece_tokens).reindex(index=range(self.data_airbnb.shape[0]))
+        
+        nbpiece_scoring = nbpiece_rpls.subtract(pieces, axis=0)
+        nbpiece_scoring = nbpiece_scoring.applymap(self._nbpiece_score_filtering)
+        nbpiece_scoring.index.rename(&#39;id_bnb&#39;, inplace=True)
+        self.nbpiece_scoring = nbpiece_scoring
+    
+    return self.nbpiece_scoring</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.comparateur.Comparateur.calculer_score"><code class="name flex">
+<span>def <span class="ident">calculer_score</span></span>(<span>self, id_airbnb, id_rpls, descriptif=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calcul le score de suspicion entre l'annonce airbnb et le logement
+social concerné.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id_airbnb</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant de l'annonce airbnb.</dd>
+<dt><strong><code>id_rpls</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social.</dd>
+</dl>
+<p>Keyword arguments:
+descriptif (bool): True si le détail des clés de suspicion ainsi que
+la description complète de l'annonce et du rpls doivent être affichés.</p>
+<h2 id="returns">Returns</h2>
+<p>(float) : score</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calculer_score(self, id_airbnb : int, id_rpls : int, descriptif=False): 
+    &#34;&#34;&#34; Calcul le score de suspicion entre l&#39;annonce airbnb et le logement
+    social concerné.
+    
+    Parameters:
+        id_airbnb (int): identifiant de l&#39;annonce airbnb.
+        
+        id_rpls (int): identifiant du logement social.
+        
+    Keyword arguments: 
+        descriptif (bool): True si le détail des clés de suspicion ainsi que
+        la description complète de l&#39;annonce et du rpls doivent être affichés.
+        
+    Returns:
+        (float) : score    
+    &#34;&#34;&#34; 
+    
+    sous_scores = {key:np.nan for key in self.weights}
+
+    if self.correspondance_distance(id_airbnb, id_rpls):
+        sous_scores[&#39;croisement&#39;] = 1
+        
+        score = self.weights[&#39;croisement&#39;] * sous_scores[&#39;croisement&#39;]
+        
+        if &#39;surfhab&#39; in self.weights:
+            sous_scores[&#39;surfhab&#39;] = self.sous_score_surfhab(id_airbnb, id_rpls)
+            score += self.weights[&#39;surfhab&#39;] * sous_scores[&#39;surfhab&#39;]
+            
+        if &#39;etage&#39; in self.weights:
+            sous_scores[&#39;etage&#39;] = self.sous_score_etage(id_airbnb, id_rpls)
+            score += self.weights[&#39;etage&#39;] * sous_scores[&#39;etage&#39;] 
+                    
+        if &#39;nbpiece&#39; in self.weights:
+            sous_scores[&#39;nbpiece&#39;] = self.sous_score_nbpiece(id_airbnb, id_rpls)
+            score += self.weights[&#39;nbpiece&#39;] * sous_scores[&#39;nbpiece&#39;] 
+        
+        if descriptif:
+            print()
+            print(&#34;Descriptif des sous-scores :&#34;)
+            print(&#34;Poids des sous scores - {}&#34;.format(self.weights))
+            for key in sous_scores:
+                print(&#34;Score {} : {}&#34;.format(key, sous_scores[key]))
+            print()
+            self.comparer(id_airbnb, id_rpls)
+        return score
+        
+    else:
+        if descriptif:
+            print()
+            print(&#34;Descriptif des sous-scores :&#34;)
+            print(&#34;Poids des sous scores - {}&#34;.format(self.weights))
+            for key in sous_scores:
+                print(&#34;Score {} : {}&#34;.format(key, sous_scores[key]))
+            print()   
+            self.comparer(id_airbnb, id_rpls)
+        return 0</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.comparateur.Comparateur.calculer_surfhab_scoring"><code class="name flex">
+<span>def <span class="ident">calculer_surfhab_scoring</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calcul l'ensemble des score de match selon la surface habitable
+entre le répertoire d'annonce airbnb et le répertoire de logement sociaux.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>self.surfhab_scoring</code> (<code>pd.DataFrame</code>) : <code>score</code> <code>de</code> <code>suspicion</code> <code>selon</code> <code>la</code></dt>
+<dd>&nbsp;</dd>
+<dt><code>surface</code> <code>habitable</code> <code>entre</code> <code>chaque</code> <code>annonce</code> <code>airbnb</code> <code>et</code> <code>les</code> <code>potentiels</code> <code>250</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>logements sociaux présents dans son voisinage.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calculer_surfhab_scoring(self):
+    &#34;&#34;&#34; Calcul l&#39;ensemble des score de match selon la surface habitable 
+    entre le répertoire d&#39;annonce airbnb et le répertoire de logement sociaux.
+        
+    Returns:
+        self.surfhab_scoring (pd.DataFrame) : score de suspicion selon la 
+        surface habitable entre chaque annonce airbnb et les potentiels 250
+        logements sociaux présents dans son voisinage.
+    &#34;&#34;&#34; 
+    
+    if hasattr(self, &#39;surfhab_scoring&#39;):
+        print(&#34;Les sous_scores de surface habitable de chaque airbnb et&#34;
+              ,&#34;leur logement sociaux respectifs sont déjà calculés&#34;)
+    
+    else:  
+        print(&#34;Calcul des sous_scores de surface habitable&#34;)
+        
+        if not hasattr(self, &#39;surfhab_tokens&#39;):
+            print(&#34;...Text mining en cours - surfhab non extrait&#34;)
+            self.surfhab_tokens \
+            = self.data_airbnb.bnb.extraire_surfhab(self.data_airbnb.index.values)
+        
+        nb_col_croisement = self.croisement.shape[1]
+        surfhab_rpls = pd.DataFrame()
+        
+        for i in range(nb_col_croisement):
+            surfhab_rpls.loc[:, &#39;surfhab_{}&#39;.format(i)] = \
+            self.data_rpls.surfhab.reindex(
+                     self.croisement[&#39;id_rpls{}&#39;.format(i)]).values
+        
+        #surfhab contient les surface extraites pour les airbnb, avec 
+        #en index l&#39;id du airbnb (le numéro de la ligne dans data_airbnb)
+        surfhab \
+        = pd.Series(self.surfhab_tokens).reindex(index=range(self.data_airbnb.shape[0]))
+
+        surfhab_scoring = surfhab_rpls.div(surfhab, axis=0)
+        surfhab_scoring = surfhab_scoring.applymap(lambda x: 1/x if x &gt; 1 else x)
+        surfhab_scoring.index.rename(&#39;id_bnb&#39;, inplace=True)
+        self.surfhab_scoring = surfhab_scoring
+        
+    return self.surfhab_scoring</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.comparateur.Comparateur.comparer"><code class="name flex">
+<span>def <span class="ident">comparer</span></span>(<span>self, id_airbnb, id_rpls)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Affiche les descriptions complètes de l'annonce airbnb et du logement
+social concernés ainsi que les extractions de champs textuels effectuées
+sur l'annonce airbnb.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id_airbnb</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant de l'annonce airbnb.</dd>
+<dt><strong><code>id_rpls</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def comparer(self, id_airbnb : int, id_rpls : int):
+    &#34;&#34;&#34; Affiche les descriptions complètes de l&#39;annonce airbnb et du logement
+    social concernés ainsi que les extractions de champs textuels effectuées
+    sur l&#39;annonce airbnb.
+    
+    Parameters:
+        id_airbnb (int): identifiant de l&#39;annonce airbnb.
+        
+        id_rpls (int): identifiant du logement social.
+    &#34;&#34;&#34; 
+    
+    self.data_airbnb.bnb.complete_description(id_airbnb)
+    print(&#34;---------------------------------------------------------------&#34;
+          , &#34;\n&#34;)
+    self.data_rpls.rpls.complete_description(id_rpls)
+    print(&#34;---------------------------------------------------------------&#34;
+          , &#34;\n&#34;)        
+    self.data_airbnb.bnb.all_extractions(id_airbnb, pprint=True, rreturn=False)
+    print()</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.comparateur.Comparateur.correspondance_distance"><code class="name flex">
+<span>def <span class="ident">correspondance_distance</span></span>(<span>self, id_airbnb, id_rpls)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Renvoie True si l'annonce airbnb et le rpls sont à moins de 150 m
+l'un de l'autre</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id_airbnb</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant de l'annonce airbnb.</dd>
+<dt><strong><code>id_rpls</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>(bool)</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def correspondance_distance(self, id_airbnb : int, id_rpls : int):
+    &#34;&#34;&#34; Renvoie True si l&#39;annonce airbnb et le rpls sont à moins de 150 m
+    l&#39;un de l&#39;autre
+    
+    Parameters:
+        id_airbnb (int): identifiant de l&#39;annonce airbnb.
+        
+        id_rpls (int): identifiant du logement social.
+        
+    Returns:
+        (bool) 
+    &#34;&#34;&#34;  
+    
+    return id_rpls in self.croisement.loc[id_airbnb].values</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.comparateur.Comparateur.extract_best_match"><code class="name flex">
+<span>def <span class="ident">extract_best_match</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>A partir de la matrice de score calculée sur l'ensemble des répertoires
+d'annonces airbnb et de logements sociaux, extrait pour chaque airbnb
+l'identifiant du logement social ayant le plus haut score de suspicion
+dans son voisinage</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>self.best_match</code> (<code>pd.Series</code>) : <code>en</code> <code>index</code> - <code>identifiant</code> <code>du</code> <code>airbnb</code> ;</dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>en colonne - identifiant du logement social.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def extract_best_match(self):
+    &#34;&#34;&#34; A partir de la matrice de score calculée sur l&#39;ensemble des répertoires
+    d&#39;annonces airbnb et de logements sociaux, extrait pour chaque airbnb
+    l&#39;identifiant du logement social ayant le plus haut score de suspicion
+    dans son voisinage
+        
+    Returns:
+        self.best_match (pd.Series) : en index - identifiant du airbnb ; 
+        en colonne - identifiant du logement social.
+    &#34;&#34;&#34; 
+    
+    if hasattr(self, &#39;all_scores&#39;):
+        #On récupère le numéro des colonnes avec le score maximal
+        column_score_max = self.all_scores.idxmax(axis=1).values
+        score_max = self.all_scores.max(axis=1).values
+        
+        best_match = -1 * np.ones((self.croisement.shape[0],2)) 
+        for idx in range(self.croisement.shape[0]):
+            if not pd.isna(self.croisement.iloc[idx, int(column_score_max[idx])]):
+                best_match[idx,0] \
+                = self.croisement.iloc[idx, int(column_score_max[idx])]
+                best_match[idx,1] = score_max[idx]
+                
+        best_match = pd.DataFrame(best_match)
+        best_match.index.rename(&#39;id_bnb&#39;, inplace=True)
+        best_match.rename(columns={0:&#39;id_rpls&#39;, 1:&#39;score&#39;}, inplace=True)
+        best_match = best_match.astype({&#39;id_rpls&#39;:&#39;int64&#39;})
+        best_match.replace(to_replace={&#39;score&#39;:-1.0}, value={&#39;score&#39;:0.0}
+        , inplace=True)
+    
+        self.best_match = best_match
+        return best_match   
+    
+    else:
+        self.calculer_all_scores()
+        return self.extract_best_match()</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.comparateur.Comparateur.sort_best_match"><code class="name flex">
+<span>def <span class="ident">sort_best_match</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sort_best_match(self):
+    if hasattr(self, &#39;best_match&#39;):
+        self.best_match.sort_values(by=&#39;score&#39;, ascending=False, inplace=True)
+    else:
+        raise AttributeError(&#34;L&#39;ensemble des scores n&#39;a pas été calculé :&#34;,
+                             &#34;exécutez la méthode &#39;calculer_all_scores&#34;)</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.comparateur.Comparateur.sous_score_etage"><code class="name flex">
+<span>def <span class="ident">sous_score_etage</span></span>(<span>self, id_airbnb, id_rpls)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calcul le score de match selon l'étage entre l'annonce airbnb et le
+rpls.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id_airbnb</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant de l'annonce airbnb.</dd>
+<dt><strong><code>id_rpls</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>(float) : score</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sous_score_etage(self, id_airbnb : int, id_rpls : int):
+    &#34;&#34;&#34; Calcul le score de match selon l&#39;étage entre l&#39;annonce airbnb et le 
+    rpls.
+    
+    Parameters:
+        id_airbnb (int): identifiant de l&#39;annonce airbnb.
+        
+        id_rpls (int): identifiant du logement social.
+        
+    Returns:
+        (float) : score    
+    &#34;&#34;&#34; 
+    
+    etage_airbnb = self.data_airbnb.bnb.extraire_etage(id_airbnb)
+    etage_rpls = self.data_rpls.loc[id_rpls, &#39;etage&#39;]
+    
+    if pd.isna(etage_airbnb) or pd.isna(etage_rpls):
+        print(&#34;etage : score nul car aucune détection&#34;)
+        return 0
+    elif abs(etage_airbnb - etage_rpls) == 0:
+        return 1
+    elif abs(etage_airbnb - etage_rpls) == 1:
+        return 0.2
+    else:
+        return 0</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.comparateur.Comparateur.sous_score_nbpiece"><code class="name flex">
+<span>def <span class="ident">sous_score_nbpiece</span></span>(<span>self, id_airbnb, id_rpls)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calcul le score de match selon le nombre de pièces entre l'annonce
+airbnb et le rpls.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id_airbnb</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant de l'annonce airbnb.</dd>
+<dt><strong><code>id_rpls</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>(float) : score</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sous_score_nbpiece(self, id_airbnb : int, id_rpls : int):
+    &#34;&#34;&#34; Calcul le score de match selon le nombre de pièces entre l&#39;annonce 
+    airbnb et le rpls.
+    
+    Parameters:
+        id_airbnb (int): identifiant de l&#39;annonce airbnb.
+        
+        id_rpls (int): identifiant du logement social.
+        
+    Returns:
+        (float) : score    
+    &#34;&#34;&#34; 
+    
+    nbpiece_airbnb = self.data_airbnb.bnb.extraire_nbpiece(id_airbnb)
+    nbpiece_rpls = self.data_rpls.loc[id_rpls, &#39;nbpiece&#39;]
+    
+    if pd.isna(nbpiece_airbnb) or pd.isna(nbpiece_rpls):
+        print(&#34;nbpiece : score nul car aucune détection&#34;)
+        return 0
+    elif abs(nbpiece_airbnb - nbpiece_rpls) == 0:
+        return 1
+    elif abs(nbpiece_airbnb - nbpiece_rpls) == 1:
+        return 0.5
+    elif abs(nbpiece_airbnb - nbpiece_rpls) == 2:
+        return 0.2
+    else:
+        return 0</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.comparateur.Comparateur.sous_score_surfhab"><code class="name flex">
+<span>def <span class="ident">sous_score_surfhab</span></span>(<span>self, id_airbnb, id_rpls)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calcul le score de match selon la surface habitable entre l'annonce
+airbnb et le rpls.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id_airbnb</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant de l'annonce airbnb.</dd>
+<dt><strong><code>id_rpls</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant du logement social.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>(float) : score</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sous_score_surfhab(self, id_airbnb : int, id_rpls : int):
+    &#34;&#34;&#34; Calcul le score de match selon la surface habitable entre l&#39;annonce 
+    airbnb et le rpls.
+    
+    Parameters:
+        id_airbnb (int): identifiant de l&#39;annonce airbnb.
+        
+        id_rpls (int): identifiant du logement social.
+        
+    Returns:
+        (float) : score    
+    &#34;&#34;&#34; 
+    
+    surfhab_airbnb = self.data_airbnb.bnb.extraire_surfhab(id_airbnb)
+    surfhab_rpls = self.data_rpls.loc[id_rpls, &#39;surfhab&#39;]
+    
+    if pd.isna(surfhab_airbnb) or pd.isna(surfhab_rpls):
+        print(&#34;surfhab : score nul car aucune détection&#34;)
+        return 0
+    elif surfhab_airbnb &lt; surfhab_rpls:
+        return surfhab_airbnb / surfhab_rpls
+    else:
+        return surfhab_rpls / surfhab_airbnb</code></pre>
+</details>
+</dd>
+<dt id="po_oresys.api.comparateur.Comparateur.voisinage_rpls"><code class="name flex">
+<span>def <span class="ident">voisinage_rpls</span></span>(<span>self, id_airbnb)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Renvoie la liste des rpls présents dans le rayon d'anonymisation.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id_airbnb</code></strong> :&ensp;<code>int</code></dt>
+<dd>identifiant de l'annonce airbnb.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>(pd.Series) contenent les id des rpls dans le voisinage.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def voisinage_rpls(self, id_airbnb : int):
+    &#34;&#34;&#34; Renvoie la liste des rpls présents dans le rayon d&#39;anonymisation.
+    
+    Parameters:
+        id_airbnb (int): identifiant de l&#39;annonce airbnb.
+        
+    Returns:
+        (pd.Series) contenent les id des rpls dans le voisinage.
+    &#34;&#34;&#34;  
+
+    return self.croisement.loc[id_airbnb]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="po_oresys.api" href="index.html">po_oresys.api</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="po_oresys.api.comparateur.Comparateur" href="#po_oresys.api.comparateur.Comparateur">Comparateur</a></code></h4>
+<ul class="">
+<li><code><a title="po_oresys.api.comparateur.Comparateur.calculer_all_scores" href="#po_oresys.api.comparateur.Comparateur.calculer_all_scores">calculer_all_scores</a></code></li>
+<li><code><a title="po_oresys.api.comparateur.Comparateur.calculer_etage_scoring" href="#po_oresys.api.comparateur.Comparateur.calculer_etage_scoring">calculer_etage_scoring</a></code></li>
+<li><code><a title="po_oresys.api.comparateur.Comparateur.calculer_nbpiece_scoring" href="#po_oresys.api.comparateur.Comparateur.calculer_nbpiece_scoring">calculer_nbpiece_scoring</a></code></li>
+<li><code><a title="po_oresys.api.comparateur.Comparateur.calculer_score" href="#po_oresys.api.comparateur.Comparateur.calculer_score">calculer_score</a></code></li>
+<li><code><a title="po_oresys.api.comparateur.Comparateur.calculer_surfhab_scoring" href="#po_oresys.api.comparateur.Comparateur.calculer_surfhab_scoring">calculer_surfhab_scoring</a></code></li>
+<li><code><a title="po_oresys.api.comparateur.Comparateur.comparer" href="#po_oresys.api.comparateur.Comparateur.comparer">comparer</a></code></li>
+<li><code><a title="po_oresys.api.comparateur.Comparateur.correspondance_distance" href="#po_oresys.api.comparateur.Comparateur.correspondance_distance">correspondance_distance</a></code></li>
+<li><code><a title="po_oresys.api.comparateur.Comparateur.extract_best_match" href="#po_oresys.api.comparateur.Comparateur.extract_best_match">extract_best_match</a></code></li>
+<li><code><a title="po_oresys.api.comparateur.Comparateur.sort_best_match" href="#po_oresys.api.comparateur.Comparateur.sort_best_match">sort_best_match</a></code></li>
+<li><code><a title="po_oresys.api.comparateur.Comparateur.sous_score_etage" href="#po_oresys.api.comparateur.Comparateur.sous_score_etage">sous_score_etage</a></code></li>
+<li><code><a title="po_oresys.api.comparateur.Comparateur.sous_score_nbpiece" href="#po_oresys.api.comparateur.Comparateur.sous_score_nbpiece">sous_score_nbpiece</a></code></li>
+<li><code><a title="po_oresys.api.comparateur.Comparateur.sous_score_surfhab" href="#po_oresys.api.comparateur.Comparateur.sous_score_surfhab">sous_score_surfhab</a></code></li>
+<li><code><a title="po_oresys.api.comparateur.Comparateur.voisinage_rpls" href="#po_oresys.api.comparateur.Comparateur.voisinage_rpls">voisinage_rpls</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

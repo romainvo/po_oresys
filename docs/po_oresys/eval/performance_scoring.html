@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.2" />
+<title>po_oresys.eval.performance_scoring API documentation</title>
+<meta name="description" content="Created on Tue Mar 10 23:45:40 2020 …" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>po_oresys.eval.performance_scoring</code></h1>
+</header>
+<section id="section-intro">
+<p>Created on Tue Mar 10 23:45:40 2020</p>
+<p>@author: romain</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># -*- coding: utf-8 -*-
+&#34;&#34;&#34;
+Created on Tue Mar 10 23:45:40 2020
+
+@author: romain
+&#34;&#34;&#34;
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+import pickle
+from po_oresys.api.comparateur import Comparateur
+
+if __name__ == &#39;__main__&#39;:
+    
+    analyse_discriminante = True
+    
+    analyse_meilleurs_scores = False
+    
+#------------------------------------------------------------------------------# 
+#------------------------ INITIALISATION DU COMPARATEUR -----------------------# 
+#------------------------------------------------------------------------------# 
+    
+    with open(&#39;po_oresys/resources/surfhab_tokens.pickle&#39;, &#39;rb&#39;) as fileIn:
+        surfhab_tokens = pickle.load(fileIn)
+
+    with open(&#39;po_oresys/resources/etage_tokens.pickle&#39;, &#39;rb&#39;) as fileIn:
+        etage_tokens = pickle.load(fileIn)
+
+    with open(&#39;po_oresys/resources/nbpiece_tokens.pickle&#39;, &#39;rb&#39;) as fileIn:
+        nbpiece_tokens = pickle.load(fileIn)       
+
+    comparateur = Comparateur(surfhab_tokens=surfhab_tokens,
+                              etage_tokens=etage_tokens, 
+                              nbpiece_tokens=nbpiece_tokens)
+        
+    surfhab_scoring = comparateur.calculer_surfhab_scoring()
+    etage_scoring = comparateur.calculer_etage_scoring()
+    nbpiece_scoring = comparateur.calculer_nbpiece_scoring()  
+    
+    scoring = {&#39;surfhab&#39;:surfhab_scoring, 
+               &#39;etage&#39;:etage_scoring, 
+               &#39;nbpiece&#39;:nbpiece_scoring}
+    
+#------------------------------------------------------------------------------# 
+#------ EVALUATION DU CARACTERE DISCRIMINANT DE CHAQUE LEVIER DE DECISION -----# 
+#------------------------------------------------------------------------------# 
+
+    if analyse_discriminante:
+        
+        plt.style.use(&#39;seaborn-darkgrid&#39;)
+        plt.rcParams.update({&#39;font.size&#39;:12})
+#        plt.rcParams[&#34;figure.figsize&#34;] = (50,40)
+        fig, ax = plt.subplots(nrows=3, sharex=True, sharey=True)
+#        fig.tight_layout()
+        title = &#34;&#34;&#34;Distributions cumulées inversées du pourcentage de logements sociaux autour 
+        de chaque annonce airbnb ayant un match exact selon chaque levier de suspicion&#34;&#34;&#34;
+        fig.suptitle(title)
+        plt.xlabel(&#34;Pourcentage de logements sociaux avec un match exact selon le levier de détection&#34;)
+        fig.text(0.05,0.5, &#34;Somme cumulée du nombre d&#39;annonces airbnb concernées&#34;,
+                 ha=&#34;center&#34;, va=&#34;center&#34;, rotation=90)
+        color_palette = sns.color_palette(&#34;muted&#34;)
+     
+        for idx,levier in enumerate({&#39;surfhab&#39;,&#39;etage&#39;,&#39;nbpiece&#39;}):
+            if levier != &#39;surfhab&#39;:
+                sns.distplot((scoring[levier] == 1)
+                    .sum(axis=1)
+                        .divide((~comparateur.croisement.isna()).sum(axis=1))
+                            , bins=150
+                            , kde=False
+                            , hist_kws={&#39;cumulative&#39;:-1, &#39;alpha&#39;:0.5,
+                                        &#39;edgecolor&#39;:&#39;w&#39;}
+                            , ax=ax[idx]
+                            , label=levier
+                            , color=color_palette[idx])
+            else:
+                sns.distplot((scoring[levier] &gt;= 0.95)
+                    .sum(axis=1)
+                        .divide((~comparateur.croisement.isna()).sum(axis=1))
+                            , bins=150
+                            , kde=False
+                            , hist_kws={&#39;cumulative&#39;:-1, &#39;alpha&#39;:0.5,
+                                        &#39;edgecolor&#39;:&#39;w&#39;}
+                            , ax=ax[idx]
+                            , label=levier
+                            , color=color_palette[idx])
+                
+            ax[idx].legend()
+    
+#------------------------------------------------------------------------------# 
+#-------------- AFFICHAGE DE LA DISTRIBUTION DES MEILLEURS SCORES -------------# 
+#------------------------------------------------------------------------------# 
+
+    if analyse_meilleurs_scores:
+            
+        rename_col= dict()
+        column_score_max = dict()
+        score_max = dict()
+        best_match = dict()
+        tranche_score = dict()
+        tranche_index = dict()
+        tranche_nombre = dict()
+       
+        for levier in {&#39;surfhab&#39;,&#39;etage&#39;,&#39;nbpiece&#39;}:
+            rename_col[levier] \
+            = {&#39;{}_{}&#39;.format(levier, i) : 
+                i for i in range(comparateur.croisement.shape[1])} 
+            
+            scoring[levier].rename(columns=rename_col[levier], 
+                                   inplace=True)
+            
+            column_score_max[levier] = scoring[levier].idxmax(axis=1).values
+            score_max[levier] = scoring[levier].max(axis=1).values
+            
+            best_match[levier] = -1 * np.ones((comparateur.croisement.shape[0],2))
+            for idx in range(comparateur.croisement.shape[0]):
+                if not pd.isna(column_score_max[levier][idx]):
+                    best_match[levier][idx,0] \
+                    = comparateur.croisement.iloc[
+                            idx, 
+                            int(column_score_max[levier][idx])]
+                    
+                    best_match[levier][idx,1] = score_max[levier][idx]
+                    
+            best_match[levier] = pd.DataFrame(best_match[levier])
+            
+            best_match[levier].index.rename(&#39;id_bnb&#39;, inplace=True)
+            best_match[levier].rename(columns={0:&#39;id_rpls&#39;, 1:&#39;score&#39;}, 
+                                      inplace=True)
+            best_match[levier] = best_match[levier].astype({&#39;id_rpls&#39;:&#39;int64&#39;})        
+    
+    #    best_match.replace(to_replace={&#39;score&#39;:-1.0}, value={&#39;score&#39;:0.0}
+    #    , inplace=True)
+    
+        plt.style.use(&#39;seaborn-darkgrid&#39;)
+        plt.rcParams.update({&#39;font.size&#39;:7.5})
+        fig_d, ax_d = plt.subplots(nrows=3)
+            
+        tranche_score \
+        = [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100]
+        
+        tranche_index[&#39;etage&#39;] = [&#34;no detection&#34;, &#34;0%&#34;, &#34;20%&#34;, &#34;100%&#34;]
+        tranche_index[&#39;nbpiece&#39;] = [&#34;no detection&#34;, &#34;0%&#34;, &#34;20%&#34;, &#34;50%&#34;, &#34;100%&#34;]
+    
+        for idx,levier in enumerate({&#39;surfhab&#39;,&#39;etage&#39;,&#39;nbpiece&#39;}):
+        
+            if levier == &#39;surfhab&#39;:
+                n = best_match[levier].shape[0]
+                somme_cumulee = 0
+                for i, tranche in enumerate(tranche_score):
+                    if tranche == 100:
+                        break
+                    elif i == (len(tranche_score) - 2):
+                        nb_temp \
+                        = best_match[levier].loc[
+                                (best_match[levier].score &gt;= tranche/100)
+                                &amp; 
+                                (best_match[levier].score &lt;= tranche_score[i+1]/100)
+                                ].shape[0]
+                        
+                        somme_cumulee += nb_temp  
+                        
+                    else:            
+                        nb_temp \
+                        = best_match[levier].loc[
+                                (best_match[levier].score &gt;= tranche/100)
+                                &amp; 
+                                (best_match[levier].score &lt; tranche_score[i+1]/100)
+                                ].shape[0]
+                        
+                        somme_cumulee += nb_temp
+                    
+                    if i == 0:
+                        tranche_nombre[levier] = [nb_temp]
+                        tranche_index[levier] \
+                        = [&#34;{}% - {}%&#34;.format(tranche, tranche_score[i+1])]
+                    else:
+                        tranche_nombre[levier].append(nb_temp)
+                        tranche_index[levier].append(&#34;{}% - {}%&#34;.format(
+                                tranche, tranche_score[i+1]))
+                        
+                    print(&#34;Détections avec une suspicion entre {}% et {}% : {} -- somme cumulée : {}&#34;
+                          .format(tranche, 
+                                  tranche_score[i+1], 
+                                  nb_temp, 
+                                  somme_cumulee/n))
+                
+                tranche_index[levier][0] = &#34;no detection&#34;
+            
+            elif levier == &#39;etage&#39;:                   
+                tranche_nombre[levier] = [0]
+                tranche_nombre[levier].append((best_match[levier].score == 0).sum())
+                tranche_nombre[levier].append((best_match[levier].score == 0.2).sum())
+                tranche_nombre[levier].append((best_match[levier].score == 1).sum())
+                tranche_nombre[levier][0] \
+                = best_match[levier].shape[0] - np.sum(tranche_nombre[levier][1:])    
+               
+            else:
+                tranche_nombre[levier] = [0]
+                tranche_nombre[levier].append((best_match[levier].score == 0).sum())
+                tranche_nombre[levier].append((best_match[levier].score == 0.5).sum())
+                tranche_nombre[levier].append((best_match[levier].score == 0.2).sum())
+                tranche_nombre[levier].append((best_match[levier].score == 1).sum())
+                tranche_nombre[levier][0] \
+                = best_match[levier].shape[0] - np.sum(tranche_nombre[levier][1:])    
+                 
+                
+            ax_d[idx].set_title(&#34;Distribution des scores - {}&#34;.format(levier))
+            sns.barplot(y=tranche_nombre[levier], x=tranche_index[levier]
+                        , orient=&#39;v&#39;, ax=ax_d[idx], edgecolor=&#39;white&#39;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="po_oresys.eval" href="index.html">po_oresys.eval</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
